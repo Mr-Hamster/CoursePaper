@@ -6,7 +6,10 @@ import Charts from '../screens/Chart.js';
 
 import '../styles/InputData.scss';
 
-let from = [], to = [];
+// let from = [], to = [];
+
+let perc = 1, labelsCount = 100/perc;
+let bigestAskAmount, bigestAskPrice, bigestBidAmount, bigestBidPrice;
 
 export default class InputData extends React.Component {
     state = {
@@ -16,51 +19,97 @@ export default class InputData extends React.Component {
         labels: [],
         dataBuy: [],
         dataSell: [],
+        loader: false,
     }
      
-    AddDataToSessionStore = () => {
-        const { variantFrom, variantTo } = this.state
+    // AddDataToSessionStore = () => {
+    //     const { variantFrom, variantTo } = this.state
 
-        // from = JSON.parse(localStorage.getItem('variantFrom'));
-        from.push(variantFrom);
-        localStorage.setItem('variantFrom', JSON.stringify(from));
+    //     // from = JSON.parse(localStorage.getItem('variantFrom'));
+    //     from.push(variantFrom);
+    //     localStorage.setItem('variantFrom', JSON.stringify(from));
 
-        to.push(variantTo);
-        localStorage.setItem('variantTo', JSON.stringify(to));
+    //     to.push(variantTo);
+    //     localStorage.setItem('variantTo', JSON.stringify(to));
 
-    }
+    // }
+
+    
 
     LoadData = () => {
         const { variantFrom, variantTo } = this.state;  
-        this.AddDataToLocalStore();
+        let requestResp;
+        // this.AddDataToLocalStore();
+        this.setState({
+            loader: true,
+            showChart: false,
+        })
         if(!variantFrom || !variantTo){
             alert('Please enter tickers!');
         }else{
             let ticker = `${variantFrom}${variantTo}`;
-            console.log(ticker);
-            const binance = api.crudBuilder(`https://api.binance.com/api/v1/depth?symbol=${ticker}&limit=1000`).get().then(
+            api.crudBuilder(`https://api.binance.com/api/v1/depth?symbol=${ticker}&limit=1000`).get().then(
                 resp => {
-                    console.log(resp);
-                }
-                ).catch(err => console.log('Error:', err));
-            const binancePrice = api.crudBuilder(`https://api.binance.com/api/v3/ticker/price?symbol=${ticker}`).get().then(
-                resp => {
-                    let requestResp = resp.request.responseText;
-                    console.log(requestResp);
-                }
-                ).catch(err => console.log('Error:', err));
-            this.setState({
-                showChart: true,
-            })
+                    requestResp = resp.request.responseText;
+                    this.getPrice(ticker, requestResp);
+                }).catch(err => console.log('Error:', err));
         }
     }
 
-    buildChart = (data1, data2, current) => {
+    getPrice = (ticker, requestResp) => {
+        api.crudBuilder(`https://api.binance.com/api/v3/ticker/price?symbol=${ticker}`).get().then(
+            resp => {         
+                let currentPrice = JSON.parse(resp.request.responseText).price;
+                this.buildChart(currentPrice, requestResp)
+            }).catch(err => console.log('Error:', err));
+    }    
+
+    buildChart = (current, data) => {
+        let minPrice = 0;
+        let jsonData = JSON.parse(data);
+        let asks = [], bids = [];
+        // BUY
+        for(var i in jsonData.bids) {
+            let price = parseFloat(jsonData.bids[i][0]);
+            let amount = parseFloat(jsonData.bids[i][1]);
+            let bidsParsedObj = {
+                price: price,
+                amount: amount
+            };
+
+            if(minPrice < price) {
+                bids.push(bidsParsedObj);
+
+                if (bigestBidAmount < amount || !bigestBidAmount) {
+                    bigestBidAmount = amount;
+                    bigestBidPrice = price;
+                }
+            }
+        }
+
+        // SELL
+        for(var i in jsonData.asks){
+            let price = parseFloat(jsonData.asks[i][0]);
+            let amount = parseFloat(jsonData.asks[i][1]);
+            let asksParsedObj = {
+                price: price,
+                amount: amount
+            };
+
+            if(minPrice < price){
+                asks.push(asksParsedObj);
+
+                if(bigestAskAmount < amount || !bigestAskAmount) {
+                    bigestAskAmount = amount;
+                    bigestAskPrice = price;
+                }
+            }
+        }
     let dataBuy = [], dataSell = [],
-        labels = buildLabelsList(current);
+        labels = this.buildLabelsList(current);
 
     //BUY
-    for(let i in data2){
+    for(let i in bids){
         for(let j in labels){
 
             let index = parseInt(j);
@@ -69,11 +118,11 @@ export default class InputData extends React.Component {
                 let label1 = parseFloat(labels[index].split(' - ')[0]),
                     label2 = parseFloat(labels[index].split(' - ')[1]);
 
-                if(data2[i].price >= label1 && data2[i].price < label2){
+                if(bids[i].price >= label1 && bids[i].price < label2){
                     if(!dataBuy[j]){
-                        dataBuy[j] = data2[i].amount;
+                        dataBuy[j] = bids[i].amount;
                     } else {
-                        dataBuy[j] += data2[i].amount;
+                        dataBuy[j] += bids[i].amount;
                     }
                 }
             }
@@ -81,19 +130,20 @@ export default class InputData extends React.Component {
     }
 
     //SELL
-    for(let p in data1){
+    for(let p in asks){
         for(let j in labels){
             let index = parseInt(j) - 1;
 
             if(index >= labels.length/2){
-
                 let label1 = parseFloat(labels[index].split(' - ')[0]),
                     label2 = parseFloat(labels[index].split(' - ')[1]);
-                if(data1[p].price >= label1 && data1[p].price < label2){
+
+                    //console.log(label1, label2, data1[p].price);
+                if(asks[p].price >= label1 && asks[p].price < label2){
                     if(!dataSell[index]){
-                        dataSell[index] = data1[p].amount;
+                        dataSell[index] = asks[p].amount;
                     } else {
-                        dataSell[index] += data1[p].amount;
+                        dataSell[index] += asks[p].amount;
                     }
                 }
             }
@@ -102,6 +152,7 @@ export default class InputData extends React.Component {
 
     let dSell = dataSell.length;
 
+    console.log(labels);
     for(let i = labels.length; i >= 0; i--){
         if(i >= dSell){
             labels.splice(i, 1);
@@ -111,11 +162,13 @@ export default class InputData extends React.Component {
             dataSell.splice(i, 1);
         }
     }
-
+    console.log(labels);
     this.setState({
         labels: labels,
         dataBuy: dataBuy,
         dataSell: dataSell,
+        showChart: true,
+        loader:false,
     })
     }
 
@@ -133,12 +186,13 @@ export default class InputData extends React.Component {
             labels1.push(label1);
             labels2.push(label2);
         }
-    
+
         return labels1.concat(labels2);
     }
 
     render() {
         console.log('State.........',this.state);
+        const { showChart, labels, dataBuy, dataSell, loader} = this.state
         return (
             <div className="wrapperInputData">
                 <div className="inputData"> 
@@ -177,7 +231,10 @@ export default class InputData extends React.Component {
                     </Button>
                 </div>
                 {
-                    this.state.showChart ? <Charts /> : null
+                    loader ? 'Loading...' : null
+                }
+                {
+                    showChart ? <Charts labels={labels}  dataBuy={dataBuy} dataSell={dataSell} bigestAskAmount={bigestAskAmount} bigestAskPrice={bigestAskPrice} bigestBidAmount={bigestBidAmount} bigestBidPrice={bigestBidPrice}/> : null
                 }
             </div>
         );
