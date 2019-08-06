@@ -17,7 +17,7 @@ export default class InputData extends React.Component {
         dataBuy: [],
         dataSell: [],
     }
-    
+     
     AddDataToSessionStore = () => {
         const { variantFrom, variantTo } = this.state
 
