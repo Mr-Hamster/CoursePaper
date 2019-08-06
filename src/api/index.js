@@ -15,5 +15,5 @@ const sendRequest = (url, options) =>
     });
 
 export const crudBuilder = url => ({
-    get: () => console.log(sendRequest(url,{method: 'GET'})),
+    get: () => sendRequest(url,{method: 'GET'}),
 });
