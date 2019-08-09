@@ -44,7 +44,7 @@ import Button from '@material-ui/core/Button';
             {
               type: 'linear',
               display: true,
-              position: 'right',
+              position: 'left',
               id: 'y-axis-2',
               gridLines: {
                 display: true
@@ -60,12 +60,14 @@ import Button from '@material-ui/core/Button';
 export default class Charts extends React.Component{
   state = {
     number: 10,
-    sellPrice: 0,
-    buyPrice: 0,
+    buyAmount: 0,
+    sellAmount: 0,
+    onPriceBuy: 0,
+    onPriceSell: 0,
   }
 
   componentDidMount(){
-    this.getResult;
+    this.getResult();
   }
 
   getResult = () => {
@@ -74,18 +76,41 @@ export default class Charts extends React.Component{
 
     let sellPrice = +currentPrice + +currentPrice*number/100;
     let buyPrice = +currentPrice - +currentPrice*number/100;
+    this.getAmountOnPrice(currentPrice, buyPrice, sellPrice);
+  }
+
+  getAmountOnPrice = (currentPrice, buyPrice, sellPrice) => {
+    const { arrBuy, arrSell } = this.props;
+    let newArrBuy = arrBuy.filter(item => item.price <= currentPrice && item.price >= buyPrice);
+    let newArrSell = arrSell.filter(item => item.price >= currentPrice && item.price <= sellPrice);
+    let resultBuy = this.maxAmount(newArrBuy);
+    let resultSell = this.maxAmount(newArrSell);
     this.setState({
-      sellPrice: sellPrice, 
-      buyPrice: buyPrice
+      buyAmount: resultBuy[0],
+      sellAmount: resultBuy[1],
+      onPriceBuy: resultSell[0],
+      onPriceSell: resultSell[1],
     })
-    console.log('sell price', sellPrice);
-    console.log('buy price', buyPrice)
+  }
+
+  maxAmount = data => {
+    let max = 0;
+    let price = 0;
+    let result = [];
+    data.forEach(item => {
+      if(item.amount > max){
+        max = item.amount
+        price = item.price;
+      }
+    });
+    result.push(max, price);
+    return result;
   }
   
   render(){     
-    const { dataBuy, dataSell, labels, bigestAskAmount, bigestAskPrice, bigestBidAmount, bigestBidPrice, currentPrice } = this.props;
-    const { sellPrice, buyPrice } = this.state;
-    console.log('Data Buy', dataBuy, bigestAskAmount);
+    const { dataBuy, dataSell, labels, currentPrice, arrBuy, arrSell } = this.props;
+    const { buyAmount, sellAmount, onPriceBuy, onPriceSell } = this.state;
+
     const data = {
       labels: labels,
       datasets: [{
@@ -116,7 +141,7 @@ export default class Charts extends React.Component{
           yAxisID: 'y-axis-2'
         }]
     };
-    console.log(this.state);
+
         return(
           <div className="wrapperChart">
             <div className="infoChart">
@@ -146,8 +171,8 @@ export default class Charts extends React.Component{
                 </div>
               </div>
               <div className="dataChart">
-              Buy biggest amount: {`${bigestBidAmount }`} <br/> On price: {`${buyPrice}`} <br/>
-              Sell biggest amount: {`${bigestAskAmount}`} <br/> On price: {`${sellPrice}`}
+              Buy biggest amount: {`${buyAmount}`} <br/> On price: {`${onPriceBuy}`} <br/>
+              Sell biggest amount: {`${sellAmount}`} <br/> On price: {`${onPriceSell}`}
               </div>
               <Button variant="contained" color="primary" style={{width:'40%', height:'40px', marginTop: '10px'}} onClick={ this.getResult }>
                 Get it

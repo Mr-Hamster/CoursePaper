@@ -11,6 +11,8 @@ let perc = 1, labelsCount = 100/perc;
 let bigestAskAmount, bigestAskPrice, bigestBidAmount, bigestBidPrice, currentPrice;
 let tickers = [], tickers1 = [];
 
+let arrBuy = [], arrSell = [];
+
 export default class InputData extends React.Component {
     state = {
         variantFrom: '',
@@ -67,7 +69,6 @@ export default class InputData extends React.Component {
                     if(item.name === obj.name){
                         parsedData[i].counter++;
                         sessionStorage.setItem('obj', JSON.stringify(parsedData));
-                        console.log(parsedData[i].counter);
                         if(parsedData[i].counter >= 3){
                             let tickers = localStorage.getItem('tickers');
                             let parsedTickers = JSON.parse(tickers);
@@ -145,8 +146,11 @@ export default class InputData extends React.Component {
                 }
             }
         }
-    let dataBuy = [], dataSell = [],
+        let dataBuy = [], dataSell = [],
         labels = this.buildLabelsList(current);
+
+        arrBuy = bids;
+        arrSell = asks;
 
     //BUY
     for(let i in bids){
@@ -178,7 +182,6 @@ export default class InputData extends React.Component {
                 let label1 = parseFloat(labels[index].split(' - ')[0]),
                     label2 = parseFloat(labels[index].split(' - ')[1]);
 
-                    //console.log(label1, label2, data1[p].price);
                 if(asks[p].price >= label1 && asks[p].price < label2){
                     if(!dataSell[index]){
                         dataSell[index] = asks[p].amount;
@@ -251,16 +254,13 @@ export default class InputData extends React.Component {
         let session = JSON.parse(sessionStorage.getItem('obj'));
         session.forEach(val => {
             if(val.name === item){
-                console.log('asdasdasdasd',val.counter);
                 val.counter = 0;
                 sessionStorage.setItem('obj',JSON.stringify(session));
             }
         })
-        console.log('session', session);
         this.setState({
             arr: loc
         })
-        // localStorage.removeItem('tickers[index]');
         this.getDataFromLocStore();
     }
 
@@ -324,7 +324,7 @@ export default class InputData extends React.Component {
                     loader ? 'Loading...' : null
                 }
                 {
-                    showChart ? <Charts labels={labels} currentPrice={currentPrice} dataBuy={dataBuy} dataSell={dataSell} bigestAskAmount={bigestAskAmount} bigestAskPrice={bigestAskPrice} bigestBidAmount={bigestBidAmount} bigestBidPrice={bigestBidPrice}/> : null
+                    showChart ? <Charts labels={labels} currentPrice={currentPrice} dataBuy={dataBuy} dataSell={dataSell} arrBuy={arrBuy} arrSell={arrSell} /> : null
                 }
                 {
                     showChart ? <HistoricalValues /> : null
