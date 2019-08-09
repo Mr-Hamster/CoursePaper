@@ -2,9 +2,8 @@ import React from 'react'
 import {Bar} from 'react-chartjs-2';
 import '../styles/Chart.scss'
 import TextField from '@material-ui/core/TextField';
-import HistoricalValues from './HistoricalValues';
+import Button from '@material-ui/core/Button';
 
-  
   const options = {
     responsive: true,
     tooltips: {
@@ -61,11 +60,32 @@ import HistoricalValues from './HistoricalValues';
 export default class Charts extends React.Component{
   state = {
     number: 10,
+    sellPrice: 0,
+    buyPrice: 0,
+  }
+
+  componentDidMount(){
+    this.getResult;
+  }
+
+  getResult = () => {
+    const { number } = this.state;
+    const {currentPrice } = this.props;
+
+    let sellPrice = +currentPrice + +currentPrice*number/100;
+    let buyPrice = +currentPrice - +currentPrice*number/100;
+    this.setState({
+      sellPrice: sellPrice, 
+      buyPrice: buyPrice
+    })
+    console.log('sell price', sellPrice);
+    console.log('buy price', buyPrice)
   }
   
   render(){     
-    const { dataBuy, dataSell, labels, bigestAskAmount, bigestAskPrice, bigestBidAmount, bigestBidPrice } = this.props;
-    console.log(this.props);
+    const { dataBuy, dataSell, labels, bigestAskAmount, bigestAskPrice, bigestBidAmount, bigestBidPrice, currentPrice } = this.props;
+    const { sellPrice, buyPrice } = this.state;
+    console.log('Data Buy', dataBuy, bigestAskAmount);
     const data = {
       labels: labels,
       datasets: [{
@@ -101,29 +121,37 @@ export default class Charts extends React.Component{
           <div className="wrapperChart">
             <div className="infoChart">
               <div className="numberInput">
-                Min price: current minus
-                <TextField
-                  id="outlined-number"
-                  label="%"
-                  type="number"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  margin="normal"
-                  variant="outlined"
-                  value={this.state.number}
-                  onChange = {(event)=>{
-                    this.setState({
-                      number: event.target.value,
-                    })
-                  }}
-                  style={{width: '80px', marginLeft: '10px'}}
-                />
+                <span>
+                  Current price: {currentPrice}
+                </span>
+                <div style={{ display:'flex', alignItems: 'center' }}>
+                  Min price: current minus
+                  <TextField
+                    id="outlined-number"
+                    label="%"
+                    type="number"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    margin="normal"
+                    variant="outlined"
+                    value={this.state.number}
+                    onChange = {(event)=>{
+                      this.setState({
+                        number: event.target.value,
+                      })
+                    }}
+                    style={{width: '80px', marginLeft: '10px'}}
+                  />
+                </div>
               </div>
               <div className="dataChart">
-              Buy biggest amount: {`${bigestBidAmount }`} <br/> On price: {`${bigestBidPrice}`} <br/>
-              Sell biggest amount: {`${bigestAskAmount}`} <br/> On price: {`${bigestAskPrice}`}
+              Buy biggest amount: {`${bigestBidAmount }`} <br/> On price: {`${buyPrice}`} <br/>
+              Sell biggest amount: {`${bigestAskAmount}`} <br/> On price: {`${sellPrice}`}
               </div>
+              <Button variant="contained" color="primary" style={{width:'40%', height:'40px', marginTop: '10px'}} onClick={ this.getResult }>
+                Get it
+              </Button>
             </div>  
             <div style={{width:'60%'}}>
               <Bar
@@ -131,7 +159,6 @@ export default class Charts extends React.Component{
                 options={options}
               />
             </div>
-            <HistoricalValues />
           </div>
        );
     }

@@ -3,63 +3,103 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import * as api from '../api/index';
 import Charts from '../screens/Chart.js';
-
 import '../styles/InputData.scss';
-
-// let from = [], to = [];
+import HistoricalValues from "./HistoricalValues";
+import Delete from '../static/images/delete.png'
 
 let perc = 1, labelsCount = 100/perc;
-let bigestAskAmount, bigestAskPrice, bigestBidAmount, bigestBidPrice;
+let bigestAskAmount, bigestAskPrice, bigestBidAmount, bigestBidPrice, currentPrice;
+let tickers = [], tickers1 = [];
 
 export default class InputData extends React.Component {
     state = {
-        variantFrom: 'BTC',
-        variantTo: 'USDT',
+        variantFrom: '',
+        variantTo: '',
         showChart: false,
         labels: [],
         dataBuy: [],
         dataSell: [],
         loader: false,
+        arr: [],
     }
-     
-    // AddDataToSessionStore = () => {
-    //     const { variantFrom, variantTo } = this.state
 
-    //     // from = JSON.parse(localStorage.getItem('variantFrom'));
-    //     from.push(variantFrom);
-    //     localStorage.setItem('variantFrom', JSON.stringify(from));
-
-    //     to.push(variantTo);
-    //     localStorage.setItem('variantTo', JSON.stringify(to));
-
-    // }
-
+    componentDidMount(){
+        this.getDataFromLocStore();
+    }
     
-
     LoadData = () => {
         const { variantFrom, variantTo } = this.state;  
         let requestResp;
-        // this.AddDataToLocalStore();
-        this.setState({
-            loader: true,
-            showChart: false,
-        })
         if(!variantFrom || !variantTo){
             alert('Please enter tickers!');
         }else{
             let ticker = `${variantFrom}${variantTo}`;
+            this.AddDataToStore();
             api.crudBuilder(`https://api.binance.com/api/v1/depth?symbol=${ticker}&limit=1000`).get().then(
                 resp => {
                     requestResp = resp.request.responseText;
                     this.getPrice(ticker, requestResp);
-                }).catch(err => console.log('Error:', err));
+                    this.setState({
+                        loader: true,
+                        showChart: false,
+                    })
+                }).catch(err => alert(`${err}`));
         }
+    }
+
+    AddDataToStore = () => {
+        const { variantFrom, variantTo } = this.state;
+        let data = sessionStorage.getItem('obj');
+        let ticker = `${variantFrom}-${variantTo}`;
+        let obj = {
+            name: ticker,
+            counter: 1
+        }
+        let parsedData = JSON.parse(data);
+      
+        if(!parsedData){
+            tickers.push(obj);
+            sessionStorage.setItem('obj', JSON.stringify(tickers));
+        } else {
+            parsedData.forEach((item, i) => {  
+                const filtered = parsedData.filter(val => val.name === obj.name);
+                if(filtered.length){
+                    if(item.name === obj.name){
+                        parsedData[i].counter++;
+                        sessionStorage.setItem('obj', JSON.stringify(parsedData));
+                        console.log(parsedData[i].counter);
+                        if(parsedData[i].counter >= 3){
+                            let tickers = localStorage.getItem('tickers');
+                            let parsedTickers = JSON.parse(tickers);
+                            if(!parsedTickers){
+                                tickers1.push(ticker)
+                                localStorage.setItem('tickers', JSON.stringify(tickers1));
+                            }else{
+                                const filteredTickers = parsedTickers.filter(val => val === ticker);
+                                if(filteredTickers.length == 0){
+                                    parsedTickers.push(ticker);
+                                    localStorage.setItem('tickers', JSON.stringify(parsedTickers));
+                                }
+                            }
+                            // tickers1.push(ticker)
+                            // localStorage.setItem('tickers', JSON.stringify(tickers1));
+                            this.getDataFromLocStore();
+                        }
+                        return;
+                    }
+                } else {
+                    parsedData.push(obj);
+                    sessionStorage.setItem('obj', JSON.stringify(parsedData));
+                }
+            });
+        }
+
     }
 
     getPrice = (ticker, requestResp) => {
         api.crudBuilder(`https://api.binance.com/api/v3/ticker/price?symbol=${ticker}`).get().then(
             resp => {         
-                let currentPrice = JSON.parse(resp.request.responseText).price;
+                currentPrice = JSON.parse(resp.request.responseText).price;
                 this.buildChart(currentPrice, requestResp)
             }).catch(err => console.log('Error:', err));
     }    
@@ -152,7 +192,6 @@ export default class InputData extends React.Component {
 
     let dSell = dataSell.length;
 
-    console.log(labels);
     for(let i = labels.length; i >= 0; i--){
         if(i >= dSell){
             labels.splice(i, 1);
@@ -162,7 +201,6 @@ export default class InputData extends React.Component {
             dataSell.splice(i, 1);
         }
     }
-    console.log(labels);
     this.setState({
         labels: labels,
         dataBuy: dataBuy,
@@ -190,9 +228,45 @@ export default class InputData extends React.Component {
         return labels1.concat(labels2);
     }
 
+    getDataFromLocStore = () => {
+        let arr = JSON.parse(localStorage.getItem('tickers'));
+        this.setState({
+            arr
+        })
+    }
+
+    autoPasting = (item) => {
+        let value = item.split('-');
+        this.setState({
+            variantFrom: value[0],
+            variantTo: value[1],
+        },() => this.LoadData())
+    }
+
+    removeItem = (index, item) => {
+        let loc = JSON.parse(localStorage.getItem('tickers'));
+        loc.splice(index,1);
+        localStorage.setItem('tickers',JSON.stringify(loc));
+
+        let session = JSON.parse(sessionStorage.getItem('obj'));
+        session.forEach(val => {
+            if(val.name === item){
+                console.log('asdasdasdasd',val.counter);
+                val.counter = 0;
+                sessionStorage.setItem('obj',JSON.stringify(session));
+            }
+        })
+        console.log('session', session);
+        this.setState({
+            arr: loc
+        })
+        // localStorage.removeItem('tickers[index]');
+        this.getDataFromLocStore();
+    }
+
     render() {
-        console.log('State.........',this.state);
-        const { showChart, labels, dataBuy, dataSell, loader} = this.state
+        // console.log('State.........',this.state);
+        const { showChart, labels, dataBuy, dataSell, loader, arr} = this.state
         return (
             <div className="wrapperInputData">
                 <div className="inputData"> 
@@ -226,6 +300,22 @@ export default class InputData extends React.Component {
                             style={{ width: '300px' }}
                         />
                     </div>
+                    {
+                        arr ? 
+                        <div className="valueFromLocStore">
+                            {
+                                arr.map((item, index) => (
+                                    <div key={index} className="helpers">
+                                        <img src={Delete} alt='delete' style={{ position:"absolute", width: '15px', right: '8px', top: '8px', zIndex: '1' }} onClick={ ()=> this.removeItem(index, item) } />
+                                        <button onClick={ () => this.autoPasting(item) } style={{ height: '30px', width:'100px' }}>
+                                            {item}
+                                        </button>
+                                    </div>
+                                ))
+                            }
+                        </div>   
+                    : null
+                    }                 
                     <Button variant="contained" color="primary" style={{width:'30%', height:'50px'}} onClick={ this.LoadData }>
                         Get Exchanges Results
                     </Button>
@@ -234,7 +324,10 @@ export default class InputData extends React.Component {
                     loader ? 'Loading...' : null
                 }
                 {
-                    showChart ? <Charts labels={labels}  dataBuy={dataBuy} dataSell={dataSell} bigestAskAmount={bigestAskAmount} bigestAskPrice={bigestAskPrice} bigestBidAmount={bigestBidAmount} bigestBidPrice={bigestBidPrice}/> : null
+                    showChart ? <Charts labels={labels} currentPrice={currentPrice} dataBuy={dataBuy} dataSell={dataSell} bigestAskAmount={bigestAskAmount} bigestAskPrice={bigestAskPrice} bigestBidAmount={bigestBidAmount} bigestBidPrice={bigestBidPrice}/> : null
+                }
+                {
+                    showChart ? <HistoricalValues /> : null
                 }
             </div>
         );
