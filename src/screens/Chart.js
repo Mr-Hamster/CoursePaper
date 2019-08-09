@@ -87,8 +87,8 @@ export default class Charts extends React.Component{
     let resultSell = this.maxAmount(newArrSell);
     this.setState({
       buyAmount: resultBuy[0],
-      sellAmount: resultBuy[1],
-      onPriceBuy: resultSell[0],
+      sellAmount: resultSell[0],
+      onPriceBuy: resultBuy[1],
       onPriceSell: resultSell[1],
     })
   }

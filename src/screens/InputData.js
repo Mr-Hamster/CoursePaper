@@ -5,7 +5,8 @@ import * as api from '../api/index';
 import Charts from '../screens/Chart.js';
 import '../styles/InputData.scss';
 import HistoricalValues from "./HistoricalValues";
-import Delete from '../static/images/delete.png'
+import Delete from '../static/images/delete.png';
+import BigTrades from '../screens/BigTrades'
 
 let perc = 1, labelsCount = 100/perc;
 let bigestAskAmount, bigestAskPrice, bigestBidAmount, bigestBidPrice, currentPrice;
@@ -306,8 +307,8 @@ export default class InputData extends React.Component {
                             {
                                 arr.map((item, index) => (
                                     <div key={index} className="helpers">
-                                        <img src={Delete} alt='delete' style={{ position:"absolute", width: '15px', right: '8px', top: '8px', zIndex: '1' }} onClick={ ()=> this.removeItem(index, item) } />
-                                        <button onClick={ () => this.autoPasting(item) } style={{ height: '30px', width:'100px' }}>
+                                        <img src={Delete} alt='delete' style={{ position:"absolute", width: '15px', right: '8px', top: '8px', cursor: 'pointer' }} onClick={ ()=> this.removeItem(index, item) } />
+                                        <button onClick={ () => this.autoPasting(item) } style={{ height: '30px', width:'100px', cursor: 'pointer' }}>
                                             {item}
                                         </button>
                                     </div>
@@ -328,6 +329,9 @@ export default class InputData extends React.Component {
                 }
                 {
                     showChart ? <HistoricalValues /> : null
+                }
+                {
+                    showChart ? <BigTrades arrBuy={arrBuy} arrSell={arrSell} /> : null
                 }
             </div>
         );

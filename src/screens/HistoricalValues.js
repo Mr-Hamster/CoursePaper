@@ -1,9 +1,10 @@
-import React from "react";
+import React, { Fragment } from "react";
 import '../styles/HistoricalValues.scss';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import {Line} from 'react-chartjs-2';
 import * as api from '../api/index';
+import Delete from '../static/images/delete.png'
 
 let dates = [], numbers = [], dates1 = [];
 
@@ -13,8 +14,6 @@ export default class HistoricalValues extends React.Component{
         value_classificaton: '',
         limit: 5,
         showChart: false,
-        // numbers : [],
-        // dates: [],
     }
 
     componentDidMount(){
@@ -91,7 +90,7 @@ export default class HistoricalValues extends React.Component{
                             value={this.state.limit}
                             onChange = {(event)=>{
                                 this.setState({
-                                limit: event.target.value,
+                                    limit: event.target.value,
                                 })
                             }}
                             style={{width: '80px', marginLeft: '15px'}}
@@ -103,7 +102,14 @@ export default class HistoricalValues extends React.Component{
                 </div>
                 <div style={{ width: '60%' }}>
                     {
-                        showChart ? <Line data={dataChart} /> : null
+                        showChart ? 
+                        <div style={{ position:'relative' }}>
+                            <Line data={dataChart} />
+                            <img src={Delete} style={{ width:'25px', cursor: 'pointer', position:'absolute', top: '0px', right: '0px' }} onClick={ () => this.setState({
+                                showChart: false
+                            }) } />
+                        </div>
+                        : null
                     }
                 </div>
                 
