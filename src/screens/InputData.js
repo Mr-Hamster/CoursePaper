@@ -7,6 +7,7 @@ import '../styles/InputData.scss';
 import HistoricalValues from "./HistoricalValues";
 import Delete from '../static/images/delete.png';
 import BigTrades from '../screens/BigTrades'
+import ChangeStatistic from "./ChangeStatistic";
 
 let perc = 1, labelsCount = 100/perc;
 let bigestAskAmount, bigestAskPrice, bigestBidAmount, bigestBidPrice, currentPrice;
@@ -33,6 +34,10 @@ export default class InputData extends React.Component {
     LoadData = () => {
         const { variantFrom, variantTo } = this.state;  
         let requestResp;
+        this.setState({
+            loader: true,
+            showChart: false,
+        })
         if(!variantFrom || !variantTo){
             alert('Please enter tickers!');
         }else{
@@ -42,11 +47,13 @@ export default class InputData extends React.Component {
                 resp => {
                     requestResp = resp.request.responseText;
                     this.getPrice(ticker, requestResp);
+                }).catch(err => {
+                    alert(`${err}`)
                     this.setState({
-                        loader: true,
-                        showChart: false,
+                        loader: false,
                     })
-                }).catch(err => alert(`${err}`));
+                });
+                
         }
     }
 
@@ -267,7 +274,7 @@ export default class InputData extends React.Component {
 
     render() {
         // console.log('State.........',this.state);
-        const { showChart, labels, dataBuy, dataSell, loader, arr} = this.state
+        const { showChart, labels, dataBuy, dataSell, loader, arr, variantFrom, variantTo} = this.state
         return (
             <div className="wrapperInputData">
                 <div className="inputData"> 
@@ -325,7 +332,10 @@ export default class InputData extends React.Component {
                     loader ? 'Loading...' : null
                 }
                 {
-                    showChart ? <Charts labels={labels} currentPrice={currentPrice} dataBuy={dataBuy} dataSell={dataSell} arrBuy={arrBuy} arrSell={arrSell} /> : null
+                    showChart ? <ChangeStatistic from={variantFrom} to={variantTo} /> : null
+                }
+                {
+                    showChart ? <Charts currentPrice={currentPrice} labels={labels} dataBuy={dataBuy} dataSell={dataSell} arrBuy={arrBuy} arrSell={arrSell} /> : null
                 }
                 {
                     showChart ? <HistoricalValues /> : null
