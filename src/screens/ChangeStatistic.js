@@ -1,13 +1,15 @@
-import React from 'react'
-import '../styles/ChangeStatistic.scss'
+import React, { Fragment, useCallback } from 'react';
+import '../styles/ChangeStatistic.scss';
 import * as api from '../api/index';
-import { Table } from 'react-bootstrap'
+import { Table } from 'react-bootstrap';
+import PieChart from "./PieChart";
 
 let arrRes = [];
 
 export default class ChangeStatistic extends React.Component{
     state = {
-        arr: [],
+        arrStatistic: [],
+        arrVolume: []
     }
 
     componentDidMount(){
@@ -17,6 +19,7 @@ export default class ChangeStatistic extends React.Component{
 
         api.crudBuilder(`https://min-api.cryptocompare.com/data/histominute?fsym=${from}&tsym=${to}&limit=1`).get().then(
             resp => {
+                arrRes = [];
                 let currentPrice = resp.data.Data[1].close;
                 this.getStatistic(histo = 'minute', times = 5, currentPrice);
                 this.getStatistic(histo = 'minute', times = 15, currentPrice);
@@ -39,11 +42,15 @@ export default class ChangeStatistic extends React.Component{
         api.crudBuilder(`https://min-api.cryptocompare.com/data/histo${histo}?fsym=${from}&tsym=${to}&limit=40`).get().then(
             resp => {
                 value = resp.data.Data[resp.data.Data.length - times].close;
+                // console.log('time:', resp.data.Data[resp.data.Data.length - times].time);
+                // console.log('histo times', histo, times)
+                // console.log('volume', resp.data.Data)
                 let res =  this.getPercent(currentPrice, value);
                 arrRes.push(res);
                 this.setState({
-                    arr: arrRes
+                    arrStatistic: arrRes
                 })
+                return res;
             }).catch(err => {
                 console.log(err);
             });
@@ -56,45 +63,45 @@ export default class ChangeStatistic extends React.Component{
     }
 
     render(){
-        const { arr } = this.state; 
-        console.log(this.state);
+        const { arrStatistic } = this.state; 
         return(
-            <Table striped bordered hover variant="dark" style={{width: "70%", marginTop: '20px'}}>
-                    <thead>
-                        <tr>
-                            <th>5min</th>
-                            <th>15min</th>
-                            <th>1h</th>
-                            <th>4h</th>
-                            <th>12h</th>
-                            <th>1d</th>
-                            <th>7d</th>
-                            <th>30d</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th>{arr[0]}</th>
-                            <th>{arr[1]}</th>
-                            <th>{arr[2]}</th>
-                            <th>{arr[3]}</th>
-                            <th>{arr[4]}</th>
-                            <th>{arr[5]}</th>
-                            <th>{arr[6]}</th>
-                            <th>{arr[7]}</th>
-                        </tr>  
-                        <tr>
-                            <th>0</th>
-                            <th>1</th>
-                            <th>2</th>
-                            <th>3</th>
-                            <th>0</th>
-                            <th>1</th>
-                            <th>2</th>
-                            <th>3</th>
-                        </tr>                           
-                    </tbody>
-            </Table>
+            <Fragment>
+                <Table striped bordered hover variant="dark" style={{width: "70%", marginTop: '20px'}}>
+                        <thead>
+                            <tr>
+                                <th>5min</th>
+                                <th>15min</th>
+                                <th>1h</th>
+                                <th>4h</th>
+                                <th>12h</th>
+                                <th>1d</th>
+                                <th>7d</th>
+                                <th>30d</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                {
+                                    arrStatistic.map((item, index) => (
+                                        <th key={index}>{item}</th>
+                                    ))
+                                }
+                            </tr>  
+                            <tr>
+                                <th>0</th>
+                                <th>1</th>
+                                <th>2</th>
+                                <th>3</th>
+                                <th>0</th>
+                                <th>1</th>
+                                <th>2</th>
+                                <th>3</th>
+                            </tr>                           
+                        </tbody>
+                </Table>
+                <PieChart />
+            
+            </Fragment>
         );
     }
 }

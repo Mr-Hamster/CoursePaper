@@ -8,6 +8,8 @@ import HistoricalValues from "./HistoricalValues";
 import Delete from '../static/images/delete.png';
 import BigTrades from '../screens/BigTrades'
 import ChangeStatistic from "./ChangeStatistic";
+import LatestStats from "./LatestStats";
+import CoinNews from "./CoinNews";
 
 let perc = 1, labelsCount = 100/perc;
 let bigestAskAmount, bigestAskPrice, bigestBidAmount, bigestBidPrice, currentPrice;
@@ -25,6 +27,9 @@ export default class InputData extends React.Component {
         dataSell: [],
         loader: false,
         arr: [],
+        showNews: false,
+        arrPosts: [],
+        count: 10
     }
 
     componentDidMount(){
@@ -34,10 +39,6 @@ export default class InputData extends React.Component {
     LoadData = () => {
         const { variantFrom, variantTo } = this.state;  
         let requestResp;
-        this.setState({
-            loader: true,
-            showChart: false,
-        })
         if(!variantFrom || !variantTo){
             alert('Please enter tickers!');
         }else{
@@ -45,6 +46,10 @@ export default class InputData extends React.Component {
             this.AddDataToStore();
             api.crudBuilder(`https://api.binance.com/api/v1/depth?symbol=${ticker}&limit=1000`).get().then(
                 resp => {
+                    this.setState({
+                        loader: true,
+                        showChart: false,
+                    })
                     requestResp = resp.request.responseText;
                     this.getPrice(ticker, requestResp);
                 }).catch(err => {
@@ -272,9 +277,33 @@ export default class InputData extends React.Component {
         this.getDataFromLocStore();
     }
 
+    getNews = () => {
+        const { variantFrom, variantTo, count } = this.state;  
+        
+        if(variantFrom && variantTo){
+            api.crudBuilder(`https://min-api.cryptocompare.com/data/v2/news/?categories=${variantFrom},${variantTo}`).get().then(
+                resp => {
+                    console.log('posts', resp.data.Data)
+                    let data = resp.data.Data;
+                    let paginationedArr = [];
+                    for (let i = 0; i < count; i++){
+                        paginationedArr.push(data[i]);
+                    }
+                    this.setState({
+                        arrPosts: paginationedArr,
+                        showNews: true
+                    })
+                }).catch(err => {
+                    console.log(err);
+                });
+        } else {
+            alert('Enter tickers!!!');
+        }
+    }
+
     render() {
         // console.log('State.........',this.state);
-        const { showChart, labels, dataBuy, dataSell, loader, arr, variantFrom, variantTo} = this.state
+        const { showChart, labels, dataBuy, dataSell, loader, arr, showNews, arrPosts} = this.state
         return (
             <div className="wrapperInputData">
                 <div className="inputData"> 
@@ -335,6 +364,9 @@ export default class InputData extends React.Component {
                     showChart ? <ChangeStatistic from={variantFrom} to={variantTo} /> : null
                 }
                 {
+                    showChart ? <LatestStats /> : null
+                }
+                {
                     showChart ? <Charts currentPrice={currentPrice} labels={labels} dataBuy={dataBuy} dataSell={dataSell} arrBuy={arrBuy} arrSell={arrSell} /> : null
                 }
                 {
@@ -342,6 +374,12 @@ export default class InputData extends React.Component {
                 }
                 {
                     showChart ? <BigTrades arrBuy={arrBuy} arrSell={arrSell} /> : null
+                }
+                <Button variant="contained" color="primary" style={{width:'30%', height:'50px'}} onClick={ this.getNews }>
+                    Show News
+                </Button>
+                {
+                    showNews ? <CoinNews arrPosts={arrPosts} /> : null
                 }
             </div>
         );

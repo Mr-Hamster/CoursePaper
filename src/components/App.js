@@ -3,6 +3,7 @@ import { ThemeProvider } from '@material-ui/styles';
 
 import '../styles/App.scss';
 import InputData from "../screens/InputData";
+import CoinNews from "../screens/CoinNews";
 
 class App extends Component {
     render() {
@@ -11,6 +12,7 @@ class App extends Component {
                 <div className="AppWrapper">
                     <h1>CRYPTO CAP</h1>
                     <InputData />
+                    <CoinNews />
                 </div>
             </ThemeProvider>
         );
