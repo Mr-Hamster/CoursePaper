@@ -278,19 +278,14 @@ export default class InputData extends React.Component {
     }
 
     getNews = () => {
-        const { variantFrom, variantTo, count } = this.state;  
+        const { variantFrom, variantTo, } = this.state;  
         
         if(variantFrom && variantTo){
             api.crudBuilder(`https://min-api.cryptocompare.com/data/v2/news/?categories=${variantFrom},${variantTo}`).get().then(
                 resp => {
                     console.log('posts', resp.data.Data)
-                    let data = resp.data.Data;
-                    let paginationedArr = [];
-                    for (let i = 0; i < count; i++){
-                        paginationedArr.push(data[i]);
-                    }
                     this.setState({
-                        arrPosts: paginationedArr,
+                        arrPosts: resp.data.Data,
                         showNews: true
                     })
                 }).catch(err => {
@@ -303,7 +298,7 @@ export default class InputData extends React.Component {
 
     render() {
         // console.log('State.........',this.state);
-        const { showChart, labels, dataBuy, dataSell, loader, arr, showNews, arrPosts} = this.state
+        const { showChart, labels, dataBuy, dataSell, loader, arr, showNews, arrPosts, variantFrom, variantTo,} = this.state
         return (
             <div className="wrapperInputData">
                 <div className="inputData"> 
@@ -377,7 +372,7 @@ export default class InputData extends React.Component {
                 }
                 <Button variant="contained" color="primary" style={{width:'30%', height:'50px'}} onClick={ this.getNews }>
                     Show News
-                </Button>
+                </Button> 
                 {
                     showNews ? <CoinNews arrPosts={arrPosts} /> : null
                 }

@@ -1,16 +1,23 @@
 import React from 'react';
 import * as api from '../api/index';
+import Button from '@material-ui/core/Button';
 import '../styles/CoinNews.scss'
+
+let data;
+let count = 0;
 
 export default class CoinNews extends React.Component{
     state = {
         arrNews: [],
-        count: 10,
-        
     }
 
     componentDidMount(){
-        this.pagination;
+        const { arrPosts } = this.props;
+        const { count, arrNews } = this.state;
+        data = arrPosts;
+        if(data){
+            this.showMore();
+        }
     }
 
     getDate = (timestamp) => {
@@ -23,23 +30,25 @@ export default class CoinNews extends React.Component{
         return {__html: `${text}`}
     }
 
-    pagination = () => {
-        const { arrPosts } = this.props;
-        const { arrNews, count } = this.state;
+    showMore = () => {
+        count = count + 10;
+        let result = [];
+        console.log('count', count)
         for(let i = 0; i < count; i++){
-            alert(i);
+            result.push(data[i]);
         }
-        
+        this.setState({
+            arrNews: result
+        })
     }
 
     render(){
-        console.log('Proooopss', this.props)
-        const { arrPosts } = this.props;
+        const { arrNews } = this.state;
         return(
-            arrPosts ? 
+            arrNews ? 
             <div className="wrapperNews">
                 {
-                    arrPosts.map((item, index) => (
+                    arrNews.map((item, index) => (
                         <div className="postWrapper" key={index}>
                             <img style={{ borderRadius: '10px' }} src={item.imageurl} />
                             <div className="postInfo">
@@ -54,6 +63,12 @@ export default class CoinNews extends React.Component{
                             </div>
                         </div>
                     ))
+                }
+                {
+                    count < 50 ? 
+                    <Button variant="contained" color="primary" style={{width:'30%', height:'50px', margin: '20px'}} onClick={ this.showMore }>
+                        Show More
+                    </Button> : null
                 }
             </div> : null
         );

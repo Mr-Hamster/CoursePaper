@@ -12,7 +12,7 @@ class App extends Component {
                 <div className="AppWrapper">
                     <h1>CRYPTO CAP</h1>
                     <InputData />
-                    <CoinNews />
+        
                 </div>
             </ThemeProvider>
         );
