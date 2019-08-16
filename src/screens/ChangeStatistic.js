@@ -88,6 +88,7 @@ export default class ChangeStatistic extends React.Component{
     componentDidMount(){
         this.getPriceChanges();
         this.buildChart();
+        height = document.getElementById('block').clientHeight - 70;
     }
 
     getPriceChanges = () => {
@@ -201,7 +202,6 @@ export default class ChangeStatistic extends React.Component{
             x: event.screenX, 
             y: event.screenY,
         });
-        height = document.getElementById('block').clientHeight - 70;
       }
 
     render(){
