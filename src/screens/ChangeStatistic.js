@@ -1,8 +1,21 @@
-import React, { Fragment, useCallback } from 'react';
+import React, { Fragment } from 'react';
 import '../styles/ChangeStatistic.scss';
 import * as api from '../api/index';
 import { Table } from 'react-bootstrap';
 import {Bar} from 'react-chartjs-2';
+
+import { makeStyles } from '@material-ui/core/styles';
+import Input from '@material-ui/core/Input';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import FilledInput from '@material-ui/core/FilledInput';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import NativeSelect from '@material-ui/core/NativeSelect';
+import { border } from '@material-ui/system';
+
+
 
 let arrRes = [];
 
@@ -57,13 +70,19 @@ const options = {
     }
   };
 
+  let height;
+
 export default class ChangeStatistic extends React.Component{
     state = {
         arrStatistic: [],
-        // arrVolume: [], 
-        arrClose: [],
-        arrVolumeFrom: [],
+        arrPrice: [],
+        arrVolume: [],
         timestamp: [],
+        histo: 'minute',
+        limit: '60',
+        volume: 'volumefrom',
+        price: 'close',
+        x: 0,
     }
 
     componentDidMount(){
@@ -106,7 +125,6 @@ export default class ChangeStatistic extends React.Component{
         
         api.crudBuilder(`https://min-api.cryptocompare.com/data/histo${histo}?fsym=${from}&tsym=${to}&limit=40`).get().then(
             resp => {
-                console.log(resp.data.Data);
                 value = resp.data.Data[resp.data.Data.length - times].close;
                 let res = this.getPercent(currentPrice, value); 
                 arrRes.push(res);
@@ -130,19 +148,47 @@ export default class ChangeStatistic extends React.Component{
         return -1 * result.toFixed(3) + '%';
     }
 
+    handleChangeTime = (event) => {
+        let value = event.target.value;
+        let res = value.split('-');
+        this.setState({
+            histo: res[0],
+            limit: res[1],
+        },()=>{
+            this.buildChart();
+        })
+    }
+
+    handleChangeVolume = (event) => {
+        this.setState({
+            volume: event.target.value
+        },() => {
+            this.buildChart();
+        })
+    }
+
+    handleChangePrice = (event) => {
+        this.setState({
+            price: event.target.value
+        },() => {
+            this.buildChart();
+        })
+    }
+
     buildChart = () => {
-        const { from, to } = this.props
-        api.crudBuilder(`https://min-api.cryptocompare.com/data/histominute?fsym=${from}&tsym=${to}&limit=60`).get().then(
+        const { from, to, } = this.props;
+        const { histo, limit, volume, price } = this.state; 
+        api.crudBuilder(`https://min-api.cryptocompare.com/data/histo${histo}?fsym=${from}&tsym=${to}&limit=${limit}`).get().then(
             resp => {
-                console.log(resp.data.Data)
-                let dataClose = resp.data.Data.map(item => item.close);
-                let dataVolumeFrom = resp.data.Data.map(item => item.volumefrom);
+                console.log('resp123',resp);
+                let dataPrice = price === 'close' ? resp.data.Data.map(item => item.close) : price === 'high' ? resp.data.Data.map(item => item.high) : price === 'low' ? resp.data.Data.map(item => item.low) : resp.data.Data.map(item => item.open);
+                let dataVolume = volume === 'volumefrom' ? resp.data.Data.map(item => item.volumefrom) : resp.data.Data.map(item => item.volumeto);
                 let timestamp = resp.data.Data.map(item => new Date(item.time * 1000));
-                timestamp = timestamp.map(item => `${item.getHours()}:${item.getMinutes()}`);
+                timestamp =  histo === 'minute' || histo === 'hour' ? timestamp.map(item => `${item.getHours()}:${item.getMinutes()}`) : timestamp.map(item => item.toLocaleDateString());
 
                 this.setState({
-                    arrClose: dataClose,
-                    arrVolumeFrom: dataVolumeFrom,
+                    arrPrice: dataPrice,
+                    arrVolume: dataVolume,
                     timestamp: timestamp,
                 })
             }).catch(err => {
@@ -150,16 +196,24 @@ export default class ChangeStatistic extends React.Component{
             });
     }
 
+    onMouseMove = (event) => {
+        this.setState({ 
+            x: event.screenX, 
+            y: event.screenY,
+        });
+        height = document.getElementById('block').clientHeight - 70;
+      }
+
     render(){
-        const { arrStatistic, arrClose, timestamp, arrVolumeFrom } = this.state; 
-        console.log(this.state);
+        const { arrStatistic, arrPrice, timestamp, arrVolume, volume, price, x,} = this.state; 
+        console.log( this.state.x );
         
         const data = {
             labels: timestamp,
             datasets: [{
-                label: 'Buy',
+                label: price === 'close' ? 'Close' : price === 'open' ? 'Open' : price === 'high' ? 'High' : 'Low',
                 type:'line',
-                data: arrClose,
+                data: arrPrice,
                 fill: false,
                 borderColor: '#004D40',
                 borderWidth: 1,
@@ -172,8 +226,8 @@ export default class ChangeStatistic extends React.Component{
                 },
                 {
                     type: 'bar',
-                    label: 'VolumeFrom',
-                    data: arrVolumeFrom,
+                    label: volume === 'volumefrom' ? 'Volume From' : 'Volume to',
+                    data: arrVolume,
                     fill: false,
                     backgroundColor: '#71B37C',
                     borderColor: '#71B37C',
@@ -209,11 +263,52 @@ export default class ChangeStatistic extends React.Component{
                             </tr>                           
                         </tbody>
                 </Table>
-                <div style={{width:'60%'}}>
-                <Bar
-                    data={data}
-                    options={options}
-                />
+                <div style={{ display: 'flex', width: '70%', justifyContent: 'space-around', margin: '15px' }} >
+                    <FormControl style={{ width:'150px' }}>
+                        <InputLabel htmlFor="age-native-simple">Select by time:</InputLabel>
+                        <Select
+                        native
+                        onChange={ this.handleChangeTime }
+                        value={`${this.state.histo}-${this.state.limit}`}
+                        >
+                        <option value='minutes-60'>1 hour</option>
+                        <option value='hour-24'>1 day</option>
+                        <option value='day-8'>7 days</option>
+                        <option value='day-31'>30 days</option>
+                        </Select>
+                    </FormControl>
+                    <FormControl style={{ width:'150px' }}>
+                        <InputLabel htmlFor="age-native-simple">Select by volume:</InputLabel>
+                        <Select
+                        native
+                        onChange={ this.handleChangeVolume }
+                        value={this.state.volume}
+                        >
+                        <option value={'volumefrom'}>Volume From</option>
+                        <option value={'volumeto'}>Volume To</option>
+                        </Select>
+                    </FormControl>
+                    <FormControl style={{ width:'150px' }}>
+                        <InputLabel htmlFor="age-native-simple">Select by price:</InputLabel>
+                        <Select
+                        native
+                        onChange={ this.handleChangePrice }
+                        value={this.state.volume}
+                        >
+                        <option value={'close'}>Close</option>
+                        <option value={'open'}>Open</option>
+                        <option value={'high'}>High</option>
+                        <option value={'low'}>Low</option>
+                        </Select>
+                    </FormControl>
+                </div>
+                <div style={{width:'65%', }} onMouseMove={ this.onMouseMove } id="block">
+                    <div style={{ height: height, width: '2px', border: 'solid 1px', position:'absolute', left: x - 3 }}>
+                    </div>
+                    <Bar
+                        data={data}
+                        options={options}
+                    />
                 </div>
             
             </Fragment>
