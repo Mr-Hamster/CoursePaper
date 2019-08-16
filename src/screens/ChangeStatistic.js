@@ -227,6 +227,9 @@ export default class ChangeStatistic extends React.Component{
 
         return(
             <Fragment>
+                <h2>
+                    Price Change
+                </h2>
                 <Table striped bordered hover variant="dark" style={{width: "70%", marginTop: '20px'}}>
                         <thead>
                             <tr>

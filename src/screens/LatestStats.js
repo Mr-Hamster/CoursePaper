@@ -7,9 +7,11 @@ export default class LatestStats extends React.Component{
     }
 
     componentDidMount(){
-        api.statsRequest(`https://min-api.cryptocompare.com/data/social/coin/latest`).get().then(
+        const { coinId } = this.props;
+        api.statsRequest(`https://min-api.cryptocompare.com/data/social/coin/latest?coinId=${coinId}`).get().then(
             resp => {
-                console.log('resp', resp)
+                let data = resp.data.Data;
+                console.log('asdf', data);
             }).catch(err => {
                 console.log(err);
             });
@@ -18,7 +20,9 @@ export default class LatestStats extends React.Component{
     render(){
         return(
             <div>
-
+                <h2>
+                    Latest Social Data
+                </h2>
             </div>
         );  
     }

@@ -29,7 +29,8 @@ export default class InputData extends React.Component {
         arr: [],
         showNews: false,
         arrPosts: [],
-        count: 10
+        count: 10,
+        coinId: 0,
     }
 
     componentDidMount(){
@@ -43,7 +44,7 @@ export default class InputData extends React.Component {
             alert('Please enter tickers!');
         }else{
             let ticker = `${variantFrom}${variantTo}`;
-            this.getVariantFromData();
+            this.getValueFromData();
             this.AddDataToStore();
             api.crudBuilder(`https://api.binance.com/api/v1/depth?symbol=${ticker}&limit=1000`).get().then(
                 resp => {
@@ -63,7 +64,7 @@ export default class InputData extends React.Component {
         }
     }
 
-    getVariantFromData = () => {
+    getValueFromData = () => {
         const { variantFrom } = this.state;  
 
         let data = [];
@@ -75,6 +76,10 @@ export default class InputData extends React.Component {
             }
         }        
         console.log('our obj', result);
+        console.log('id', result.Id);
+        this.setState({
+            coinId: result.Id,
+        })
     }
 
     AddDataToStore = () => {
@@ -313,7 +318,7 @@ export default class InputData extends React.Component {
 
     render() {
         // console.log('State.........',this.state);
-        const { showChart, labels, dataBuy, dataSell, loader, arr, showNews, arrPosts, variantFrom, variantTo,} = this.state
+        const { showChart, labels, dataBuy, dataSell, loader, arr, showNews, arrPosts, variantFrom, variantTo, coinId, } = this.state
         return (
             <div className="wrapperInputData">
                 <div className="inputData"> 
@@ -374,7 +379,7 @@ export default class InputData extends React.Component {
                     showChart ? <ChangeStatistic from={variantFrom} to={variantTo} /> : null
                 }
                 {
-                    showChart ? <LatestStats /> : null
+                    showChart ? <LatestStats coinId = {coinId} /> : null
                 }
                 {
                     showChart ? <Charts currentPrice={currentPrice} labels={labels} dataBuy={dataBuy} dataSell={dataSell} arrBuy={arrBuy} arrSell={arrSell} /> : null

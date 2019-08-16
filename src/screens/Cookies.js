@@ -23,7 +23,7 @@ export default class Cookies extends React.Component{
                 <Button variant="contained" color="primary" style={{width:'20%', height:'50px'}} onClick={ this.AcceptCookies } >
                     Accept
                 </Button>
-                <img src={Cancel} className="imgCancel" onClick={ this.AcceptCookies } />
+                <img src={Cancel} className="imgCancel" onClick={ this.props.checkAccept } />
             </div>
         );
     }
