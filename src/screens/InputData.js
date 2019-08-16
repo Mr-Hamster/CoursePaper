@@ -43,6 +43,7 @@ export default class InputData extends React.Component {
             alert('Please enter tickers!');
         }else{
             let ticker = `${variantFrom}${variantTo}`;
+            this.getVariantFromData();
             this.AddDataToStore();
             api.crudBuilder(`https://api.binance.com/api/v1/depth?symbol=${ticker}&limit=1000`).get().then(
                 resp => {
@@ -60,6 +61,20 @@ export default class InputData extends React.Component {
                 });
                 
         }
+    }
+
+    getVariantFromData = () => {
+        const { variantFrom } = this.state;  
+
+        let data = [];
+        let result;
+        data = JSON.parse(localStorage.getItem('data'));
+        for(let key in data){
+            if(key === variantFrom){
+                result = data[key];
+            }
+        }        
+        console.log('our obj', result);
     }
 
     AddDataToStore = () => {
@@ -370,7 +385,7 @@ export default class InputData extends React.Component {
                 {
                     showChart ? <BigTrades arrBuy={arrBuy} arrSell={arrSell} /> : null
                 }
-                <Button variant="contained" color="primary" style={{width:'30%', height:'50px'}} onClick={ this.getNews }>
+                <Button variant="contained" color="primary" style={{width:'30%', height:'50px', margin:'20px' }} onClick={ this.getNews }>
                     Show News
                 </Button> 
                 {

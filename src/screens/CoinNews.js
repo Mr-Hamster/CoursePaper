@@ -55,7 +55,7 @@ export default class CoinNews extends React.Component{
                                 <h3 dangerouslySetInnerHTML={this.parser(item.title)} />
                                 <p dangerouslySetInnerHTML={this.parser(item.body)} />
                                 <span>
-                                    Original Source: <a href={item.url}>{item.url}</a>
+                                    Original Source: <a href={item.url} target="_blank">{item.url}</a>
                                 </span>
                                 <p>
                                     Published on: { this.getDate(item.published_on) }

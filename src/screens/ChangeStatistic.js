@@ -3,21 +3,11 @@ import '../styles/ChangeStatistic.scss';
 import * as api from '../api/index';
 import { Table } from 'react-bootstrap';
 import {Bar} from 'react-chartjs-2';
-
-import { makeStyles } from '@material-ui/core/styles';
-import Input from '@material-ui/core/Input';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import FilledInput from '@material-ui/core/FilledInput';
 import InputLabel from '@material-ui/core/InputLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import NativeSelect from '@material-ui/core/NativeSelect';
-import { border } from '@material-ui/system';
 
-
-
-let arrRes = [];
+let arrRes = [], height;
 
 const options = {
     responsive: true,
@@ -70,8 +60,6 @@ const options = {
     }
   };
 
-  let height;
-
 export default class ChangeStatistic extends React.Component{
     state = {
         arrStatistic: [],
@@ -88,7 +76,6 @@ export default class ChangeStatistic extends React.Component{
     componentDidMount(){
         this.getPriceChanges();
         this.buildChart();
-        height = document.getElementById('block').clientHeight - 70;
     }
 
     getPriceChanges = () => {
@@ -185,7 +172,7 @@ export default class ChangeStatistic extends React.Component{
                 let dataPrice = price === 'close' ? resp.data.Data.map(item => item.close) : price === 'high' ? resp.data.Data.map(item => item.high) : price === 'low' ? resp.data.Data.map(item => item.low) : resp.data.Data.map(item => item.open);
                 let dataVolume = volume === 'volumefrom' ? resp.data.Data.map(item => item.volumefrom) : resp.data.Data.map(item => item.volumeto);
                 let timestamp = resp.data.Data.map(item => new Date(item.time * 1000));
-                timestamp =  histo === 'minute' || histo === 'hour' ? timestamp.map(item => `${item.getHours()}:${item.getMinutes()}`) : timestamp.map(item => item.toLocaleDateString());
+                timestamp =  histo === 'minute' || histo === 'hour' ? timestamp.map(item => item.toLocaleTimeString()) : timestamp.map(item => item.toLocaleDateString());
 
                 this.setState({
                     arrPrice: dataPrice,
@@ -202,12 +189,12 @@ export default class ChangeStatistic extends React.Component{
             x: event.screenX, 
             y: event.screenY,
         });
+        height = document.getElementById('block').clientHeight - 70;
       }
 
     render(){
         const { arrStatistic, arrPrice, timestamp, arrVolume, volume, price, x,} = this.state; 
-        console.log( this.state.x );
-        
+                
         const data = {
             labels: timestamp,
             datasets: [{
@@ -215,12 +202,12 @@ export default class ChangeStatistic extends React.Component{
                 type:'line',
                 data: arrPrice,
                 fill: false,
-                borderColor: '#004D40',
-                borderWidth: 1,
-                backgroundColor: '#4DB6AC',
-                pointBorderColor: '#000',
-                pointBackgroundColor: '#4DB6AC',
-                pointHoverBackgroundColor: '#4DB6AC',
+                borderColor: '#B71C1C',
+                borderWidth: 2,
+                backgroundColor: '#E57373',
+                pointBorderColor: '#E57373',
+                pointBackgroundColor: '#E57373',
+                pointHoverBackgroundColor: '#E57373',
                 pointHoverBorderColor: '#EC932F',
                 yAxisID: 'y-axis-2'
                 },
@@ -267,11 +254,11 @@ export default class ChangeStatistic extends React.Component{
                     <FormControl style={{ width:'150px' }}>
                         <InputLabel htmlFor="age-native-simple">Select by time:</InputLabel>
                         <Select
-                        native
-                        onChange={ this.handleChangeTime }
-                        value={`${this.state.histo}-${this.state.limit}`}
+                            native
+                            onChange={ this.handleChangeTime }
+                            value={`${this.state.histo}-${this.state.limit}`}
                         >
-                        <option value='minutes-60'>1 hour</option>
+                        <option value='minute-60'>1 hour</option>
                         <option value='hour-24'>1 day</option>
                         <option value='day-8'>7 days</option>
                         <option value='day-31'>30 days</option>
@@ -280,9 +267,9 @@ export default class ChangeStatistic extends React.Component{
                     <FormControl style={{ width:'150px' }}>
                         <InputLabel htmlFor="age-native-simple">Select by volume:</InputLabel>
                         <Select
-                        native
-                        onChange={ this.handleChangeVolume }
-                        value={this.state.volume}
+                            native
+                            onChange={ this.handleChangeVolume }
+                            value={this.state.volume}
                         >
                         <option value={'volumefrom'}>Volume From</option>
                         <option value={'volumeto'}>Volume To</option>
@@ -291,9 +278,9 @@ export default class ChangeStatistic extends React.Component{
                     <FormControl style={{ width:'150px' }}>
                         <InputLabel htmlFor="age-native-simple">Select by price:</InputLabel>
                         <Select
-                        native
-                        onChange={ this.handleChangePrice }
-                        value={this.state.volume}
+                            native
+                            onChange={ this.handleChangePrice }
+                            value={this.state.volume}
                         >
                         <option value={'close'}>Close</option>
                         <option value={'open'}>Open</option>
