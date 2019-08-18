@@ -1,33 +1,9 @@
 import React from 'react'
 import {Bar} from 'react-chartjs-2';
+import '../styles/Chart.scss'
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 
-const data = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-    datasets: [{
-        label: 'Sales',
-        type:'line',
-        data: [51, 65, 40, 49, 60, 37, 40],
-        fill: false,
-        borderColor: '#EC932F',
-        backgroundColor: '#EC932F',
-        pointBorderColor: '#EC932F',
-        pointBackgroundColor: '#EC932F',
-        pointHoverBackgroundColor: '#EC932F',
-        pointHoverBorderColor: '#EC932F',
-        yAxisID: 'y-axis-2'
-      },{
-        type: 'bar',
-        label: 'Visitor',
-        data: [200, 185, 590, 621, 250, 400, 95],
-        fill: false,
-        backgroundColor: '#71B37C',
-        borderColor: '#71B37C',
-        hoverBackgroundColor: '#71B37C',
-        hoverBorderColor: '#71B37C',
-        yAxisID: 'y-axis-1'
-      }]
-  };
-  
   const options = {
     responsive: true,
     tooltips: {
@@ -35,8 +11,11 @@ const data = {
     },
     elements: {
       line: {
-        fill: false
+        fill: true
       }
+    },
+    legend: {
+      position: 'top',
     },
     scales: {
         xAxes: [
@@ -46,17 +25,17 @@ const data = {
                 display: false
               },
           
-              labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+              // labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
             }
           ],
           yAxes: [
             {
               type: 'linear',
-              display: true,
+              display: false,
               position: 'left',
               id: 'y-axis-1',
               gridLines: {
-                display: false
+                display: true
               },
               labels: {
                 show: true
@@ -65,10 +44,10 @@ const data = {
             {
               type: 'linear',
               display: true,
-              position: 'right',
+              position: 'left',
               id: 'y-axis-2',
               gridLines: {
-                display: false
+                display: true
               },
               labels: {
                 show: true
@@ -77,25 +56,135 @@ const data = {
           ]
     }
   };
-  
-  
 
 export default class Charts extends React.Component{
-  render(){
-      
-    //   const plugins = [{
-    //       afterDraw: (chartInstance, easing) => {
-    //           const ctx = chartInstance.chart.ctx;
-    //           ctx.fillText("This text drawn by a plugin", 100, 100);
-    //       }
-    //   }];
-       
+  state = {
+    number: 10,
+    buyAmount: 0,
+    sellAmount: 0,
+    onPriceBuy: 0,
+    onPriceSell: 0,
+  }
+
+  componentDidMount(){
+    this.getResult();
+  }
+
+  getResult = () => {
+    const { number } = this.state;
+    const {currentPrice } = this.props;
+
+    let sellPrice = +currentPrice + +currentPrice*number/100;
+    let buyPrice = +currentPrice - +currentPrice*number/100;
+    this.getAmountOnPrice(currentPrice, buyPrice, sellPrice);
+  }
+
+  getAmountOnPrice = (currentPrice, buyPrice, sellPrice) => {
+    const { arrBuy, arrSell } = this.props;
+    let newArrBuy = arrBuy.filter(item => item.price <= currentPrice && item.price >= buyPrice);
+    let newArrSell = arrSell.filter(item => item.price >= currentPrice && item.price <= sellPrice);
+    let resultBuy = this.maxAmount(newArrBuy);
+    let resultSell = this.maxAmount(newArrSell);
+    this.setState({
+      buyAmount: resultBuy[0],
+      sellAmount: resultSell[0],
+      onPriceBuy: resultBuy[1],
+      onPriceSell: resultSell[1],
+    })
+  }
+
+  maxAmount = data => {
+    let max = 0;
+    let price = 0;
+    let result = [];
+    data.forEach(item => {
+      if(item.amount > max){
+        max = item.amount
+        price = item.price;
+      }
+    });
+    result.push(max, price);
+    return result;
+  }
+  
+  render(){     
+    const { dataBuy, dataSell, labels, currentPrice, arrBuy, arrSell } = this.props;
+    const { buyAmount, sellAmount, onPriceBuy, onPriceSell } = this.state;
+
+    const data = {
+      labels: labels,
+      datasets: [{
+          label: 'Buy',
+          type:'line',
+          data: dataBuy,
+          fill: true,
+          borderColor: '#004D40',
+          borderWidth: 1,
+          backgroundColor: '#4DB6AC',
+          pointBorderColor: '#000',
+          pointBackgroundColor: '#4DB6AC',
+          pointHoverBackgroundColor: '#4DB6AC',
+          pointHoverBorderColor: '#EC932F',
+          yAxisID: 'y-axis-2'
+        },{
+          label: 'Sell',
+          type:'line',
+          data: dataSell,
+          fill: true,
+          borderColor: '#B71C1C',
+          borderWidth: 1,
+          backgroundColor: '#E57373',
+          pointBorderColor: '#000',
+          pointBackgroundColor: '#E57373',
+          pointHoverBackgroundColor: '#E57373',
+          pointHoverBorderColor: '#EC932F',
+          yAxisID: 'y-axis-2'
+        }]
+    };
+
         return(
-          <div style={{width:'70%'}}>  
-            <Bar
-          data={data}
-          options={options}
-        />
+          <div className="wrapperChart">
+            <div className="infoChart">
+              <h2>Biggest Amount</h2>
+              <div className="numberInput">
+                <span>
+                  Current price: {currentPrice}
+                </span>
+                <div style={{ display:'flex', alignItems: 'center' }}>
+                  Min price: current minus
+                  <TextField
+                    id="outlined-number"
+                    label="%"
+                    type="number"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    margin="normal"
+                    variant="outlined"
+                    value={this.state.number}
+                    onChange = {(event)=>{
+                      this.setState({
+                        number: event.target.value,
+                      })
+                    }}
+                    style={{width: '80px', marginLeft: '10px'}}
+                  />
+                </div>
+              </div>
+              <div className="dataChart">
+              Buy biggest amount: {`${buyAmount}`} <br/> On price: {`${onPriceBuy}`} <br/>
+              Sell biggest amount: {`${sellAmount}`} <br/> On price: {`${onPriceSell}`}
+              </div>
+              <Button variant="contained" color="primary" style={{width:'40%', height:'40px', marginTop: '10px'}} onClick={ this.getResult }>
+                Get it
+              </Button>
+            </div>  
+            <div style={{width:'60%'}}>
+              <Bar
+                data={data}
+                options={options}
+              />
+            </div>
           </div>
        );
     }
