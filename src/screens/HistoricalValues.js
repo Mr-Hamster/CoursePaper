@@ -43,7 +43,6 @@ export default class HistoricalValues extends React.Component{
 
     render(){
         const {value, value_classificaton, showChart} = this.state
-        console.log(this.state);
 
         const dataChart = {
             labels: dates1.reverse(),

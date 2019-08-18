@@ -53,6 +53,7 @@ export default class BigTrades extends React.Component{
         return(
             <div className="wrapperTrades">
                 <div className="inputTrades">
+                <h2>Big Trades</h2>
                     <div className="textField">
                         Enter min value for big trades: 
                         <TextField

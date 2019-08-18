@@ -10,6 +10,7 @@ import BigTrades from '../screens/BigTrades'
 import ChangeStatistic from "./ChangeStatistic";
 import LatestStats from "./LatestStats";
 import CoinNews from "./CoinNews";
+import Swap from '../static/images/swap.png'
 
 let perc = 1, labelsCount = 100/perc;
 let bigestAskAmount, bigestAskPrice, bigestBidAmount, bigestBidPrice, currentPrice;
@@ -31,6 +32,7 @@ export default class InputData extends React.Component {
         arrPosts: [],
         count: 10,
         coinId: 0,
+        imgCoin:'',
     }
 
     componentDidMount(){
@@ -70,15 +72,16 @@ export default class InputData extends React.Component {
         let data = [];
         let result;
         data = JSON.parse(localStorage.getItem('data'));
+        console.log('img',data);
         for(let key in data){
             if(key === variantFrom){
                 result = data[key];
             }
         }        
-        console.log('our obj', result);
-        console.log('id', result.Id);
+        let imgUrl = 'https://www.cryptocompare.com' + result.ImageUrl;
         this.setState({
             coinId: result.Id,
+            imgCoin: imgUrl,
         })
     }
 
@@ -316,9 +319,19 @@ export default class InputData extends React.Component {
         }
     }
 
+    Swaping = () => {
+        const { variantFrom, variantTo } = this.state;
+        let extraValue = variantFrom;
+        this.setState({
+            variantFrom: variantTo,
+            variantTo: extraValue,
+        })
+        this.LoadData();
+    }
+
     render() {
         // console.log('State.........',this.state);
-        const { showChart, labels, dataBuy, dataSell, loader, arr, showNews, arrPosts, variantFrom, variantTo, coinId, } = this.state
+        const { showChart, labels, dataBuy, dataSell, loader, arr, showNews, arrPosts, variantFrom, variantTo, coinId, imgCoin, } = this.state
         return (
             <div className="wrapperInputData">
                 <div className="inputData"> 
@@ -337,6 +350,7 @@ export default class InputData extends React.Component {
                             value={this.state.variantFrom}
                             style={{ width: '300px' }}
                         />
+                        <img src={Swap} className="imgSwap" onClick={ this.Swaping } />
                         <TextField
                             id="outlined-uncontrolled"
                             label="To"
@@ -379,7 +393,7 @@ export default class InputData extends React.Component {
                     showChart ? <ChangeStatistic from={variantFrom} to={variantTo} /> : null
                 }
                 {
-                    showChart ? <LatestStats coinId = {coinId} /> : null
+                    showChart ? <LatestStats coinId = {coinId} imgCoin={imgCoin} /> : null
                 }
                 {
                     showChart ? <Charts currentPrice={currentPrice} labels={labels} dataBuy={dataBuy} dataSell={dataSell} arrBuy={arrBuy} arrSell={arrSell} /> : null

@@ -145,6 +145,7 @@ export default class Charts extends React.Component{
         return(
           <div className="wrapperChart">
             <div className="infoChart">
+              <h2>Biggest Amount</h2>
               <div className="numberInput">
                 <span>
                   Current price: {currentPrice}

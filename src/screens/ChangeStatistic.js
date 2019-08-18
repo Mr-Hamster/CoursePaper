@@ -168,7 +168,6 @@ export default class ChangeStatistic extends React.Component{
         const { histo, limit, volume, price } = this.state; 
         api.crudBuilder(`https://min-api.cryptocompare.com/data/histo${histo}?fsym=${from}&tsym=${to}&limit=${limit}`).get().then(
             resp => {
-                console.log('resp123',resp);
                 let dataPrice = price === 'close' ? resp.data.Data.map(item => item.close) : price === 'high' ? resp.data.Data.map(item => item.high) : price === 'low' ? resp.data.Data.map(item => item.low) : resp.data.Data.map(item => item.open);
                 let dataVolume = volume === 'volumefrom' ? resp.data.Data.map(item => item.volumefrom) : resp.data.Data.map(item => item.volumeto);
                 let timestamp = resp.data.Data.map(item => new Date(item.time * 1000));
