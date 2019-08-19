@@ -72,7 +72,6 @@ export default class InputData extends React.Component {
         let data = [];
         let result;
         data = JSON.parse(localStorage.getItem('data'));
-        console.log('img',data);
         for(let key in data){
             if(key === variantFrom){
                 result = data[key];
