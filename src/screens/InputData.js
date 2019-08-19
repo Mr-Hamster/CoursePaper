@@ -11,6 +11,7 @@ import ChangeStatistic from "./ChangeStatistic";
 import LatestStats from "./LatestStats";
 import CoinNews from "./CoinNews";
 import Swap from '../static/images/swap.png'
+import RecentEvents from "./RecentEvents";
 
 let perc = 1, labelsCount = 100/perc;
 let bigestAskAmount, bigestAskPrice, bigestBidAmount, bigestBidPrice, currentPrice;
@@ -72,7 +73,6 @@ export default class InputData extends React.Component {
         let data = [];
         let result;
         data = JSON.parse(localStorage.getItem('data'));
-        console.log('img',data);
         for(let key in data){
             if(key === variantFrom){
                 result = data[key];
@@ -306,7 +306,6 @@ export default class InputData extends React.Component {
         if(variantFrom && variantTo){
             api.crudBuilder(`https://min-api.cryptocompare.com/data/v2/news/?categories=${variantFrom},${variantTo}`).get().then(
                 resp => {
-                    console.log('posts', resp.data.Data)
                     this.setState({
                         arrPosts: resp.data.Data,
                         showNews: true
@@ -389,7 +388,7 @@ export default class InputData extends React.Component {
                 {
                     loader ? 'Loading...' : null
                 }
-                {
+                {/* {
                     showChart ? <ChangeStatistic from={variantFrom} to={variantTo} /> : null
                 }
                 {
@@ -409,7 +408,8 @@ export default class InputData extends React.Component {
                 </Button> 
                 {
                     showNews ? <CoinNews arrPosts={arrPosts} /> : null
-                }
+                } */}
+                <RecentEvents variantFrom={variantFrom} showChart={showChart} />
             </div>
         );
     }
