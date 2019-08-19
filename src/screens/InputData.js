@@ -329,7 +329,7 @@ export default class InputData extends React.Component {
     }
 
     render() {
-        // console.log('State.........',this.state);
+        console.log('State.........',this.state);
         const { showChart, labels, dataBuy, dataSell, loader, arr, showNews, arrPosts, variantFrom, variantTo, coinId, imgCoin, } = this.state
         return (
             <div className="wrapperInputData">
@@ -409,7 +409,7 @@ export default class InputData extends React.Component {
                 {
                     showNews ? <CoinNews arrPosts={arrPosts} /> : null
                 } */}
-                <RecentEvents variantFrom={variantFrom} showChart={showChart} />
+                <RecentEvents variantFrom={variantFrom} />
             </div>
         );
     }

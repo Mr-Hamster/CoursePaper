@@ -7,32 +7,37 @@ export default class RecentEvents extends React.Component{
     }
 
     componentDidMount(){
-        const { variantFrom, showChart } = this.props;
-        console.log('from', variantFrom);
+        this.LoadCurrentEvents();
+    }
 
-        let data = JSON.parse(localStorage.getItem('recentEvents'));
-        console.log('events', data);
-        let currentDate = new Date();
-        if(variantFrom){
+    componentDidUpdate(prevProps){
+        const { variantFrom  } = this.props;
+        if (this.props.variantFrom !== prevProps.variantFrom) {
+            if(variantFrom){
+                let data = JSON.parse(localStorage.getItem('recentEvents'));
             let DataForCurrentValue = [];
-            data.filter(item => {
-                let newArr = item.coins.filter(item => item.symbol === variantFrom);
-                if(newArr.length) {
-                    DataForCurrentValue.push(item);
-                }
-            });
-            this.setState({
-                data: DataForCurrentValue,
-            })
-            console.log('value', DataForCurrentValue);
-        } else {
-            let DataForCurrentDate = data.filter(item => new Date(item.date_event).getDate() === currentDate.getDate()-1);
-            console.log('events1', DataForCurrentDate);
-            this.setState({
-                data: DataForCurrentDate,
-            })
-            
+                data.filter(item => {
+                    let newArr = item.coins.filter(item => item.symbol === variantFrom);
+                    if(newArr.length) {
+                        DataForCurrentValue.push(item);
+                    }
+                });
+                this.setState({
+                    data: DataForCurrentValue,
+                })
+            } else {
+                this.LoadCurrentEvents();
+            }
         }
+    }
+
+    LoadCurrentEvents = () => {
+        let data = JSON.parse(localStorage.getItem('recentEvents'));
+        let currentDate = new Date();   
+        let DataForCurrentDate = data.filter(item => new Date(item.date_event).getDate() === currentDate.getDate()-1);
+        this.setState({
+            data: DataForCurrentDate,
+        })
     }
 
     render(){
@@ -54,7 +59,6 @@ export default class RecentEvents extends React.Component{
                                 <p>
                                     {item.coins.map(item => `${item.fullname} `)}
                                 </p>
-                                <img src={item.proof} className="imgEvent" />
                                 <a href={item.source} target="_blank">
                                     {item.source}
                                 </a>
