@@ -5,6 +5,7 @@ import '../styles/App.scss';
 import InputData from "../screens/InputData";
 import CoinNews from "../screens/CoinNews";
 import Cookies from "../screens/Cookies";
+import AddFavouriteCoins from "../screens/AddFavouriteCoins";
 
 class App extends Component {
     state = {
@@ -57,6 +58,7 @@ class App extends Component {
                     {
                         !accept ? <Cookies checkAccept = { this.checkAccept } /> : null
                     }
+                    <AddFavouriteCoins />
                 </div>
             </ThemeProvider>
         );
