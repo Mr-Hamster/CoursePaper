@@ -18,6 +18,13 @@ class App extends Component {
                 let data = resp.data.Data;
                 localStorage.setItem('data', JSON.stringify(data));
             }).catch(err => console.log('Error:', err));
+        
+        api.crudBuilder(`https://api.coingecko.com/api/v3/coins`).get().then(
+            resp => {         
+                let data = resp.data;
+                localStorage.setItem('coingeckoData', JSON.stringify(data));
+            }).catch(err => console.log('Error:', err));
+        
     }
 
     CheckCookies = () => {
