@@ -6,6 +6,7 @@ import InputData from "../screens/InputData";
 import CoinNews from "../screens/CoinNews";
 import Cookies from "../screens/Cookies";
 import AddFavouriteCoins from "../screens/AddFavouriteCoins";
+import TableFavouriteCoins from "../screens/TableFavouriteCoins";
 
 class App extends Component {
     state = {
@@ -59,6 +60,7 @@ class App extends Component {
                         !accept ? <Cookies checkAccept = { this.checkAccept } /> : null
                     }
                     <AddFavouriteCoins />
+                    <TableFavouriteCoins />
                 </div>
             </ThemeProvider>
         );

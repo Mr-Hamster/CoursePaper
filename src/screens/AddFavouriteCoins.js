@@ -11,19 +11,25 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import FavouriteCoinSection from './FavouriteCoinSection';
 
-let arrFavouriteCoins = [], data = [];
-
+let data = [];
+let coinsFromLocStore;
 
 export default class AddFavouriteCoins extends React.Component{
     state = {
         open: false,
         coin: '',
-        data:[]
+        data:[],
+        showFavouriteCoins: false,
     }
 
     componentDidMount(){
         data = JSON.parse(localStorage.getItem('coingeckoData'));
-        console.log(data);
+        coinsFromLocStore = JSON.parse(localStorage.getItem('FavouriteCoins'));
+        if(coinsFromLocStore.length){
+            this.setState({
+                showFavouriteCoins: true
+            })
+        }
         this.setState({
             data: data
         })
@@ -33,18 +39,34 @@ export default class AddFavouriteCoins extends React.Component{
         const { coin } = this.state;
         this.setState({
             open: false,
+            showFavouriteCoins: true
         })
-        data.filter(item => {
-            if (item.symbol === coin){
-                arrFavouriteCoins.push(item)
-            }
-        });
-        console.log(arrFavouriteCoins);
+        if(coinsFromLocStore){
+            data.filter(item => {
+                if (item.symbol === coin){
+                    coinsFromLocStore.push(item);
+                    localStorage.setItem('FavouriteCoins', JSON.stringify(coinsFromLocStore));
+                }
+            });
+        } else {
+            let newCoins = [];
+            data.filter(item => {
+                if (item.symbol === coin){
+                    newCoins.push(item);
+                    localStorage.setItem('FavouriteCoins', JSON.stringify(newCoins));
+                }
+            });
+        }
+    }
+
+    closeFavouriteCoins = () => {
+        this.setState({ 
+            showFavouriteCoins: false 
+        })
     }
 
     render(){
-        console.log(this.state)
-        const { data } = this.state;
+        const { data, showFavouriteCoins } = this.state;
         return(
             <div style={{ width:'100%', }} >
             <Button variant="contained" color="primary" style={{width:'30%', height:'50px', margin:'20px' }} onClick={ () => this.setState({ open: true }) }>
@@ -89,7 +111,9 @@ export default class AddFavouriteCoins extends React.Component{
                 </Button>
                 </DialogActions>
             </Dialog>
-                <FavouriteCoinSection arrFavouriteCoins={arrFavouriteCoins} />
+                {
+                    showFavouriteCoins ? <FavouriteCoinSection coinsFromLocStore={coinsFromLocStore} closeFavouriteCoins={this.closeFavouriteCoins} /> : null
+                }
             </div>
         );
     }

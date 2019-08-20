@@ -4,40 +4,36 @@ import Delete from '../static/images/delete.png'
 
 export default class FavouriteCoinSection extends React.Component{
     state = {
-        arrCoins: [],
         showImg: false,
     }
 
     componentDidMount(){
-        const { arrFavouriteCoins } = this.props;
 
-        this.setState({
-            arrCoins: arrFavouriteCoins,
-        })
     }   
 
     removeItem = (index, ticker) => {
-        const { arrCoins } = this.state;
-        let data = arrCoins;
+        const { coinsFromLocStore, closeFavouriteCoins } = this.props;
+
         let answer = confirm(`Are you sure you want to remove "${ticker.toUpperCase()}" from favorites?`);
         if(answer){
-            data.splice(index, 1);
-        this.setState({
-            arrCoins: data
-        })  
+            coinsFromLocStore.splice(index, 1);
+            localStorage.setItem('FavouriteCoins', JSON.stringify(coinsFromLocStore));
+            this.setState({
+                arrCoins: coinsFromLocStore
+            })  
+            // closeFavouriteCoins();
         } 
     }
 
     render(){
-        const { arrCoins, showImg } = this.state;
-        console.log('state', this.state)
+        const { showImg } = this.state;
+        const { coinsFromLocStore } = this.props;
         return(
-            arrCoins.length ? 
-            <div className="wrapperCoinSection" onHove>
+            <div className="wrapperCoinSection">
                 <h2>Favourite Coins</h2>
                 <div className="CoinItems">
                     {
-                        arrCoins.map((item, index) => (
+                        coinsFromLocStore.map((item, index) => (
                             <div key={index} className="FavouriteCoinItem" onMouseEnter={()=>this.setState({
                                 showImg: true
                             })} onMouseLeave={()=>this.setState({
@@ -50,7 +46,7 @@ export default class FavouriteCoinSection extends React.Component{
                         ))
                     }
                 </div>
-            </div> : null
+            </div>
         );
     }
 }
