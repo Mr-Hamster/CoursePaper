@@ -12,7 +12,10 @@ export default class GlobalInfoData extends React.Component{
                 resp => {
                     console.log('global info', resp.data.data);
                     this.setState({
-                        globalInfo: resp.data.data
+                        globalInfo: resp.data.data,
+                        marketCapPerc: resp.data.data.market_cap_percentage.usdt,
+                        marketCap: resp.data.data.total_market_cap.usd,
+                        totalVolume: resp.data.data.total_volume.usd
                     })
                 }).catch(err => {
                     alert(`${err}`)
@@ -20,7 +23,8 @@ export default class GlobalInfoData extends React.Component{
     }
 
     render(){
-        const { globalInfo } = this.state;
+        const { globalInfo, marketCapPerc, marketCap, totalVolume  } = this.state;
+        console.log(this.state);
         return(
             <div>
                 <h2>
@@ -30,14 +34,15 @@ export default class GlobalInfoData extends React.Component{
                     Market cap change percentage 24h usd: {globalInfo.market_cap_change_percentage_24h_usd}
                 </p>
                 <p>
-                    Market cap percentage: {  }
+                    Market cap percentage: { marketCapPerc }
                 </p>
                 <p>
-                    Total market cap (usd): 
+                    Total market cap (usd): { marketCap }
                 </p>
                 <p>
-                    Total volume (usd): 
+                    Total volume (usd): { totalVolume }
                 </p>
+                
                 {/* market_cap_change_percentage_24h_usd
 
                 market_cap_percentage
