@@ -15,7 +15,7 @@ export default class RecentEvents extends React.Component{
         if (this.props.variantFrom !== prevProps.variantFrom) {
             if(variantFrom){
                 let data = JSON.parse(localStorage.getItem('recentEvents'));
-            let DataForCurrentValue = [];
+                let DataForCurrentValue = [];
                 data.filter(item => {
                     let newArr = item.coins.filter(item => item.symbol === variantFrom);
                     if(newArr.length) {
