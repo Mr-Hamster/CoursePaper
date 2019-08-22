@@ -21,6 +21,8 @@ let tickers = [], tickers1 = [];
 
 let arrBuy = [], arrSell = [];
 
+let coinGeckoData = [];
+
 export default class InputData extends React.Component {
     state = {
         variantFrom: '',
@@ -41,13 +43,15 @@ export default class InputData extends React.Component {
     }
 
     componentDidMount(){
+        coinGeckoData = JSON.parse(localStorage.getItem('coingeckoData'));
+        
         api.crudBuilder(`https://min-api.cryptocompare.com/data/all/coinlist`).get().then(
             resp => {         
                 let data = resp.data.Data;
                 localStorage.setItem('data', JSON.stringify(data));
             }).catch(err => console.log('Error:', err));
-        
-        api.crudBuilder(`https://api.coingecko.com/api/v3/coins`).get().then(
+        if(!coinGeckoData){
+            api.crudBuilder(`https://api.coingecko.com/api/v3/coins`).get().then(
             resp => {         
                 let data = resp.data;
                 localStorage.setItem('coingeckoData', JSON.stringify(data));
@@ -55,6 +59,11 @@ export default class InputData extends React.Component {
                     coinGecko: data,
                 })
             }).catch(err => console.log('Error:', err));
+        } else {
+            this.setState({
+                coinGecko: coinGeckoData,
+            })
+        }
         this.CheckCookies();
         this.getDataFromLocStore();
     }

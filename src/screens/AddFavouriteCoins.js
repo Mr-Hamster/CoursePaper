@@ -11,8 +11,6 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import FavouriteCoinSection from './FavouriteCoinSection';
 
-let data = [];
-let coinsFromLocStore = [];
 
 export default class AddFavouriteCoins extends React.Component{
     state = {
@@ -20,49 +18,74 @@ export default class AddFavouriteCoins extends React.Component{
         coin: '',
         data:[],
         showFavouriteCoins: false,
+        choosenCoins: [],
+    }
+
+    componentDidMount(){
+        let coinsFromLocStore = JSON.parse(localStorage.getItem('FavouriteCoins'));
+        if(coinsFromLocStore){
+            this.setState({
+                showFavouriteCoins: true,
+                choosenCoins: coinsFromLocStore,
+            })
+        }    
     }
 
     componentDidUpdate(prevProps){
         const { coinGecko } = this.props;
-
-        if (this.props.coinGecko !== prevProps.coinGecko) {
-            console.log('coinGecko', coinGecko);
-            coinsFromLocStore = JSON.parse(localStorage.getItem('FavouriteCoins'));
-            console.log('coin from loc store', coinsFromLocStore);  
-            if(!!coinsFromLocStore){
-                this.setState({
-                    showFavouriteCoins: true
-                })
-            }
-            this.setState({
-                data: coinGecko
-            })
+        const { choosenCoins } = this.state;
+        if (coinGecko !== prevProps.coinGecko) {
+            // for(let key of choosenCoins){
+            //     for (let item of coinGecko){
+            //         if(key.symbol === item.symbol){
+            //             // console.log('item!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',item.symbol);
+            //             coinGecko.splice()
+            //         }
+            //     }
+            // }
+            this.updateCoinList();
         }
     }
 
     AddCoin = () => {
-        const { coin } = this.state;
+        const { coin, data, choosenCoins } = this.state;
+        
         this.setState({
             open: false,
-            showFavouriteCoins: true
+            showFavouriteCoins: true,
         })
-        if(coinsFromLocStore){
-            data.filter(item => {
-                if (item.symbol === coin){
-                    coinsFromLocStore.push(item);
-                    localStorage.setItem('FavouriteCoins', JSON.stringify(coinsFromLocStore));
-                }
-            });
-        } else {
-            let newCoins = [];
-            data.filter(item => {
-                if (item.symbol === coin){
-                    newCoins.push(item);
-                    localStorage.setItem('FavouriteCoins', JSON.stringify(newCoins));
-                }
-            });
-        }
+        let arrCoins= [];
+        arrCoins = choosenCoins;
+        data.filter((item) => {
+            if (item.symbol === coin){
+                arrCoins.push(item);
+                this.setState({
+                    choosenCoins: arrCoins,
+                })
+                localStorage.setItem('FavouriteCoins', JSON.stringify(arrCoins));
+            }
+        });
+        this.updateCoinList();
+
     }
+
+    updateCoinList = () => {
+        const { coinGecko } = this.props;
+        const { choosenCoins } = this.state;
+
+        choosenCoins.map(item => {
+            coinGecko.forEach((key, index) => {
+                if(item.symbol === key.symbol){
+                    coinGecko.splice(index,1);
+                }
+            }
+            );
+        });
+        this.setState({
+            data: coinGecko
+        })
+    } 
+
 
     closeFavouriteCoins = () => {
         this.setState({ 
@@ -70,8 +93,23 @@ export default class AddFavouriteCoins extends React.Component{
         })
     }
 
+    addToCoinList = (item) => {
+        console.log('123', item)
+        const { coinGecko } = this.props;
+        let arr = coinGecko;
+        arr.push(item[0]);
+        let qwe = arr.sort((a,b) => {
+            return a.market_data.market_cap_rank - b.market_data.market_cap_rank;
+        });
+        console.log('sorting', qwe)
+        this.setState({
+            data: qwe
+        })
+    }
+
     render(){
-        const { data, showFavouriteCoins } = this.state;
+        const { data, showFavouriteCoins, choosenCoins } = this.state;
+        console.log('coin state', this.state);
         return(
             <div style={{ width:'100%', }} >
             <Button variant="contained" color="primary" style={{width:'30%', height:'50px', margin:'20px' }} onClick={ () => this.setState({ open: true }) }>
@@ -111,13 +149,13 @@ export default class AddFavouriteCoins extends React.Component{
                 } } color="primary">
                     Cancel
                 </Button>
-                <Button onClick={ this.AddCoin } color="primary">
+                <Button onClick={ () => this.AddCoin() } color="primary">
                     Ok
                 </Button>
                 </DialogActions>
             </Dialog>
                 {
-                    showFavouriteCoins ? <FavouriteCoinSection coinsFromLocStore={coinsFromLocStore} closeFavouriteCoins={this.closeFavouriteCoins} /> : null
+                    showFavouriteCoins ? <FavouriteCoinSection coinsFromLocStore={choosenCoins} closeFavouriteCoins={this.closeFavouriteCoins} addToCoinList={this.addToCoinList} /> : null
                 }
             </div>
         );
