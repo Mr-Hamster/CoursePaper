@@ -22,21 +22,22 @@ export default class AddFavouriteCoins extends React.Component{
         showFavouriteCoins: false,
     }
 
-    componentDidUpdate(prevState){
-        if(prevState !== this.props.coinGecko){
+    componentDidUpdate(prevProps){
         const { coinGecko } = this.props;
-        console.log('coinGecko', coinGecko);
-        coinsFromLocStore = JSON.parse(localStorage.getItem('FavouriteCoins'));
-        console.log('coin from loc store', coinsFromLocStore);  
-        if(!!coinsFromLocStore){
+
+        if (this.props.coinGecko !== prevProps.coinGecko) {
+            console.log('coinGecko', coinGecko);
+            coinsFromLocStore = JSON.parse(localStorage.getItem('FavouriteCoins'));
+            console.log('coin from loc store', coinsFromLocStore);  
+            if(!!coinsFromLocStore){
+                this.setState({
+                    showFavouriteCoins: true
+                })
+            }
             this.setState({
-                showFavouriteCoins: true
+                data: coinGecko
             })
         }
-        this.setState({
-            data: coinGecko
-        })
-    }
     }
 
     AddCoin = () => {
