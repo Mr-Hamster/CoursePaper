@@ -12,7 +12,7 @@ import Select from '@material-ui/core/Select';
 import FavouriteCoinSection from './FavouriteCoinSection';
 
 let data = [];
-let coinsFromLocStore;
+let coinsFromLocStore = [];
 
 export default class AddFavouriteCoins extends React.Component{
     state = {
@@ -22,17 +22,21 @@ export default class AddFavouriteCoins extends React.Component{
         showFavouriteCoins: false,
     }
 
-    componentDidMount(){
-        data = JSON.parse(localStorage.getItem('coingeckoData'));
+    componentDidUpdate(prevState){
+        if(prevState !== this.props.coinGecko){
+        const { coinGecko } = this.props;
+        console.log('coinGecko', coinGecko);
         coinsFromLocStore = JSON.parse(localStorage.getItem('FavouriteCoins'));
-        if(coinsFromLocStore.length){
+        console.log('coin from loc store', coinsFromLocStore);  
+        if(!!coinsFromLocStore){
             this.setState({
                 showFavouriteCoins: true
             })
         }
         this.setState({
-            data: data
+            data: coinGecko
         })
+    }
     }
 
     AddCoin = () => {
@@ -88,11 +92,11 @@ export default class AddFavouriteCoins extends React.Component{
                         input={<Input id="age-simple" />}
                     >
                         {
-                            data.map((item, index) => (
+                            data ? data.map((item, index) => (
                                 <MenuItem key={index} value={item.symbol} style={{ display: 'flex', justifyContent:'space-between',}}>
                                     <img src={item.image.small} style={{ width:'35px' }} />{item.symbol.toUpperCase()}
                                 </MenuItem>
-                            ))
+                            )) : null
                         }
                     </Select>
                     </FormControl>

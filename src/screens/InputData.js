@@ -11,6 +11,9 @@ import ChangeStatistic from "./ChangeStatistic";
 import LatestStats from "./LatestStats";
 import CoinNews from "./CoinNews";
 import Swap from '../static/images/swap.png'
+import Cookies from "./Cookies";
+import TableFavouriteCoins from "./TableFavouriteCoins";
+import AddFavouriteCoins from "./AddFavouriteCoins";
 
 let perc = 1, labelsCount = 100/perc;
 let bigestAskAmount, bigestAskPrice, bigestBidAmount, bigestBidPrice, currentPrice;
@@ -33,10 +36,47 @@ export default class InputData extends React.Component {
         count: 10,
         coinId: 0,
         imgCoin:'',
+        accept: false,
+        coinGecko: [],
     }
 
     componentDidMount(){
+        api.crudBuilder(`https://min-api.cryptocompare.com/data/all/coinlist`).get().then(
+            resp => {         
+                let data = resp.data.Data;
+                localStorage.setItem('data', JSON.stringify(data));
+            }).catch(err => console.log('Error:', err));
+        
+        api.crudBuilder(`https://api.coingecko.com/api/v3/coins`).get().then(
+            resp => {         
+                let data = resp.data;
+                localStorage.setItem('coingeckoData', JSON.stringify(data));
+                this.setState({
+                    coinGecko: data,
+                })
+            }).catch(err => console.log('Error:', err));
+        this.CheckCookies();
         this.getDataFromLocStore();
+    }
+
+    CheckCookies = () => {
+        let accept = JSON.parse(localStorage.getItem('accept'));
+        console.log('accept', accept);
+        if(!accept){
+            this.setState({
+                accept: false,
+            })
+        } else {
+            this.setState({
+                accept: true,
+            })
+        }
+    }
+
+    checkAccept = () => {
+        this.setState({ 
+            accept: true
+          })
     }
     
     LoadData = () => {
@@ -72,7 +112,6 @@ export default class InputData extends React.Component {
         let data = [];
         let result;
         data = JSON.parse(localStorage.getItem('data'));
-        console.log('img',data);
         for(let key in data){
             if(key === variantFrom){
                 result = data[key];
@@ -331,9 +370,10 @@ export default class InputData extends React.Component {
 
     render() {
         // console.log('State.........',this.state);
-        const { showChart, labels, dataBuy, dataSell, loader, arr, showNews, arrPosts, variantFrom, variantTo, coinId, imgCoin, } = this.state
+        const { showChart, labels, dataBuy, dataSell, loader, arr, showNews, arrPosts, variantFrom, variantTo, coinId, imgCoin, accept, coinGecko } = this.state
         return (
             <div className="wrapperInputData">
+                <h1>Crypto Cap</h1>
                 <div className="inputData"> 
                     <div className="textField"> 
                         <TextField
@@ -410,6 +450,11 @@ export default class InputData extends React.Component {
                 {
                     showNews ? <CoinNews arrPosts={arrPosts} /> : null
                 }
+                {
+                    !accept ? <Cookies checkAccept = { this.checkAccept } /> : null
+                }
+                <AddFavouriteCoins coinGecko={coinGecko} />
+                <TableFavouriteCoins /> 
             </div>
         );
     }

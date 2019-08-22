@@ -6,8 +6,9 @@ import {Bar} from 'react-chartjs-2';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import {Pie} from 'react-chartjs-2';
 
-let arrRes = [], height;
+let arrRes = [], height, result = [];
 
 const options = {
     responsive: true,
@@ -71,11 +72,77 @@ export default class ChangeStatistic extends React.Component{
         volume: 'volumefrom',
         price: 'close',
         x: 0,
+        pieChartArr: [],
     }
 
     componentDidMount(){
         this.getPriceChanges();
         this.buildChart();
+        // this.getPieChart();
+    }
+
+    getPieChart = () => {
+        const { from, to } = this.props;
+        let ticker = from + to;
+        result = [];
+        let currentTime = new Date().getTime();
+        let FiveMin = 300000;
+        
+        this.getDataForPieChart(ticker, currentTime, FiveMin).then(
+            () => this.getDataForPieChart(ticker, currentTime, FiveMin*3).then(
+                () => this.getDataForPieChart(ticker, currentTime, FiveMin*12).then(
+                    () => this.getDataForPieChart(ticker, currentTime, this.toFix(FiveMin*12*4)).then(
+                        () => this.getDataForPieChart(ticker, currentTime, FiveMin*12*4*3).then(
+                            () => this.getDataForPieChart(ticker, currentTime, FiveMin*12*4*3*2).then(
+                                () => this.getDataForPieChart(ticker, currentTime, FiveMin*12*4*3*2*7).then(
+                                    () => this.getDataForPieChart(ticker, currentTime, FiveMin*12*4*3*2*7*3).then(
+                                    ).catch()
+                                ).catch()
+                            ).catch()
+                        ).catch()
+                    ).catch()
+                ).catch()
+            ).catch()
+        ).catch()
+    }
+
+    toFix = (num) => {
+        console.log('num', num);
+        console.log('e', 300000*12*4);
+        return num.toLocaleString('fullwide', {useGrouping:false})
+    }
+
+    getDataForPieChart = (ticker, currentTime, time) => {
+        let promiseVar = new Promise((resolve, reject) => {
+            api.crudBuilder(`https://api.binance.com/api/v1/aggTrades?symbol=${ticker}&startTime=${currentTime-time}&endTime=${currentTime}`).get().then(
+                resp => {         
+                    let data = resp.data;
+                    let dataBuy = data.filter(item => item.m);
+                    let resultBuy = 0;
+                    dataBuy.forEach((item) => {
+                        resultBuy += +item.q
+                    })
+
+                    let dataSell = data.filter(item => !item.m);
+                    let resultSell = 0;
+                    dataSell.forEach((item) => {
+                        resultSell += +item.q
+                    })
+
+                    result.push([resultBuy, resultSell]);
+                    console.log('res', result)
+                    this.setState({
+                        pieChartArr: result
+                    })
+                    resolve();
+                }).catch(err => {
+                    console.log('Error:', err)
+                    reject();
+                });
+                console.log('res1', result)
+        })
+
+        return promiseVar;
     }
 
     getPriceChanges = () => {
@@ -108,22 +175,22 @@ export default class ChangeStatistic extends React.Component{
     getStatistic = (histo, times, currentPrice) => {
         let promiseVar = new Promise((resolve, reject) => {
         
-        const { from, to } = this.props;
-        let value;
-        
-        api.crudBuilder(`https://min-api.cryptocompare.com/data/histo${histo}?fsym=${from}&tsym=${to}&limit=40`).get().then(
-            resp => {
-                value = resp.data.Data[resp.data.Data.length - times].close;
-                let res = this.getPercent(currentPrice, value); 
-                arrRes.push(res);
-                this.setState({
-                    arrStatistic: arrRes,
-                })
-                resolve();
-            }).catch(err => {
-                reject()
-                console.log(err);
-            });
+            const { from, to } = this.props;
+            let value;
+            
+            api.crudBuilder(`https://min-api.cryptocompare.com/data/histo${histo}?fsym=${from}&tsym=${to}&limit=40`).get().then(
+                resp => {
+                    value = resp.data.Data[resp.data.Data.length - times].close;
+                    let res = this.getPercent(currentPrice, value); 
+                    arrRes.push(res);
+                    this.setState({
+                        arrStatistic: arrRes,
+                    })
+                    resolve();
+                }).catch(err => {
+                    reject()
+                    console.log(err);
+                });
         })
         
         return promiseVar;
@@ -192,8 +259,7 @@ export default class ChangeStatistic extends React.Component{
       }
 
     render(){
-        const { arrStatistic, arrPrice, timestamp, arrVolume, volume, price, x,} = this.state; 
-                
+        const { arrStatistic, arrPrice, timestamp, arrVolume, volume, price, x, pieChartArr, } = this.state; 
         const data = {
             labels: timestamp,
             datasets: [{
@@ -223,7 +289,24 @@ export default class ChangeStatistic extends React.Component{
                 }
             ]
         };
-
+        const pieChart = {
+            labels: [
+                'Buy',
+                'Sell',
+            ],
+            datasets: [{
+                data: pieChartArr,
+                backgroundColor: [
+                'green',
+                'red',
+                ],
+                hoverBackgroundColor: [
+                'green',
+                'red',
+                ]
+            }]
+        };
+        // console.log(this.state.pieChartArr);
         return(
             <Fragment>
                 <h2>
@@ -252,6 +335,9 @@ export default class ChangeStatistic extends React.Component{
                             </tr>                           
                         </tbody>
                 </Table>
+                <div style={{ display:'flex', width:'20%' }}>
+                    <Pie data={pieChart} />
+                </div>
                 <div style={{ display: 'flex', width: '70%', justifyContent: 'space-around', margin: '15px' }} >
                     <FormControl style={{ width:'150px' }}>
                         <InputLabel htmlFor="age-native-simple">Select by time:</InputLabel>

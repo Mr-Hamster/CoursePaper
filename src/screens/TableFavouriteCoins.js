@@ -7,9 +7,10 @@ export default class TableFavouriteCoins extends React.Component{
     }
 
     componentDidMount(){
-        let data = JSON.parse(localStorage.getItem('FavouriteCoins'));
+        let dataCoins = JSON.parse(localStorage.getItem('FavouriteCoins'));
+        console.log('table',dataCoins);
         this.setState({
-            data
+            data: dataCoins
         })
     }
 
@@ -18,6 +19,7 @@ export default class TableFavouriteCoins extends React.Component{
         const { data } = this.state;
         return(
             <div style={{ width:'90%' }} >
+                {data ? 
                  <Table responsive="sm">
                     <thead>
                         <tr>
@@ -41,7 +43,7 @@ export default class TableFavouriteCoins extends React.Component{
                                     <td>{index+1}</td>
                                     <td style={{ display:'flex', justifyContent:'center', alignItems:'center', }} >
                                         <div style={{ display:'flex', width:'130px', justifyContent:'flex-start', alignItems:'center', }} >
-                                            <img src={item.image.small} style={{ width:'35px', marginRight:'10px' }} />{item.name}
+                                            <img src={item.image.small} style={{ height:'20px', marginRight:'10px' }} />{item.name}
                                         </div>
                                     </td>
                                     <td>{item.symbol.toUpperCase()}</td>
@@ -49,7 +51,7 @@ export default class TableFavouriteCoins extends React.Component{
                                     <td style={{color: item.market_data.price_change_percentage_1y > 0 ? 'green' : 'red' }} >{item.market_data.price_change_percentage_1y}%</td>
                                     <td style={{color: item.market_data.price_change_percentage_24h > 0 ? 'green' : 'red' }} >{item.market_data.price_change_percentage_24h}%</td>      
                                     <td style={{color: item.market_data.price_change_percentage_7d > 0 ? 'green' : 'red' }} >{item.market_data.price_change_percentage_7d}%</td>                               
-                                    <td>Table cell</td>
+                                    <td>{item.market_data.total_volume.usd}$</td>
                                     <td>{item.market_data.circulating_supply}</td>
                                     <td>{item.market_data.market_cap.usd}$</td>
                                     <td>Table cell</td>
@@ -57,7 +59,7 @@ export default class TableFavouriteCoins extends React.Component{
                             ))
                         }
                     </tbody>
-                </Table>
+                </Table> : null}
             </div>
         );
     }
