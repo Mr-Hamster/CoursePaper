@@ -8,7 +8,6 @@ export default class TableFavouriteCoins extends React.Component{
 
     componentDidMount(){
         let dataCoins = JSON.parse(localStorage.getItem('FavouriteCoins'));
-        console.log('table',dataCoins);
         this.setState({
             data: dataCoins
         })
@@ -48,7 +47,7 @@ export default class TableFavouriteCoins extends React.Component{
                                     </td>
                                     <td>{item.symbol.toUpperCase()}</td>
                                     <td>{item.market_data.current_price.usd}$</td>
-                                    <td style={{color: item.market_data.price_change_percentage_1y > 0 ? 'green' : 'red' }} >{item.market_data.price_change_percentage_1y}%</td>
+                                    <td style={{color: item.market_data.price_change_percentage_1h_in_currency.usd > 0 ? 'green' : 'red' }} >{item.market_data.price_change_percentage_1h_in_currency.usd}%</td>
                                     <td style={{color: item.market_data.price_change_percentage_24h > 0 ? 'green' : 'red' }} >{item.market_data.price_change_percentage_24h}%</td>      
                                     <td style={{color: item.market_data.price_change_percentage_7d > 0 ? 'green' : 'red' }} >{item.market_data.price_change_percentage_7d}%</td>                               
                                     <td>{item.market_data.total_volume.usd}$</td>
