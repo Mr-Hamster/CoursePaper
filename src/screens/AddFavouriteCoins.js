@@ -23,7 +23,6 @@ export default class AddFavouriteCoins extends React.Component{
 
     componentDidMount(){
         let coinsFromLocStore = JSON.parse(localStorage.getItem('FavouriteCoins'));
-        console.log('qweqwe',coinsFromLocStore)
         if(coinsFromLocStore){
             this.setState({
                 showFavouriteCoins: true,

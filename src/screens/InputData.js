@@ -40,6 +40,8 @@ export default class InputData extends React.Component {
         imgCoin:'',
         accept: false,
         coinGecko: [],
+        FavouriteCoinsList: [],
+        top10Coins:[]
     }
 
     componentDidMount(){
@@ -57,15 +59,32 @@ export default class InputData extends React.Component {
                 localStorage.setItem('coingeckoData', JSON.stringify(data));
                 this.setState({
                     coinGecko: data,
-                })
+                },()=>this.filterTop10())
             }).catch(err => console.log('Error:', err));
         } else {
             this.setState({
                 coinGecko: coinGeckoData,
-            })
+            },()=>this.filterTop10())
         }
+        this.getFavouriteCoins();
         this.CheckCookies();
         this.getDataFromLocStore();
+    }
+
+    filterTop10 = () => {
+        const { coinGecko } = this.state;
+        let arr = [];
+        arr = coinGecko.filter((item, index) => item.market_data.market_cap_rank <= 11);
+        this.setState({
+            top10Coins: arr,
+        })
+    }
+
+    getFavouriteCoins = () => {
+        let dataCoins = JSON.parse(localStorage.getItem('FavouriteCoins'));
+        this.setState({
+            FavouriteCoinsList: dataCoins
+        })
     }
 
     CheckCookies = () => {
@@ -379,7 +398,7 @@ export default class InputData extends React.Component {
 
     render() {
         // console.log('State.........',this.state);
-        const { showChart, labels, dataBuy, dataSell, loader, arr, showNews, arrPosts, variantFrom, variantTo, coinId, imgCoin, accept, coinGecko } = this.state
+        const { showChart, labels, dataBuy, dataSell, loader, arr, showNews, arrPosts, variantFrom, variantTo, coinId, imgCoin, accept, coinGecko, FavouriteCoinsList, top10Coins } = this.state
         return (
             <div className="wrapperInputData">
                 <h1>Crypto Cap</h1>
@@ -462,8 +481,12 @@ export default class InputData extends React.Component {
                 {
                     !accept ? <Cookies checkAccept = { this.checkAccept } /> : null
                 }
+                <h3>Top 10</h3>
+                <TableFavouriteCoins top10={top10Coins} /> 
                 <AddFavouriteCoins coinGecko={coinGecko} />
-                <TableFavouriteCoins /> 
+                {
+                    FavouriteCoinsList.length ? <TableFavouriteCoins favouriteCoins={FavouriteCoinsList} /> : null
+                }
             </div>
         );
     }
