@@ -1,12 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./components/App.js";
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import LogIn from "./screens/LogIn.js";
-import InputData from "./screens/InputData.js";
+import { BrowserRouter } from 'react-router-dom';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import reducer from './reducers/reducer'
+
+const store = createStore(reducer);
 
 ReactDOM.render((
+  <Provider store={store}>
     <BrowserRouter>
       <App />
     </BrowserRouter>
+  </Provider>
   ), document.getElementById('root'))

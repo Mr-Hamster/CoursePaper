@@ -33,7 +33,6 @@ export default class AddFavouriteCoins extends React.Component{
 
     componentDidUpdate(prevProps){
         const { coinGecko } = this.props;
-        const { choosenCoins } = this.state;
         if (coinGecko !== prevProps.coinGecko) {
             // for(let key of choosenCoins){
             //     for (let item of coinGecko){
