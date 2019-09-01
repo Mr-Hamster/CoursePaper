@@ -82,7 +82,7 @@ export default class ChangeStatistic extends React.Component{
         this.buildChart();
         // this.getPieChart();
     }
-
+ 
 //     PROBLEM with        vs_currency
 
     getDataForVolumeChange = () => {
