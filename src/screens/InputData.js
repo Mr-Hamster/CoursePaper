@@ -12,7 +12,9 @@ import Cookies from "./Cookies";
 import TableFavouriteCoins from "./TableFavouriteCoins";
 import AddFavouriteCoins from "./AddFavouriteCoins";
 import PieChartMarketCap from "./PieChartMarketCap";
-import InputCoin from "../components/InputCoin";
+import Swap from '../static/images/swap.png'
+import Delete from '../static/images/delete.png';
+import TextField from '@material-ui/core/TextField';
 
 let perc = 1, labelsCount = 100/perc;
 let bigestAskAmount, bigestAskPrice, bigestBidAmount, bigestBidPrice, currentPrice;
@@ -431,7 +433,55 @@ export default class InputData extends React.Component {
         return (
             <div className="wrapperInputData">
                 <h1>Crypto Cap</h1>
-                    <InputCoin arr={arr} getVariantFrom={ this.getVariantFrom } getVariantTo={ this.getVariantTo } variantFrom={variantFrom} variantTo={variantTo} swaping={this.Swaping} getDataFromLocStore={this.getDataFromLocStore} autoPasting={this.autoPasting} removeItem={this.removeItem} />
+                    <div className="inputData"> 
+                        <div className="textField"> 
+                            <TextField
+                                id="outlined-uncontrolled"
+                                label="From"
+                                defaultValue=""
+                                margin="normal"
+                                variant="outlined"
+                                onChange = { (event)=>{
+                                    this.setState({
+                                        variantFrom: event.target.value
+                                    })
+                                }}
+                                value={variantFrom}
+                                style={{ width: '300px' }}
+                            />
+                            <img src={Swap} className="imgSwap" onClick={ this.Swaping } />
+                            <TextField
+                                id="outlined-uncontrolled"
+                                label="To"
+                                defaultValue=""
+                                margin="normal"
+                                variant="outlined"
+                                onChange = { (event)=>{
+                                    this.setState({
+                                        variantTo: event.target.value
+                                    })
+                                }}
+                                value={variantTo}
+                                style={{ width: '300px' }}
+                            />
+                        </div>
+                    {
+                        arr ? 
+                        <div className="valueFromLocStore">
+                            {
+                                arr.map((item, index) => (
+                                    <div key={index} className="helpers">
+                                        <img src={Delete} alt='delete' style={{ position:"absolute", width: '15px', right: '8px', top: '8px', cursor: 'pointer' }} onClick={ ()=> this.removeItem(index, item) } />
+                                        <button onClick={ () => this.autoPasting(item) } style={{ height: '30px', width:'100px', cursor: 'pointer' }}>
+                                            {item}
+                                        </button>
+                                    </div>
+                                ))
+                            }
+                        </div>   
+                    : null
+                    }   
+                </div>         
                     <Button variant="contained" color="primary" style={{width:'30%', height:'50px'}} onClick={ this.LoadData }>
                         Get Exchanges Results
                     </Button>
