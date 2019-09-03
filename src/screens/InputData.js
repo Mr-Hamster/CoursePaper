@@ -1,20 +1,18 @@
 import React from "react";
-import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import * as api from '../api/index';
 import Charts from '../screens/Chart.js';
 import '../styles/InputData.scss';
 import HistoricalValues from "./HistoricalValues";
-import Delete from '../static/images/delete.png';
 import BigTrades from '../screens/BigTrades'
 import ChangeStatistic from "./ChangeStatistic";
 import LatestStats from "./LatestStats";
 import CoinNews from "./CoinNews";
-import Swap from '../static/images/swap.png'
 import Cookies from "./Cookies";
 import TableFavouriteCoins from "./TableFavouriteCoins";
 import AddFavouriteCoins from "./AddFavouriteCoins";
 import PieChartMarketCap from "./PieChartMarketCap";
+import InputCoin from "../components/InputCoin";
 
 let perc = 1, labelsCount = 100/perc;
 let bigestAskAmount, bigestAskPrice, bigestBidAmount, bigestBidPrice, currentPrice;
@@ -415,64 +413,28 @@ export default class InputData extends React.Component {
         this.LoadData();
     }
 
+    getVariantFrom = ( {target: {value} }) => {
+        this.setState({
+            variantFrom: value.toUpperCase()
+        })
+    }
+
+    getVariantTo = ( {target: {value} }) => {
+        this.setState({
+            variantTo: value.toUpperCase()
+        })
+    }
+
     render() {
-        // console.log('State.........',this.state.coinGecko);
-        const { showChart, labels, dataBuy, dataSell, loader, arr, showNews, arrPosts, variantFrom, variantTo, coinId, imgCoin, accept, coinGecko, FavouriteCoinsList, top10Coins, dependencyObj } = this.state
+        console.log('State.........',this.state);
+        const { arr, showChart, labels, dataBuy, dataSell, loader, showNews, arrPosts, variantFrom, variantTo, coinId, imgCoin, accept, coinGecko, FavouriteCoinsList, top10Coins, dependencyObj } = this.state
         return (
             <div className="wrapperInputData">
                 <h1>Crypto Cap</h1>
-                <div className="inputData"> 
-                    <div className="textField"> 
-                        <TextField
-                            id="outlined-uncontrolled"
-                            label="From"
-                            defaultValue=""
-                            margin="normal"
-                            variant="outlined"
-                            onChange = { (event) => {
-                                this.setState({
-                                    variantFrom: event.target.value.toUpperCase()
-                                })
-                            } }
-                            value={this.state.variantFrom}
-                            style={{ width: '300px' }}
-                        />
-                        <img src={Swap} className="imgSwap" onClick={ this.Swaping } />
-                        <TextField
-                            id="outlined-uncontrolled"
-                            label="To"
-                            defaultValue=""
-                            margin="normal"
-                            variant="outlined"
-                            onChange = { (event) => {
-                                this.setState({
-                                    variantTo: event.target.value.toUpperCase()
-                                })
-                            } }
-                            value={this.state.variantTo}
-                            style={{ width: '300px' }}
-                        />
-                    </div>
-                    {
-                        arr ? 
-                        <div className="valueFromLocStore">
-                            {
-                                arr.map((item, index) => (
-                                    <div key={index} className="helpers">
-                                        <img src={Delete} alt='delete' style={{ position:"absolute", width: '15px', right: '8px', top: '8px', cursor: 'pointer' }} onClick={ ()=> this.removeItem(index, item) } />
-                                        <button onClick={ () => this.autoPasting(item) } style={{ height: '30px', width:'100px', cursor: 'pointer' }}>
-                                            {item}
-                                        </button>
-                                    </div>
-                                ))
-                            }
-                        </div>   
-                    : null
-                    }                 
+                    <InputCoin arr={arr} getVariantFrom={ this.getVariantFrom } getVariantTo={ this.getVariantTo } variantFrom={variantFrom} variantTo={variantTo} swaping={this.Swaping} getDataFromLocStore={this.getDataFromLocStore} autoPasting={this.autoPasting} removeItem={this.removeItem} />
                     <Button variant="contained" color="primary" style={{width:'30%', height:'50px'}} onClick={ this.LoadData }>
                         Get Exchanges Results
                     </Button>
-                </div>
                 {
                     loader ? 'Loading...' : null
                 }

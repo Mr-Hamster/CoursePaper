@@ -408,7 +408,7 @@ export default class ChangeStatistic extends React.Component{
                         <Select
                             native
                             onChange={ this.handleChangePrice }
-                            value={this.state.volume}
+                            value={this.state.price}
                         >
                         <option value={'close'}>Close</option>
                         <option value={'open'}>Open</option>
