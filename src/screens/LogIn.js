@@ -5,7 +5,6 @@ import Button from '@material-ui/core/Button';
 import { Redirect } from 'react-router-dom'
 import Eye from "../static/images/eye.png"
 
-
 const ValidEmail = '123@gmail.com';
 const ValidPassword = 'qwerty123';
 
@@ -42,13 +41,13 @@ export default class LogIn extends React.Component{
 
     render(){
         // console.log(this.state);
-        const { error, eye } = this.state;
+        const { error, eye, password, email } = this.state;
         return(
             <div className="wrapperLogIn">
                 <div className="logInBlock">
                     <h3>Sign In</h3>
-                    <span>Email: {ValidEmail}</span>
-                    <span>Password: {ValidPassword}</span>
+                    <span style={{cursor:'pointer'}} onClick={() => this.setState({ email: ValidEmail })}>Email: {ValidEmail}</span>
+                    <span style={{cursor:'pointer'}} onClick={() => this.setState({ password: ValidPassword })}>Password: {ValidPassword}</span>
                     <div>
                         <TextField
                             id="outlined-uncontrolled"
@@ -62,6 +61,7 @@ export default class LogIn extends React.Component{
                                     email: event.target.value
                                 })
                             } }
+                            value={email}
                             style={{ width: '100%' }}
                         />
                         <div style={{ display:'flex', width: '100%', alignItems:'center', position: 'relative', }} >
@@ -77,6 +77,7 @@ export default class LogIn extends React.Component{
                                         password: event.target.value
                                     })
                                 } }
+                                value={password}
                                 style={{ width: '100%' }}
                             />
                             <img src={Eye} style={{ width:'20px', position: 'absolute', right: '15px', top: '36px', cursor: 'pointer' }} onMouseEnter={ () => this.setState({

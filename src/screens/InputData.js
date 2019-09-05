@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import Button from '@material-ui/core/Button';
 import * as api from '../api/index';
 import Charts from '../screens/Chart.js';
@@ -41,6 +41,7 @@ export default class InputData extends React.Component {
         imgCoin:'',
         accept: false,
         coinGecko: [],
+        staticCoinGecko: [],
         FavouriteCoinsList: [],
         top10Coins:[], 
         dependencyObj: {},
@@ -54,7 +55,6 @@ export default class InputData extends React.Component {
     }
 
     getCoinGeckoData = () => {
-        coinGeckoData = JSON.parse(localStorage.getItem('coingeckoData'));
 
         api.crudBuilder(`https://min-api.cryptocompare.com/data/all/coinlist`).get().then(
             resp => {         
@@ -62,8 +62,7 @@ export default class InputData extends React.Component {
                 localStorage.setItem('data', JSON.stringify(data));
             }).catch(err => console.log('Error:', err));
 
-        if(!coinGeckoData){
-            api.crudBuilder(`https://api.coingecko.com/api/v3/coins`).get().then(
+        api.crudBuilder(`https://api.coingecko.com/api/v3/coins`).get().then(
             resp => {         
                 let data = resp.data;
                 this.createDependencyObj(data);
@@ -72,12 +71,7 @@ export default class InputData extends React.Component {
                     coinGecko: data,
                 },()=>this.filterTop10())
             }).catch(err => console.log('Error:', err));
-        } else {
-            this.createDependencyObj(coinGeckoData);
-            this.setState({
-                coinGecko: coinGeckoData,
-            },()=>this.filterTop10())
-        }
+        
     }
 
     createDependencyObj = (arr) => {
@@ -91,9 +85,9 @@ export default class InputData extends React.Component {
     }
 
     filterTop10 = () => {
-        const { coinGecko } = this.state;
+        let data = JSON.parse(localStorage.getItem('coingeckoData'));
         let arr = [];
-        arr = coinGecko.filter((item) => item.market_data.market_cap_rank < 11);
+        arr = data.filter((item) => item.market_data.market_cap_rank < 11);
         this.setState({
             top10Coins: arr,
         })
@@ -415,20 +409,8 @@ export default class InputData extends React.Component {
         this.LoadData();
     }
 
-    getVariantFrom = ( {target: {value} }) => {
-        this.setState({
-            variantFrom: value.toUpperCase()
-        })
-    }
-
-    getVariantTo = ( {target: {value} }) => {
-        this.setState({
-            variantTo: value.toUpperCase()
-        })
-    }
-
     render() {
-        console.log('State.........',this.state);
+        // console.log('State.........',this.state);
         const { arr, showChart, labels, dataBuy, dataSell, loader, showNews, arrPosts, variantFrom, variantTo, coinId, imgCoin, accept, coinGecko, FavouriteCoinsList, top10Coins, dependencyObj } = this.state
         return (
             <div className="wrapperInputData">
@@ -443,7 +425,7 @@ export default class InputData extends React.Component {
                                 variant="outlined"
                                 onChange = { (event)=>{
                                     this.setState({
-                                        variantFrom: event.target.value
+                                        variantFrom: event.target.value.toUpperCase()
                                     })
                                 }}
                                 value={variantFrom}
@@ -458,7 +440,7 @@ export default class InputData extends React.Component {
                                 variant="outlined"
                                 onChange = { (event)=>{
                                     this.setState({
-                                        variantTo: event.target.value
+                                        variantTo: event.target.value.toUpperCase()
                                     })
                                 }}
                                 value={variantTo}

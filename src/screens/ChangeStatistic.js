@@ -417,7 +417,7 @@ export default class ChangeStatistic extends React.Component{
                         </Select>
                     </FormControl>
                 </div>
-                <div style={{width:'65%', }} onMouseMove={ this.onMouseMove } id="block">
+                <div style={{width:'65%',  }} onMouseMove={ this.onMouseMove } id="block">
                     <div style={{ height: height, width: '2px', border: 'solid 1px', position:'absolute', left: x - 3 }}>
                     </div>
                     <Bar
