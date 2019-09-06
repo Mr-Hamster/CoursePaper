@@ -209,24 +209,6 @@ export default class ChangeStatistic extends React.Component{
     getStatistic = (histo, times, currentPrice) => {
         let promiseVar = new Promise((resolve, reject) => {
         
-<<<<<<< HEAD
-            const { from, to } = this.props;
-            let value;
-            
-            api.crudBuilder(`https://min-api.cryptocompare.com/data/histo${histo}?fsym=${from}&tsym=${to}&limit=40`).get().then(
-                resp => {
-                    value = resp.data.Data[resp.data.Data.length - times].close;
-                    let res = this.getPercent(currentPrice, value); 
-                    arrRes.push(res);
-                    this.setState({
-                        arrStatistic: arrRes,
-                    })
-                    resolve();
-                }).catch(err => {
-                    reject()
-                    console.log(err);
-                });
-=======
         const { from, to } = this.props;
         console.log('cur price',currentPrice)
 
@@ -246,7 +228,6 @@ export default class ChangeStatistic extends React.Component{
                 reject()
                 console.log(err);
             });
->>>>>>> master
         })
         
         return promiseVar;
