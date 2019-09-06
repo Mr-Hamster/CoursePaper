@@ -11,6 +11,7 @@ import ChangeStatistic from "./ChangeStatistic";
 import LatestStats from "./LatestStats";
 import CoinNews from "./CoinNews";
 import Swap from '../static/images/swap.png'
+import RecentEvents from "./RecentEvents";
 import GlobalInfoData from "./GlobalInfoData";
 
 let perc = 1, labelsCount = 100/perc;
@@ -22,6 +23,7 @@ let arrBuy = [], arrSell = [];
 export default class InputData extends React.Component {
     state = {
         variantFrom: '',
+        from:'',
         variantTo: '',
         showChart: false,
         labels: [],
@@ -46,6 +48,9 @@ export default class InputData extends React.Component {
         if(!variantFrom || !variantTo){
             alert('Please enter tickers!');
         }else{
+            this.setState({
+                from: variantFrom
+            })
             let ticker = `${variantFrom}${variantTo}`;
             this.getValueFromData();
             this.AddDataToStore();
@@ -305,7 +310,6 @@ export default class InputData extends React.Component {
         if(variantFrom && variantTo){
             api.crudBuilder(`https://min-api.cryptocompare.com/data/v2/news/?categories=${variantFrom},${variantTo}`).get().then(
                 resp => {
-                    console.log('posts', resp.data.Data)
                     this.setState({
                         arrPosts: resp.data.Data,
                         showNews: true
@@ -329,8 +333,8 @@ export default class InputData extends React.Component {
     }
 
     render() {
-        // console.log('State.........',this.state);
-        const { showChart, labels, dataBuy, dataSell, loader, arr, showNews, arrPosts, variantFrom, variantTo, coinId, imgCoin, } = this.state
+        console.log('State.........',this.state);
+        const { showChart, labels, dataBuy, dataSell, loader, arr, showNews, arrPosts, variantFrom, variantTo, coinId, imgCoin, from, } = this.state
         return (
             <div className="wrapperInputData">
                 <div className="inputData"> 
@@ -346,7 +350,7 @@ export default class InputData extends React.Component {
                                     variantFrom: event.target.value.toUpperCase()
                                 })
                             } }
-                            value={this.state.variantFrom}
+                            value={variantFrom}
                             style={{ width: '300px' }}
                         />
                         <img src={Swap} className="imgSwap" onClick={ this.Swaping } />
@@ -361,7 +365,7 @@ export default class InputData extends React.Component {
                                     variantTo: event.target.value.toUpperCase()
                                 })
                             } }
-                            value={this.state.variantTo}
+                            value={variantTo}
                             style={{ width: '300px' }}
                         />
                     </div>
@@ -408,8 +412,13 @@ export default class InputData extends React.Component {
                 </Button> 
                 {
                     showNews ? <CoinNews arrPosts={arrPosts} /> : null
+<<<<<<< HEAD
+                }
+                <RecentEvents variantFrom={from} />
+=======
                 } */}
                 <GlobalInfoData />
+>>>>>>> master
             </div>
         );
     }

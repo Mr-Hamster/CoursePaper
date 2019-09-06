@@ -3,7 +3,6 @@ import { ThemeProvider } from '@material-ui/styles';
 import * as api from '../api/index';
 import '../styles/App.scss';
 import InputData from "../screens/InputData";
-import CoinNews from "../screens/CoinNews";
 import Cookies from "../screens/Cookies";
 
 class App extends Component {
@@ -12,6 +11,11 @@ class App extends Component {
     }
 
     componentDidMount(){
+        this.LoadCoinList();
+        this.LoadRecentEvents();
+    }
+
+    LoadCoinList = () => {
         this.CheckCookies();
         api.crudBuilder(`https://min-api.cryptocompare.com/data/all/coinlist`).get().then(
             resp => {         
@@ -38,6 +42,16 @@ class App extends Component {
         this.setState({ 
             accept: true
           })
+    }
+
+    LoadRecentEvents = () => {
+        api.eventsRequest(`https://developers.coinmarketcal.com/v1/events?max=150`).get().then(
+            resp => {
+                let data = resp.data.body;
+                localStorage.setItem('recentEvents', JSON.stringify(data));
+            }).catch(err => {
+                alert(`${err}`)
+            });
     }
 
     render() {
