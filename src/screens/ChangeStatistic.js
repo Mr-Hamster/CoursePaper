@@ -87,12 +87,12 @@ export default class ChangeStatistic extends React.Component{
                 let currentPrice = resp.data.Data[1].close;
                 this.getStatistic(histo = 'minute', times = 5, currentPrice).then(
                     () => this.getStatistic(histo = 'minute', times = 15, currentPrice).then(
-                        () => this.getStatistic(histo = 'hour', times = 2, currentPrice).then(
+                        () => this.getStatistic(histo = 'minute', times = 60, currentPrice).then(
                             () => this.getStatistic(histo = 'hour', times = 5, currentPrice).then(
                                 () => this.getStatistic(histo = 'hour', times = 13, currentPrice).then(
-                                    () => this.getStatistic(histo = 'day', times = 2, currentPrice).then(
-                                        () => this.getStatistic(histo = 'day', times = 8, currentPrice).then(
-                                            () => this.getStatistic(histo = 'day', times = 31, currentPrice)
+                                    () => this.getStatistic(histo = 'hour', times = 25, currentPrice).then(
+                                        () => this.getStatistic(histo = 'day', times = 7, currentPrice).then(
+                                            () => this.getStatistic(histo = 'day', times = 30, currentPrice)
                                         ).catch()
                                     ).catch()
                                 ).catch()
@@ -109,13 +109,16 @@ export default class ChangeStatistic extends React.Component{
         let promiseVar = new Promise((resolve, reject) => {
         
         const { from, to } = this.props;
-        let value;
-        
-        api.crudBuilder(`https://min-api.cryptocompare.com/data/histo${histo}?fsym=${from}&tsym=${to}&limit=40`).get().then(
+        console.log('cur price',currentPrice)
+
+        api.crudBuilder(`https://min-api.cryptocompare.com/data/histo${histo}?fsym=${from}&tsym=${to}&limit=61`).get().then(
             resp => {
-                value = resp.data.Data[resp.data.Data.length - times].close;
+                let value = resp.data.Data[resp.data.Data.length - times].close;
+                let time = resp.data.Data[resp.data.Data.length - times].time;
                 let res = this.getPercent(currentPrice, value); 
                 arrRes.push(res);
+                console.log('val',value)
+                console.log('time', time)
                 this.setState({
                     arrStatistic: arrRes,
                 })
@@ -131,9 +134,9 @@ export default class ChangeStatistic extends React.Component{
     }
 
     getPercent = (currentPrice, value) => {
-        let result = value * 100 / currentPrice;
-        result = 100 - result;
-        return -1 * result.toFixed(3) + '%';
+        let result = (value * 100) / currentPrice;
+        result = result - 100;
+        return result.toFixed(3) + '%';
     }
 
     handleChangeTime = (event) => {
