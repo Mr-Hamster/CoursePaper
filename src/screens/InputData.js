@@ -11,6 +11,7 @@ import ChangeStatistic from "./ChangeStatistic";
 import LatestStats from "./LatestStats";
 import CoinNews from "./CoinNews";
 import Swap from '../static/images/swap.png'
+import GlobalInfoData from "./GlobalInfoData";
 
 let perc = 1, labelsCount = 100/perc;
 let bigestAskAmount, bigestAskPrice, bigestBidAmount, bigestBidPrice, currentPrice;
@@ -62,7 +63,6 @@ export default class InputData extends React.Component {
                         loader: false,
                     })
                 });
-                
         }
     }
 
@@ -388,7 +388,7 @@ export default class InputData extends React.Component {
                 {
                     loader ? 'Loading...' : null
                 }
-                {
+                {/* {
                     showChart ? <ChangeStatistic from={variantFrom} to={variantTo} /> : null
                 }
                 {
@@ -408,7 +408,8 @@ export default class InputData extends React.Component {
                 </Button> 
                 {
                     showNews ? <CoinNews arrPosts={arrPosts} /> : null
-                }
+                } */}
+                <GlobalInfoData />
             </div>
         );
     }
