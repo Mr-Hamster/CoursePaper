@@ -109,7 +109,6 @@ export default class ChangeStatistic extends React.Component{
             resp => { 
                 let data = resp.data.total_volumes;   
                 // data.map(item => console.log(item[0]));
-                console.log('data volume', data); 
             }).catch(err => {
                 console.log('Error:', err)
             });
@@ -164,7 +163,6 @@ export default class ChangeStatistic extends React.Component{
                     })
 
                     result.push([resultBuy, resultSell]);
-                    console.log('res', result)
                     this.setState({
                         pieChartArr: result
                     })
@@ -210,7 +208,6 @@ export default class ChangeStatistic extends React.Component{
         let promiseVar = new Promise((resolve, reject) => {
         
         const { from, to } = this.props;
-        console.log('cur price',currentPrice)
 
         api.crudBuilder(`https://min-api.cryptocompare.com/data/histo${histo}?fsym=${from}&tsym=${to}&limit=61`).get().then(
             resp => {
@@ -218,8 +215,6 @@ export default class ChangeStatistic extends React.Component{
                 let time = resp.data.Data[resp.data.Data.length - times].time;
                 let res = this.getPercent(currentPrice, value); 
                 arrRes.push(res);
-                console.log('val',value)
-                console.log('time', time)
                 this.setState({
                     arrStatistic: arrRes,
                 })
@@ -343,7 +338,6 @@ export default class ChangeStatistic extends React.Component{
                 ]
             }]
         };
-        // console.log(this.state.total_24hVolume);
         return(
             <Fragment>
                 <h2>

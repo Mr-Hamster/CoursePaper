@@ -4,10 +4,15 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import '../styles/Settings.scss';
 import controller from '../controlers/Const'
+import AddFavouriteCoins from './AddFavouriteCoins';
 
 export default class Settings extends React.Component{
     state = {
-        value: ''
+        value: '',
+    }
+
+    componentDidMount(){
+
     }
 
     changeExchange = (event) => {
@@ -15,9 +20,11 @@ export default class Settings extends React.Component{
     }
 
     render(){
-        // const { exchange, changeExchange } = this.props;
+        const { coinGecko } = this.props;
+        console.log('prooops', coinGecko)
         return(
             <div className="sWrapper">
+                <AddFavouriteCoins coinGecko={coinGecko} />
                 <FormControl style={{ width:'200px' }}>
                     <InputLabel htmlFor="age-native-simple">Select your exchange:</InputLabel>
                     <Select

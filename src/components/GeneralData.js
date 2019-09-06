@@ -1,10 +1,71 @@
 import React from 'react';
+import HistoricalValues from '../screens/HistoricalValues';
+import '../styles/GeneralData.scss'
+import GlobalInfoData from '../screens/GlobalInfoData';
+import Button from '@material-ui/core/Button';
+import CoinNews from '../screens/CoinNews';
+import * as api from '../api/index';
+import RecentEvents from '../screens/RecentEvents';
+import TableFavouriteCoins from '../screens/TableFavouriteCoins';
+
 
 export default class GeneralData extends React.Component{
+
+    state = {
+        arrPosts: [],
+        showNews: false,
+        top10Coins:[], 
+
+    }
+
+    componentDidMount(){
+        this.filterTop10();
+
+    }
+
+    filterTop10 = () => {
+        let data = JSON.parse(localStorage.getItem('coingeckoData'));
+        let arr = [];
+        arr = data.filter((item) => item.market_data.market_cap_rank < 11);
+        this.setState({
+            top10Coins: arr,
+        })
+    }
+
+    getNews = () => {
+        const { variantFrom, variantTo, } = this.props;  
+        
+        if(variantFrom && variantTo){
+            api.crudBuilder(`https://min-api.cryptocompare.com/data/v2/news/?categories=${variantFrom},${variantTo}`).get().then(
+                resp => {
+                    this.setState({
+                        arrPosts: resp.data.Data,
+                        showNews: true
+                    })
+                }).catch(err => {
+                    console.log(err);
+                });
+        } else {
+            alert('Enter tickers!!!');
+        }
+    }
+
     render(){
+        const { showNews, arrPosts, top10Coins } = this.state;
+        const { from } = this.props; 
         return(
-            <div>
-                
+            <div className="wrapper">
+                <Button variant="contained" color="primary" style={{width:'30%', height:'50px', margin:'20px' }} onClick={this.getNews }>
+                    Show News
+                </Button> 
+                {
+                    showNews ? <CoinNews arrPosts={arrPosts} /> : null               
+                }
+                <h3>Top 10 Coins</h3>
+                <TableFavouriteCoins top10={top10Coins} /> 
+                <HistoricalValues />
+                <GlobalInfoData />
+                <RecentEvents from={from} />
             </div>
         );
     }

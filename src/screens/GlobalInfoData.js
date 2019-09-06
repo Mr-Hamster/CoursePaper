@@ -10,7 +10,6 @@ export default class GlobalInfoData extends React.Component{
     componentDidMount(){
         api.crudBuilder(`https://api.coingecko.com/api/v3/global`).get().then(
                 resp => {
-                    console.log('global info', resp.data.data);
                     this.setState({
                         globalInfo: resp.data.data,
                         marketCapPerc: resp.data.data.market_cap_percentage.usdt,
@@ -24,7 +23,6 @@ export default class GlobalInfoData extends React.Component{
 
     render(){
         const { globalInfo, marketCapPerc, marketCap, totalVolume  } = this.state;
-        console.log(this.state);
         return(
             <div>
                 <h2>
@@ -42,14 +40,6 @@ export default class GlobalInfoData extends React.Component{
                 <p>
                     Total volume (usd): { totalVolume }
                 </p>
-                
-                {/* market_cap_change_percentage_24h_usd
-
-                market_cap_percentage
-
-                total_market_cap (usd)
-
-                total_volume (usd) */}
             </div>
         )
     }

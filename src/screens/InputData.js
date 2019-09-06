@@ -18,6 +18,7 @@ import TextField from '@material-ui/core/TextField';
 import controller from "../controlers/Const";
 import RecentEvents from "./RecentEvents";
 import GlobalInfoData from "./GlobalInfoData";
+import GeneralData from "../components/GeneralData";
 
 let perc = 1, labelsCount = 100/perc;
 let bigestAskAmount, bigestAskPrice, bigestBidAmount, bigestBidPrice, currentPrice;
@@ -25,7 +26,6 @@ let tickers = [], tickers1 = [];
 
 let arrBuy = [], arrSell = [];
 
-let coinGeckoData = [];
 
 export default class InputData extends React.Component {
     state = {
@@ -44,11 +44,8 @@ export default class InputData extends React.Component {
         coinId: 0,
         imgCoin:'',
         accept: false,
-        coinGecko: [],
         staticCoinGecko: [],
         FavouriteCoinsList: [],
-        top10Coins:[], 
-        dependencyObj: {},
     }
 
     componentDidMount(){
@@ -56,7 +53,6 @@ export default class InputData extends React.Component {
         this.getFavouriteCoins();
         this.CheckCookies();
         this.getDataFromLocStore();
-        console.log('controller inputdata', controller)
     }
 
     getCoinGeckoData = () => {
@@ -66,36 +62,7 @@ export default class InputData extends React.Component {
                 let data = resp.data.Data;
                 localStorage.setItem('data', JSON.stringify(data));
             }).catch(err => console.log('Error:', err));
-
-        api.crudBuilder(`https://api.coingecko.com/api/v3/coins`).get().then(
-            resp => {         
-                let data = resp.data;
-                this.createDependencyObj(data);
-                localStorage.setItem('coingeckoData', JSON.stringify(data));
-                this.setState({
-                    coinGecko: data,
-                },()=>this.filterTop10())
-            }).catch(err => console.log('Error:', err));
         
-    }
-
-    createDependencyObj = (arr) => {
-        let obj = {};
-        arr.forEach(item => {
-            obj[item.symbol] = item.id;
-        })
-        this.setState({
-            dependencyObj: obj
-        })
-    }
-
-    filterTop10 = () => {
-        let data = JSON.parse(localStorage.getItem('coingeckoData'));
-        let arr = [];
-        arr = data.filter((item) => item.market_data.market_cap_rank < 11);
-        this.setState({
-            top10Coins: arr,
-        })
     }
 
     getFavouriteCoins = () => {
@@ -107,7 +74,6 @@ export default class InputData extends React.Component {
 
     CheckCookies = () => {
         let accept = JSON.parse(localStorage.getItem('accept'));
-        console.log('accept', accept);
         if(!accept){
             this.setState({
                 accept: false,
@@ -205,8 +171,6 @@ export default class InputData extends React.Component {
                                     localStorage.setItem('tickers', JSON.stringify(parsedTickers));
                                 }
                             }
-                            // tickers1.push(ticker)
-                            // localStorage.setItem('tickers', JSON.stringify(tickers1));
                             this.getDataFromLocStore();
                         }
                         return;
@@ -387,24 +351,6 @@ export default class InputData extends React.Component {
         this.getDataFromLocStore();
     }
 
-    getNews = () => {
-        const { variantFrom, variantTo, } = this.state;  
-        
-        if(variantFrom && variantTo){
-            api.crudBuilder(`https://min-api.cryptocompare.com/data/v2/news/?categories=${variantFrom},${variantTo}`).get().then(
-                resp => {
-                    this.setState({
-                        arrPosts: resp.data.Data,
-                        showNews: true
-                    })
-                }).catch(err => {
-                    console.log(err);
-                });
-        } else {
-            alert('Enter tickers!!!');
-        }
-    }
-
     Swaping = () => {
         const { variantFrom, variantTo } = this.state;
         let extraValue = variantFrom;
@@ -417,7 +363,13 @@ export default class InputData extends React.Component {
 
     render() {
         // console.log('State.........',this.state);
-        const { arr, showChart, labels, dataBuy, dataSell, loader, showNews, arrPosts, variantFrom, variantTo, coinId, imgCoin, accept, coinGecko, FavouriteCoinsList, top10Coins, dependencyObj } = this.state
+        const { arr, showChart, labels, dataBuy, dataSell, 
+                loader, variantFrom, variantTo, coinId, imgCoin, 
+                accept, 
+                FavouriteCoinsList, top10Coins, 
+                from 
+            } = this.state;
+            const { dependencyObj } = this.props;
         return (
             <div className="wrapperInputData">
                 <h1>Crypto Cap</h1>
@@ -488,31 +440,22 @@ export default class InputData extends React.Component {
                 {
                     showChart ? <Charts currentPrice={currentPrice} labels={labels} dataBuy={dataBuy} dataSell={dataSell} arrBuy={arrBuy} arrSell={arrSell} /> : null
                 }
-                {
-                    showChart ? <HistoricalValues /> : null
-                }
+                
                 {
                     showChart ? <BigTrades arrBuy={arrBuy} arrSell={arrSell} /> : null
                 }
-                <Button variant="contained" color="primary" style={{width:'30%', height:'50px', margin:'20px' }} onClick={ this.getNews }>
-                    Show News
-                </Button> 
-                {
-                    showNews ? <CoinNews arrPosts={arrPosts} /> : null
-                }
-
                 {
                     !accept ? <Cookies checkAccept = { this.checkAccept } /> : null
                 }
-                <h3>Top 10</h3>
+                <GeneralData variantFrom={variantFrom} variantTo={variantTo} from={from} />
+                <h3>Top 10 Coins</h3>
                 <TableFavouriteCoins top10={top10Coins} /> 
-                <AddFavouriteCoins coinGecko={coinGecko} />
                 {
-                    FavouriteCoinsList ? <TableFavouriteCoins favouriteCoins={FavouriteCoinsList} /> : null
+                    FavouriteCoinsList ? <Fragment>
+                                            <h3>Favourite Coins</h3>
+                                            <TableFavouriteCoins favouriteCoins={FavouriteCoinsList} /> 
+                                         </Fragment> : null
                 }
-                <RecentEvents variantFrom={from} />
-                <GlobalInfoData />
-
             </div>
         );
     }

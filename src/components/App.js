@@ -9,6 +9,16 @@ import Settings from "../screens/Settings";
 import { slide as Menu } from 'react-burger-menu'
 import { Link  } from 'react-router-dom'
 
+// IF NOT WORKING reload page a few times!!!!!!!!!
+// IF NOT WORKING reload page a few times!!!!!!!!!
+// IF NOT WORKING reload page a few times!!!!!!!!!
+// IF NOT WORKING reload page a few times!!!!!!!!!
+// IF NOT WORKING reload page a few times!!!!!!!!!
+// IF NOT WORKING reload page a few times!!!!!!!!!
+// IF NOT WORKING reload page a few times!!!!!!!!!
+// IF NOT WORKING reload page a few times!!!!!!!!!
+// IF NOT WORKING reload page a few times!!!!!!!!!
+
 const styles = {
     bmBurgerButton: {
       position: 'fixed',
@@ -65,11 +75,15 @@ const styles = {
 class App extends Component {
     
     state = {
+      coinGecko: [],
+      dependencyObj: {},
     }
 
-    // componentDidMount(){
-        
-    // }
+    componentDidMount(){
+      this.LoadRecentEvents();
+      this.getCoinGecko();
+
+    }
 
     LoadRecentEvents = () => {
         api.eventsRequest(`https://developers.coinmarketcal.com/v1/events?max=150`).get().then(
@@ -81,8 +95,30 @@ class App extends Component {
             });
     }
 
+    getCoinGecko = () => {
+      api.crudBuilder(`https://api.coingecko.com/api/v3/coins`).get().then(
+        resp => {         
+            let data = resp.data;
+            this.createDependencyObj(data);
+            localStorage.setItem('coingeckoData', JSON.stringify(data));
+            this.setState({
+              coinGecko: data,
+            })
+        }).catch(err => console.log('Error:', err));
+    }
+
+    createDependencyObj = (arr) => {
+      let obj = {};
+      arr.forEach(item => {
+          obj[item.symbol] = item.id;
+      })
+      this.setState({
+          dependencyObj: obj
+      })
+  }
+
     render() {
-      const { exchange } = this.state;
+      const { dependencyObj, coinGecko } = this.state;
         return (
             <ThemeProvider>
                 <div className="AppWrapper">
@@ -99,8 +135,8 @@ class App extends Component {
                 </Menu>
                     <Switch>
                         <Route exact path='/' component={LogIn} />
-                        <Route path='/inputData' component={() => <InputData />} />
-                        <Route path='/settings' component={() => <Settings />} />
+                        <Route path='/inputData' component={() => <InputData dependencyObj={dependencyObj} />} />
+                        <Route path='/settings' component={() => <Settings coinGecko={coinGecko} />} />
                     </Switch>
                 </div>
             </ThemeProvider>

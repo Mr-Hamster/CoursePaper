@@ -29,20 +29,14 @@ export default class AddFavouriteCoins extends React.Component{
                 choosenCoins: coinsFromLocStore,
             })
         }    
+        this.updateCoinList();
     }
 
     componentDidUpdate(prevProps){
         const { coinGecko } = this.props;
         if (coinGecko !== prevProps.coinGecko) {
-            // for(let key of choosenCoins){
-            //     for (let item of coinGecko){
-            //         if(key.symbol === item.symbol){
-            //             // console.log('item!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',item.symbol);
-            //             coinGecko.splice()
-            //         }
-            //     }
-            // }
             this.updateCoinList();
+            console.log('update')
         }
     }
 
@@ -106,6 +100,7 @@ export default class AddFavouriteCoins extends React.Component{
 
     render(){
         const { data, showFavouriteCoins, choosenCoins } = this.state;
+        console.log('prooops2', this.props.coinGecko)
         return(
             <div style={{ width:'100%', }} >
             <Button variant="contained" color="primary" style={{width:'30%', height:'50px', margin:'20px' }} onClick={ () => this.setState({ open: true }) }>

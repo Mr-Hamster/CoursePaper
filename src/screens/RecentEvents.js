@@ -41,8 +41,7 @@ export default class RecentEvents extends React.Component{
     }
 
     render(){
-        console.log(this.state);
-        console.log(this.props);
+
         const { data } = this.state;
         return(
             <div className="wrapperEvents">   
