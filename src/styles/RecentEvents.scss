@@ -5,7 +5,9 @@
     height: 100%;
     .eventBlocks{
         display: flex;
-        flex-direction: column;
+        width: 100%;
+        flex-flow: row wrap; 
+        justify-content: center;
         .eventItem{
             display: flex;
             flex-direction: column;

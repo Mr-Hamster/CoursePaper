@@ -448,8 +448,6 @@ export default class InputData extends React.Component {
                     !accept ? <Cookies checkAccept = { this.checkAccept } /> : null
                 }
                 <GeneralData variantFrom={variantFrom} variantTo={variantTo} from={from} />
-                <h3>Top 10 Coins</h3>
-                <TableFavouriteCoins top10={top10Coins} /> 
                 {
                     FavouriteCoinsList ? <Fragment>
                                             <h3>Favourite Coins</h3>
