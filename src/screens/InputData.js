@@ -15,6 +15,7 @@ import PieChartMarketCap from "./PieChartMarketCap";
 import Swap from '../static/images/swap.png'
 import Delete from '../static/images/delete.png';
 import TextField from '@material-ui/core/TextField';
+import controller from "../controlers/Const";
 
 let perc = 1, labelsCount = 100/perc;
 let bigestAskAmount, bigestAskPrice, bigestBidAmount, bigestBidPrice, currentPrice;
@@ -52,6 +53,7 @@ export default class InputData extends React.Component {
         this.getFavouriteCoins();
         this.CheckCookies();
         this.getDataFromLocStore();
+        console.log('controller inputdata', controller)
     }
 
     getCoinGeckoData = () => {
@@ -386,7 +388,6 @@ export default class InputData extends React.Component {
         if(variantFrom && variantTo){
             api.crudBuilder(`https://min-api.cryptocompare.com/data/v2/news/?categories=${variantFrom},${variantTo}`).get().then(
                 resp => {
-                    console.log('posts', resp.data.Data)
                     this.setState({
                         arrPosts: resp.data.Data,
                         showNews: true

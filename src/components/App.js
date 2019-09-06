@@ -65,21 +65,14 @@ const styles = {
 class App extends Component {
     
     state = {
-        exchange: ''
     }
 
     // componentDidMount(){
         
     // }
 
-    changeExchange = () => {
-        this.setState({
-            exchange: event.target.value
-        })
-    }
-
     render() {
-        console.log(this.state)
+      const { exchange } = this.state;
         return (
             <ThemeProvider>
                 <div className="AppWrapper">
@@ -96,8 +89,8 @@ class App extends Component {
                 </Menu>
                     <Switch>
                         <Route exact path='/' component={LogIn} />
-                        <Route path='/inputData' component={InputData} />
-                        <Route path='/settings' component={() => <Settings changeExchange={ this.changeExchange } exchange={ this.state.exchange } />} />
+                        <Route path='/inputData' component={() => <InputData />} />
+                        <Route path='/settings' component={() => <Settings />} />
                     </Switch>
                 </div>
             </ThemeProvider>
