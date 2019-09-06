@@ -73,12 +73,46 @@ export default class ChangeStatistic extends React.Component{
         price: 'close',
         x: 0,
         pieChartArr: [],
+        total_24hVolume: []
     }
 
     componentDidMount(){
+        this.getDataForVolumeChange();
         this.getPriceChanges();
         this.buildChart();
         // this.getPieChart();
+    }
+ 
+//     PROBLEM with        vs_currency
+
+    getDataForVolumeChange = () => {
+        const { from, to, dependencyObj } = this.props;
+        let valueFrom;
+        let valueTo = to.toLowerCase();
+        let currentTimeUNIX = Date.now() / 1000; //UNIX Timestamp
+        currentTimeUNIX = Math.round(currentTimeUNIX);
+        let currentTime = new Date().getTime();
+        for(let key in dependencyObj){
+            if(key === from.toLocaleLowerCase()){
+                valueFrom = dependencyObj[key];
+            }
+        }
+        api.crudBuilder(`https://min-api.cryptocompare.com/data/histoday?fsym=${from}&tsym=${to}&limit=1&aggregate=0&toTs=${currentTime}`).get().then(
+            resp => { 
+                this.setState({
+                    total_24hVolume: resp.data.Data[1]
+                })
+            }).catch(err => {
+            console.log('Error:', err)
+        });
+        api.crudBuilder(`https://api.coingecko.com/api/v3/coins/${valueFrom}/market_chart/range?vs_currency=ltc&from=${currentTimeUNIX-5*60*2}&to=${currentTimeUNIX}`).get().then(
+            resp => { 
+                let data = resp.data.total_volumes;   
+                // data.map(item => console.log(item[0]));
+                console.log('data volume', data); 
+            }).catch(err => {
+                console.log('Error:', err)
+            });
     }
 
     getPieChart = () => {
@@ -328,7 +362,7 @@ export default class ChangeStatistic extends React.Component{
                 ]
             }]
         };
-        // console.log(this.state.pieChartArr);
+        // console.log(this.state.total_24hVolume);
         return(
             <Fragment>
                 <h2>
@@ -337,6 +371,7 @@ export default class ChangeStatistic extends React.Component{
                 <Table striped bordered hover variant="dark" style={{width: "70%", marginTop: '20px'}}>
                         <thead>
                             <tr>
+                                <th>#</th>
                                 <th>5min</th>
                                 <th>15min</th>
                                 <th>1h</th>
@@ -349,11 +384,16 @@ export default class ChangeStatistic extends React.Component{
                         </thead>
                         <tbody>
                             <tr>
+                                <th>By price:</th>
                                 {
                                     arrStatistic.map((item, index) => (
                                         <th key={index}>{item}</th>
                                     ))
                                 }
+                            </tr>     
+                            <tr>
+                                <th>By volume:</th>
+                                
                             </tr>                           
                         </tbody>
                 </Table>
@@ -390,7 +430,7 @@ export default class ChangeStatistic extends React.Component{
                         <Select
                             native
                             onChange={ this.handleChangePrice }
-                            value={this.state.volume}
+                            value={this.state.price}
                         >
                         <option value={'close'}>Close</option>
                         <option value={'open'}>Open</option>
@@ -399,7 +439,7 @@ export default class ChangeStatistic extends React.Component{
                         </Select>
                     </FormControl>
                 </div>
-                <div style={{width:'65%', }} onMouseMove={ this.onMouseMove } id="block">
+                <div style={{width:'65%',  }} onMouseMove={ this.onMouseMove } id="block">
                     <div style={{ height: height, width: '2px', border: 'solid 1px', position:'absolute', left: x - 3 }}>
                     </div>
                     <Bar

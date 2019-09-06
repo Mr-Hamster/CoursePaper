@@ -33,7 +33,6 @@ export default class CoinNews extends React.Component{
     showMore = () => {
         count = count + 10;
         let result = [];
-        console.log('count', count)
         for(let i = 0; i < count; i++){
             result.push(data[i]);
         }

@@ -33,7 +33,6 @@ export default class AddFavouriteCoins extends React.Component{
 
     componentDidUpdate(prevProps){
         const { coinGecko } = this.props;
-        const { choosenCoins } = this.state;
         if (coinGecko !== prevProps.coinGecko) {
             // for(let key of choosenCoins){
             //     for (let item of coinGecko){
@@ -94,22 +93,19 @@ export default class AddFavouriteCoins extends React.Component{
     }
 
     addToCoinList = (item) => {
-        console.log('123', item)
         const { coinGecko } = this.props;
         let arr = coinGecko;
         arr.push(item[0]);
-        let qwe = arr.sort((a,b) => {
+        let sortedArr = arr.sort((a,b) => {
             return a.market_data.market_cap_rank - b.market_data.market_cap_rank;
         });
-        console.log('sorting', qwe)
         this.setState({
-            data: qwe
+            data: sortedArr
         })
     }
 
     render(){
         const { data, showFavouriteCoins, choosenCoins } = this.state;
-        console.log('coin state', this.state);
         return(
             <div style={{ width:'100%', }} >
             <Button variant="contained" color="primary" style={{width:'30%', height:'50px', margin:'20px' }} onClick={ () => this.setState({ open: true }) }>
@@ -127,7 +123,7 @@ export default class AddFavouriteCoins extends React.Component{
                     <InputLabel htmlFor="age-simple">Coin</InputLabel>
                     <Select
                         value={this.state.coin}
-                        onChange={ (event)=> this.setState({ coin: event.target.value })}
+                        onChange={ (event) => this.setState({ coin: event.target.value })}
                         input={<Input id="age-simple" />}
                     >
                         {

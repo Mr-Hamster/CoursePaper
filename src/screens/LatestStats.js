@@ -23,7 +23,6 @@ export default class LatestStats extends React.Component{
                     twitter: resp.data.Data.Twitter,
                     crypto: resp.data.Data.CryptoCompare,
                 })
-                console.log('data', resp.data.Data);
             }).catch(err => {
                 console.log(err);
             });

@@ -1,19 +1,21 @@
-import React from "react";
-import TextField from '@material-ui/core/TextField';
+import React, { Fragment } from "react";
 import Button from '@material-ui/core/Button';
 import * as api from '../api/index';
 import Charts from '../screens/Chart.js';
 import '../styles/InputData.scss';
 import HistoricalValues from "./HistoricalValues";
-import Delete from '../static/images/delete.png';
 import BigTrades from '../screens/BigTrades'
 import ChangeStatistic from "./ChangeStatistic";
 import LatestStats from "./LatestStats";
 import CoinNews from "./CoinNews";
-import Swap from '../static/images/swap.png'
 import Cookies from "./Cookies";
 import TableFavouriteCoins from "./TableFavouriteCoins";
 import AddFavouriteCoins from "./AddFavouriteCoins";
+import PieChartMarketCap from "./PieChartMarketCap";
+import Swap from '../static/images/swap.png'
+import Delete from '../static/images/delete.png';
+import TextField from '@material-ui/core/TextField';
+import controller from "../controlers/Const";
 import RecentEvents from "./RecentEvents";
 import GlobalInfoData from "./GlobalInfoData";
 
@@ -43,41 +45,54 @@ export default class InputData extends React.Component {
         imgCoin:'',
         accept: false,
         coinGecko: [],
+        staticCoinGecko: [],
         FavouriteCoinsList: [],
-        top10Coins:[]
+        top10Coins:[], 
+        dependencyObj: {},
     }
 
     componentDidMount(){
-        coinGeckoData = JSON.parse(localStorage.getItem('coingeckoData'));
-        
+        this.getCoinGeckoData();
+        this.getFavouriteCoins();
+        this.CheckCookies();
+        this.getDataFromLocStore();
+        console.log('controller inputdata', controller)
+    }
+
+    getCoinGeckoData = () => {
+
         api.crudBuilder(`https://min-api.cryptocompare.com/data/all/coinlist`).get().then(
             resp => {         
                 let data = resp.data.Data;
                 localStorage.setItem('data', JSON.stringify(data));
             }).catch(err => console.log('Error:', err));
-        if(!coinGeckoData){
-            api.crudBuilder(`https://api.coingecko.com/api/v3/coins`).get().then(
+
+        api.crudBuilder(`https://api.coingecko.com/api/v3/coins`).get().then(
             resp => {         
                 let data = resp.data;
+                this.createDependencyObj(data);
                 localStorage.setItem('coingeckoData', JSON.stringify(data));
                 this.setState({
                     coinGecko: data,
                 },()=>this.filterTop10())
             }).catch(err => console.log('Error:', err));
-        } else {
-            this.setState({
-                coinGecko: coinGeckoData,
-            },()=>this.filterTop10())
-        }
-        this.getFavouriteCoins();
-        this.CheckCookies();
-        this.getDataFromLocStore();
+        
+    }
+
+    createDependencyObj = (arr) => {
+        let obj = {};
+        arr.forEach(item => {
+            obj[item.symbol] = item.id;
+        })
+        this.setState({
+            dependencyObj: obj
+        })
     }
 
     filterTop10 = () => {
-        const { coinGecko } = this.state;
+        let data = JSON.parse(localStorage.getItem('coingeckoData'));
         let arr = [];
-        arr = coinGecko.filter((item, index) => item.market_data.market_cap_rank <= 11);
+        arr = data.filter((item) => item.market_data.market_cap_rank < 11);
         this.setState({
             top10Coins: arr,
         })
@@ -402,42 +417,42 @@ export default class InputData extends React.Component {
 
     render() {
         // console.log('State.........',this.state);
-        const { showChart, labels, dataBuy, dataSell, loader, arr, showNews, arrPosts, variantFrom, variantTo, coinId, imgCoin, accept, coinGecko, FavouriteCoinsList, top10Coins } = this.state
+        const { arr, showChart, labels, dataBuy, dataSell, loader, showNews, arrPosts, variantFrom, variantTo, coinId, imgCoin, accept, coinGecko, FavouriteCoinsList, top10Coins, dependencyObj } = this.state
         return (
             <div className="wrapperInputData">
                 <h1>Crypto Cap</h1>
-                <div className="inputData"> 
-                    <div className="textField"> 
-                        <TextField
-                            id="outlined-uncontrolled"
-                            label="From"
-                            defaultValue=""
-                            margin="normal"
-                            variant="outlined"
-                            onChange = { (event) => {
-                                this.setState({
-                                    variantFrom: event.target.value.toUpperCase()
-                                })
-                            } }
-                            value={variantFrom}
-                            style={{ width: '300px' }}
-                        />
-                        <img src={Swap} className="imgSwap" onClick={ this.Swaping } />
-                        <TextField
-                            id="outlined-uncontrolled"
-                            label="To"
-                            defaultValue=""
-                            margin="normal"
-                            variant="outlined"
-                            onChange = { (event) => {
-                                this.setState({
-                                    variantTo: event.target.value.toUpperCase()
-                                })
-                            } }
-                            value={variantTo}
-                            style={{ width: '300px' }}
-                        />
-                    </div>
+                    <div className="inputData"> 
+                        <div className="textField"> 
+                            <TextField
+                                id="outlined-uncontrolled"
+                                label="From"
+                                defaultValue=""
+                                margin="normal"
+                                variant="outlined"
+                                onChange = { (event)=>{
+                                    this.setState({
+                                        variantFrom: event.target.value.toUpperCase()
+                                    })
+                                }}
+                                value={variantFrom}
+                                style={{ width: '300px' }}
+                            />
+                            <img src={Swap} className="imgSwap" onClick={ this.Swaping } />
+                            <TextField
+                                id="outlined-uncontrolled"
+                                label="To"
+                                defaultValue=""
+                                margin="normal"
+                                variant="outlined"
+                                onChange = { (event)=>{
+                                    this.setState({
+                                        variantTo: event.target.value.toUpperCase()
+                                    })
+                                }}
+                                value={variantTo}
+                                style={{ width: '300px' }}
+                            />
+                        </div>
                     {
                         arr ? 
                         <div className="valueFromLocStore">
@@ -453,16 +468,19 @@ export default class InputData extends React.Component {
                             }
                         </div>   
                     : null
-                    }                 
+                    }   
+                </div>         
                     <Button variant="contained" color="primary" style={{width:'30%', height:'50px'}} onClick={ this.LoadData }>
                         Get Exchanges Results
                     </Button>
-                </div>
                 {
                     loader ? 'Loading...' : null
                 }
                 {/* {
-                    showChart ? <ChangeStatistic from={variantFrom} to={variantTo} /> : null
+                    <PieChartMarketCap coinGecko={coinGecko} /> // Delete
+                } */}
+                {
+                    showChart ? <ChangeStatistic from={variantFrom} to={variantTo} dependencyObj={dependencyObj} /> : null
                 }
                 {
                     showChart ? <LatestStats coinId = {coinId} imgCoin={imgCoin} /> : null
@@ -481,9 +499,8 @@ export default class InputData extends React.Component {
                 </Button> 
                 {
                     showNews ? <CoinNews arrPosts={arrPosts} /> : null
-<<<<<<< HEAD
                 }
-<<<<<<< HEAD
+
                 {
                     !accept ? <Cookies checkAccept = { this.checkAccept } /> : null
                 }
@@ -491,15 +508,11 @@ export default class InputData extends React.Component {
                 <TableFavouriteCoins top10={top10Coins} /> 
                 <AddFavouriteCoins coinGecko={coinGecko} />
                 {
-                    FavouriteCoinsList.length ? <TableFavouriteCoins favouriteCoins={FavouriteCoinsList} /> : null
+                    FavouriteCoinsList ? <TableFavouriteCoins favouriteCoins={FavouriteCoinsList} /> : null
                 }
-=======
                 <RecentEvents variantFrom={from} />
-=======
-                } */}
                 <GlobalInfoData />
->>>>>>> master
->>>>>>> master
+
             </div>
         );
     }
