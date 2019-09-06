@@ -11,6 +11,9 @@ import ChangeStatistic from "./ChangeStatistic";
 import LatestStats from "./LatestStats";
 import CoinNews from "./CoinNews";
 import Swap from '../static/images/swap.png'
+import Cookies from "./Cookies";
+import TableFavouriteCoins from "./TableFavouriteCoins";
+import AddFavouriteCoins from "./AddFavouriteCoins";
 import RecentEvents from "./RecentEvents";
 import GlobalInfoData from "./GlobalInfoData";
 
@@ -19,6 +22,8 @@ let bigestAskAmount, bigestAskPrice, bigestBidAmount, bigestBidPrice, currentPri
 let tickers = [], tickers1 = [];
 
 let arrBuy = [], arrSell = [];
+
+let coinGeckoData = [];
 
 export default class InputData extends React.Component {
     state = {
@@ -36,10 +41,73 @@ export default class InputData extends React.Component {
         count: 10,
         coinId: 0,
         imgCoin:'',
+        accept: false,
+        coinGecko: [],
+        FavouriteCoinsList: [],
+        top10Coins:[]
     }
 
     componentDidMount(){
+        coinGeckoData = JSON.parse(localStorage.getItem('coingeckoData'));
+        
+        api.crudBuilder(`https://min-api.cryptocompare.com/data/all/coinlist`).get().then(
+            resp => {         
+                let data = resp.data.Data;
+                localStorage.setItem('data', JSON.stringify(data));
+            }).catch(err => console.log('Error:', err));
+        if(!coinGeckoData){
+            api.crudBuilder(`https://api.coingecko.com/api/v3/coins`).get().then(
+            resp => {         
+                let data = resp.data;
+                localStorage.setItem('coingeckoData', JSON.stringify(data));
+                this.setState({
+                    coinGecko: data,
+                },()=>this.filterTop10())
+            }).catch(err => console.log('Error:', err));
+        } else {
+            this.setState({
+                coinGecko: coinGeckoData,
+            },()=>this.filterTop10())
+        }
+        this.getFavouriteCoins();
+        this.CheckCookies();
         this.getDataFromLocStore();
+    }
+
+    filterTop10 = () => {
+        const { coinGecko } = this.state;
+        let arr = [];
+        arr = coinGecko.filter((item, index) => item.market_data.market_cap_rank <= 11);
+        this.setState({
+            top10Coins: arr,
+        })
+    }
+
+    getFavouriteCoins = () => {
+        let dataCoins = JSON.parse(localStorage.getItem('FavouriteCoins'));
+        this.setState({
+            FavouriteCoinsList: dataCoins
+        })
+    }
+
+    CheckCookies = () => {
+        let accept = JSON.parse(localStorage.getItem('accept'));
+        console.log('accept', accept);
+        if(!accept){
+            this.setState({
+                accept: false,
+            })
+        } else {
+            this.setState({
+                accept: true,
+            })
+        }
+    }
+
+    checkAccept = () => {
+        this.setState({ 
+            accept: true
+          })
     }
     
     LoadData = () => {
@@ -333,10 +401,11 @@ export default class InputData extends React.Component {
     }
 
     render() {
-        console.log('State.........',this.state);
-        const { showChart, labels, dataBuy, dataSell, loader, arr, showNews, arrPosts, variantFrom, variantTo, coinId, imgCoin, from, } = this.state
+        // console.log('State.........',this.state);
+        const { showChart, labels, dataBuy, dataSell, loader, arr, showNews, arrPosts, variantFrom, variantTo, coinId, imgCoin, accept, coinGecko, FavouriteCoinsList, top10Coins } = this.state
         return (
             <div className="wrapperInputData">
+                <h1>Crypto Cap</h1>
                 <div className="inputData"> 
                     <div className="textField"> 
                         <TextField
@@ -414,10 +483,22 @@ export default class InputData extends React.Component {
                     showNews ? <CoinNews arrPosts={arrPosts} /> : null
 <<<<<<< HEAD
                 }
+<<<<<<< HEAD
+                {
+                    !accept ? <Cookies checkAccept = { this.checkAccept } /> : null
+                }
+                <h3>Top 10</h3>
+                <TableFavouriteCoins top10={top10Coins} /> 
+                <AddFavouriteCoins coinGecko={coinGecko} />
+                {
+                    FavouriteCoinsList.length ? <TableFavouriteCoins favouriteCoins={FavouriteCoinsList} /> : null
+                }
+=======
                 <RecentEvents variantFrom={from} />
 =======
                 } */}
                 <GlobalInfoData />
+>>>>>>> master
 >>>>>>> master
             </div>
         );
