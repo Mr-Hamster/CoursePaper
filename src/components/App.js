@@ -5,6 +5,7 @@ import '../styles/App.scss';
 import InputData from "../screens/InputData";
 import LogIn from "../screens/LogIn";
 import { Switch, Route,  } from 'react-router-dom'
+import Cookies from "../screens/Cookies";
 
 class App extends Component {
     state = {
@@ -13,6 +14,16 @@ class App extends Component {
 
     componentDidMount(){
         
+    }
+
+    LoadRecentEvents = () => {
+        api.eventsRequest(`https://developers.coinmarketcal.com/v1/events?max=150`).get().then(
+            resp => {
+                let data = resp.data.body;
+                localStorage.setItem('recentEvents', JSON.stringify(data));
+            }).catch(err => {
+                alert(`${err}`)
+            });
     }
 
     render() {

@@ -14,6 +14,8 @@ import Swap from '../static/images/swap.png'
 import Cookies from "./Cookies";
 import TableFavouriteCoins from "./TableFavouriteCoins";
 import AddFavouriteCoins from "./AddFavouriteCoins";
+import RecentEvents from "./RecentEvents";
+import GlobalInfoData from "./GlobalInfoData";
 
 let perc = 1, labelsCount = 100/perc;
 let bigestAskAmount, bigestAskPrice, bigestBidAmount, bigestBidPrice, currentPrice;
@@ -26,6 +28,7 @@ let coinGeckoData = [];
 export default class InputData extends React.Component {
     state = {
         variantFrom: '',
+        from:'',
         variantTo: '',
         showChart: false,
         labels: [],
@@ -113,6 +116,9 @@ export default class InputData extends React.Component {
         if(!variantFrom || !variantTo){
             alert('Please enter tickers!');
         }else{
+            this.setState({
+                from: variantFrom
+            })
             let ticker = `${variantFrom}${variantTo}`;
             this.getValueFromData();
             this.AddDataToStore();
@@ -130,7 +136,6 @@ export default class InputData extends React.Component {
                         loader: false,
                     })
                 });
-                
         }
     }
 
@@ -373,7 +378,6 @@ export default class InputData extends React.Component {
         if(variantFrom && variantTo){
             api.crudBuilder(`https://min-api.cryptocompare.com/data/v2/news/?categories=${variantFrom},${variantTo}`).get().then(
                 resp => {
-                    console.log('posts', resp.data.Data)
                     this.setState({
                         arrPosts: resp.data.Data,
                         showNews: true
@@ -415,7 +419,7 @@ export default class InputData extends React.Component {
                                     variantFrom: event.target.value.toUpperCase()
                                 })
                             } }
-                            value={this.state.variantFrom}
+                            value={variantFrom}
                             style={{ width: '300px' }}
                         />
                         <img src={Swap} className="imgSwap" onClick={ this.Swaping } />
@@ -430,7 +434,7 @@ export default class InputData extends React.Component {
                                     variantTo: event.target.value.toUpperCase()
                                 })
                             } }
-                            value={this.state.variantTo}
+                            value={variantTo}
                             style={{ width: '300px' }}
                         />
                     </div>
@@ -457,7 +461,7 @@ export default class InputData extends React.Component {
                 {
                     loader ? 'Loading...' : null
                 }
-                {
+                {/* {
                     showChart ? <ChangeStatistic from={variantFrom} to={variantTo} /> : null
                 }
                 {
@@ -477,7 +481,9 @@ export default class InputData extends React.Component {
                 </Button> 
                 {
                     showNews ? <CoinNews arrPosts={arrPosts} /> : null
+<<<<<<< HEAD
                 }
+<<<<<<< HEAD
                 {
                     !accept ? <Cookies checkAccept = { this.checkAccept } /> : null
                 }
@@ -487,6 +493,13 @@ export default class InputData extends React.Component {
                 {
                     FavouriteCoinsList.length ? <TableFavouriteCoins favouriteCoins={FavouriteCoinsList} /> : null
                 }
+=======
+                <RecentEvents variantFrom={from} />
+=======
+                } */}
+                <GlobalInfoData />
+>>>>>>> master
+>>>>>>> master
             </div>
         );
     }
