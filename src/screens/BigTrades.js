@@ -15,18 +15,23 @@ export default class BigTrades extends React.Component{
     getTrades = () => {
         const { amount } = this.state;
         const { arrSell, arrBuy } = this.props;
-
         this.setState({
             showTrades: true,
         })
-        let newArrBuy = arrBuy.filter(item => 
+        let newArrBuy = arrBuy.filter(item => item.type = 'buy');
+        let newArrSell = arrSell.filter(item => item.type = 'sell');
+        newArrBuy= newArrBuy.filter(item => 
             item.amount >= amount
         );
-        newArrBuy = newArrBuy.sort((a,b)=>{
+        newArrSell = newArrSell.filter(item => 
+            item.amount >= amount
+        );
+        let result = newArrBuy.concat(newArrSell);
+        result = result.sort((a,b)=>{
             return b.amount - a.amount;
         })
         this.setState({
-            arrTrades: newArrBuy,
+            arrTrades: result,
         })
     }
 
@@ -97,7 +102,7 @@ export default class BigTrades extends React.Component{
                             <div className="tradesList">
                                 {
                                     arrTrades.map((item, index) => (
-                                        <div className="tradeItem" key={index}>
+                                        <div className="tradeItem" key={index} style={{ color: item.type === 'buy' ? 'green' : 'red' }} >
                                             <span>
                                                 Price of value: {item.price}
                                             </span>

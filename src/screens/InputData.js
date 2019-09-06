@@ -16,6 +16,8 @@ import Swap from '../static/images/swap.png'
 import Delete from '../static/images/delete.png';
 import TextField from '@material-ui/core/TextField';
 import controller from "../controlers/Const";
+import RecentEvents from "./RecentEvents";
+import GlobalInfoData from "./GlobalInfoData";
 
 let perc = 1, labelsCount = 100/perc;
 let bigestAskAmount, bigestAskPrice, bigestBidAmount, bigestBidPrice, currentPrice;
@@ -28,6 +30,7 @@ let coinGeckoData = [];
 export default class InputData extends React.Component {
     state = {
         variantFrom: '',
+        from:'',
         variantTo: '',
         showChart: false,
         labels: [],
@@ -128,6 +131,9 @@ export default class InputData extends React.Component {
         if(!variantFrom || !variantTo){
             alert('Please enter tickers!');
         }else{
+            this.setState({
+                from: variantFrom
+            })
             let ticker = `${variantFrom}${variantTo}`;
             this.getValueFromData();
             this.AddDataToStore();
@@ -145,7 +151,6 @@ export default class InputData extends React.Component {
                         loader: false,
                     })
                 });
-                
         }
     }
 
@@ -495,6 +500,7 @@ export default class InputData extends React.Component {
                 {
                     showNews ? <CoinNews arrPosts={arrPosts} /> : null
                 }
+
                 {
                     !accept ? <Cookies checkAccept = { this.checkAccept } /> : null
                 }
@@ -504,6 +510,9 @@ export default class InputData extends React.Component {
                 {
                     FavouriteCoinsList ? <TableFavouriteCoins favouriteCoins={FavouriteCoinsList} /> : null
                 }
+                <RecentEvents variantFrom={from} />
+                <GlobalInfoData />
+
             </div>
         );
     }

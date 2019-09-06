@@ -71,6 +71,16 @@ class App extends Component {
         
     // }
 
+    LoadRecentEvents = () => {
+        api.eventsRequest(`https://developers.coinmarketcal.com/v1/events?max=150`).get().then(
+            resp => {
+                let data = resp.data.body;
+                localStorage.setItem('recentEvents', JSON.stringify(data));
+            }).catch(err => {
+                alert(`${err}`)
+            });
+    }
+
     render() {
       const { exchange } = this.state;
         return (
