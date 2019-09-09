@@ -9,16 +9,6 @@ import Settings from "../screens/Settings";
 import { slide as Menu } from 'react-burger-menu'
 import { Link  } from 'react-router-dom'
 
-// IF NOT WORKING reload page a few times!!!!!!!!!
-// IF NOT WORKING reload page a few times!!!!!!!!!
-// IF NOT WORKING reload page a few times!!!!!!!!!
-// IF NOT WORKING reload page a few times!!!!!!!!!
-// IF NOT WORKING reload page a few times!!!!!!!!!
-// IF NOT WORKING reload page a few times!!!!!!!!!
-// IF NOT WORKING reload page a few times!!!!!!!!!
-// IF NOT WORKING reload page a few times!!!!!!!!!
-// IF NOT WORKING reload page a few times!!!!!!!!!
-
 const styles = {
     bmBurgerButton: {
       position: 'fixed',
@@ -77,6 +67,7 @@ class App extends Component {
     state = {
       coinGecko: [],
       dependencyObj: {},
+      recentEvents: [],
     }
 
     componentDidMount(){
@@ -89,7 +80,9 @@ class App extends Component {
         api.eventsRequest(`https://developers.coinmarketcal.com/v1/events?max=150`).get().then(
             resp => {
                 let data = resp.data.body;
-                localStorage.setItem('recentEvents', JSON.stringify(data));
+                this.setState({
+                  recentEvents: data
+                })
             }).catch(err => {
                 alert(`${err}`)
             });
@@ -100,7 +93,6 @@ class App extends Component {
         resp => {         
             let data = resp.data;
             this.createDependencyObj(data);
-            localStorage.setItem('coingeckoData', JSON.stringify(data));
             this.setState({
               coinGecko: data,
             })
@@ -118,7 +110,7 @@ class App extends Component {
   }
 
     render() {
-      const { dependencyObj, coinGecko } = this.state;
+      const { dependencyObj, coinGecko, recentEvents } = this.state;
         return (
             <ThemeProvider>
                 <div className="AppWrapper">
@@ -135,7 +127,7 @@ class App extends Component {
                 </Menu>
                     <Switch>
                         <Route exact path='/' component={LogIn} />
-                        <Route path='/inputData' component={() => <InputData dependencyObj={dependencyObj} />} />
+                        <Route path='/inputData' component={() => <InputData dependencyObj={dependencyObj} recentEvents={recentEvents} coinGecko={coinGecko} />} />
                         <Route path='/settings' component={() => <Settings coinGecko={coinGecko} />} />
                     </Switch>
                 </div>

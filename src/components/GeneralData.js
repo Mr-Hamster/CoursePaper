@@ -24,7 +24,8 @@ export default class GeneralData extends React.Component{
     }
 
     filterTop10 = () => {
-        let data = JSON.parse(localStorage.getItem('coingeckoData'));
+        const { coinGecko } = this.props;
+        let data = coinGecko;
         let arr = [];
         arr = data.filter((item) => item.market_data.market_cap_rank < 11);
         this.setState({
@@ -52,7 +53,7 @@ export default class GeneralData extends React.Component{
 
     render(){
         const { showNews, arrPosts, top10Coins } = this.state;
-        const { from } = this.props; 
+        const { from, recentEvents } = this.props; 
         return(
             <div className="wrapper">
                 <Button variant="contained" color="primary" style={{width:'30%', height:'50px', margin:'20px' }} onClick={this.getNews }>
@@ -65,7 +66,7 @@ export default class GeneralData extends React.Component{
                 <TableFavouriteCoins top10={top10Coins} /> 
                 <HistoricalValues />
                 <GlobalInfoData />
-                <RecentEvents from={from} />
+                <RecentEvents from={from} recentEvents={recentEvents} />
             </div>
         );
     }

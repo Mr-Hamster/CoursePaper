@@ -11,13 +11,14 @@ export default class RecentEvents extends React.Component{
     }
 
     componentDidUpdate(prevProps){
-        const { variantFrom  } = this.props;
-        if (this.props.variantFrom !== prevProps.variantFrom) {
-            if(variantFrom){
-                let data = JSON.parse(localStorage.getItem('recentEvents'));
+        const { from, recentEvents  } = this.props;
+        if (this.props.from !== prevProps.from) {
+            if(from){
+                // let data = JSON.parse(localStorage.getItem('recentEvents'));
+                let data = recentEvents;
                 let DataForCurrentValue = [];
                 data.filter(item => {
-                    let newArr = item.coins.filter(item => item.symbol === variantFrom);
+                    let newArr = item.coins.filter(item => item.symbol === from);
                     if(newArr.length) {
                         DataForCurrentValue.push(item);
                     }
@@ -32,7 +33,9 @@ export default class RecentEvents extends React.Component{
     }
 
     LoadCurrentEvents = () => {
-        let data = JSON.parse(localStorage.getItem('recentEvents'));
+        const { recentEvents  } = this.props;
+
+        let data = recentEvents;
         let currentDate = new Date();   
         let DataForCurrentDate = data.filter(item => new Date(item.date_event).getDate() === currentDate.getDate()-1);
         this.setState({

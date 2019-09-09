@@ -369,7 +369,7 @@ export default class InputData extends React.Component {
                 FavouriteCoinsList, top10Coins, 
                 from 
             } = this.state;
-            const { dependencyObj } = this.props;
+            const { dependencyObj, recentEvents, coinGecko } = this.props;
         return (
             <div className="wrapperInputData">
                 <h1>Crypto Cap</h1>
@@ -447,7 +447,7 @@ export default class InputData extends React.Component {
                 {
                     !accept ? <Cookies checkAccept = { this.checkAccept } /> : null
                 }
-                <GeneralData variantFrom={variantFrom} variantTo={variantTo} from={from} />
+                <GeneralData variantFrom={variantFrom} variantTo={variantTo} from={from} recentEvents={recentEvents} coinGecko={coinGecko} />
                 {
                     FavouriteCoinsList ? <Fragment>
                                             <h3>Favourite Coins</h3>
