@@ -8,6 +8,7 @@ import { Switch, Route,  } from 'react-router-dom'
 import Settings from "../screens/Settings";
 import { slide as Menu } from 'react-burger-menu'
 import { Link  } from 'react-router-dom'
+import Testing from "../screens/Testing";
 
 const styles = {
     bmBurgerButton: {
@@ -114,22 +115,26 @@ class App extends Component {
         return (
             <ThemeProvider>
                 <div className="AppWrapper">
-                <Menu styles={styles} >
-                    <Link to='/' style={{ outline:'none' }} >
-                        Log In
-                    </Link>
-                    <Link to='/inputData'>
-                        App
-                    </Link>
-                    <Link to='/settings' >
-                        Settings
-                    </Link>
-                </Menu>
-                    <Switch>
-                        <Route exact path='/' component={LogIn} />
-                        <Route path='/inputData' component={() => <InputData dependencyObj={dependencyObj} recentEvents={recentEvents} coinGecko={coinGecko} />} />
-                        <Route path='/settings' component={() => <Settings coinGecko={coinGecko} />} />
-                    </Switch>
+                  <Menu styles={styles} >
+                      <Link to='/' style={{ outline:'none' }} >
+                          Log In
+                      </Link>
+                      <Link to='/inputData'>
+                          App
+                      </Link>
+                      <Link to='/settings' >
+                          Settings
+                      </Link>
+                      <Link to='/test' >
+                          Test
+                      </Link>
+                  </Menu>
+                  <Switch>
+                      <Route exact path='/' component={LogIn} />
+                      <Route path='/inputData' component={() => <InputData dependencyObj={dependencyObj} recentEvents={recentEvents} coinGecko={coinGecko} />} />
+                      <Route path='/settings' component={() => <Settings coinGecko={coinGecko} />} />
+                      <Route path='/test' component={Testing} />
+                  </Switch>
                 </div>
             </ThemeProvider>
         );

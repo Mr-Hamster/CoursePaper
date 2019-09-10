@@ -1,4 +1,4 @@
-const controller = {
+let controller = {
     exchange: ''
 };
 

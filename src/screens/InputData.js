@@ -3,21 +3,14 @@ import Button from '@material-ui/core/Button';
 import * as api from '../api/index';
 import Charts from '../screens/Chart.js';
 import '../styles/InputData.scss';
-import HistoricalValues from "./HistoricalValues";
 import BigTrades from '../screens/BigTrades'
 import ChangeStatistic from "./ChangeStatistic";
 import LatestStats from "./LatestStats";
-import CoinNews from "./CoinNews";
 import Cookies from "./Cookies";
 import TableFavouriteCoins from "./TableFavouriteCoins";
-import AddFavouriteCoins from "./AddFavouriteCoins";
-import PieChartMarketCap from "./PieChartMarketCap";
 import Swap from '../static/images/swap.png'
 import Delete from '../static/images/delete.png';
 import TextField from '@material-ui/core/TextField';
-import controller from "../controlers/Const";
-import RecentEvents from "./RecentEvents";
-import GlobalInfoData from "./GlobalInfoData";
 import GeneralData from "../components/GeneralData";
 
 let perc = 1, labelsCount = 100/perc;

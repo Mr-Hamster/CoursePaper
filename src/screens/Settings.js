@@ -3,25 +3,16 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import '../styles/Settings.scss';
-import controller from '../controlers/Const'
 import AddFavouriteCoins from './AddFavouriteCoins';
+import { connect } from 'react-redux';
+import * as actions from '../actions/actions';
 
-export default class Settings extends React.Component{
-    state = {
-        value: '',
-    }
 
-    componentDidMount(){
-
-    }
-
-    changeExchange = (event) => {
-        controller.exchange = event.target.value
-    }
-
+class Settings extends React.Component{
+  
     render(){
-        const { coinGecko } = this.props;
-        console.log('prooops', coinGecko)
+        const { coinGecko, value, changeExchange } = this.props;
+        console.log(this.props.value)
         return(
             <div className="sWrapper">
                 <AddFavouriteCoins coinGecko={coinGecko} />
@@ -29,14 +20,22 @@ export default class Settings extends React.Component{
                     <InputLabel htmlFor="age-native-simple">Select your exchange:</InputLabel>
                     <Select
                         native
-                        onChange={ this.changeExchange }
+                        onChange={ (event) => changeExchange(event.target.value) }
                     >
-                        <option value=''></option>
-                        <option value={'Binance'}>Binance</option>
-                        <option value={'General Data'}>General Data</option>
+                        <option value={value}></option>
+                        <option value='binance'>Binance</option>
+                        <option value='bitflinex'>Bitflinex</option>
                     </Select>
                 </FormControl>
             </div>
         );
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        value: state
+    }
+};
+
+export default connect(mapStateToProps, actions)(Settings);

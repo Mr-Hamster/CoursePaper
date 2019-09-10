@@ -100,7 +100,6 @@ export default class AddFavouriteCoins extends React.Component{
 
     render(){
         const { data, showFavouriteCoins, choosenCoins } = this.state;
-        console.log('prooops2', this.props.coinGecko)
         return(
             <div style={{ width:'100%', }} >
             <Button variant="contained" color="primary" style={{width:'30%', height:'50px', margin:'20px' }} onClick={ () => this.setState({ open: true }) }>

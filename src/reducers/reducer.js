@@ -1,13 +1,11 @@
-const example = (state = {}, action) => {
+const reducer = (state = '', action) => {
+
     switch(action.type){
-        case 'example':
-            return {
-                ...state,
-                
-            }
-            default: 
-                return state;
+        case 'CHANGE_EXCHANGE':
+            return action.value
+        default: 
+            return state;
     }
 }
 
-export default example;
+export default reducer;
