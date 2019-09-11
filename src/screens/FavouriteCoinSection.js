@@ -46,7 +46,7 @@ export default class FavouriteCoinSection extends React.Component{
                             })}>
                                 <img src={item.image.large} className="imgCoinItem" />
                                 <h3>{item.name} ({item.symbol.toUpperCase()})</h3>
-                                <img src={Delete} className="imgDeleteCoin" onClick={ () => this.removeItem(index, item.symbol) } style={{ display: showImg ? 'block' : 'block' }} />
+                                <img src={Delete} className="imgDeleteCoin" onClick={ () => this.removeItem(index, item.symbol) } />
                             </div>
                         )) : null
                     }

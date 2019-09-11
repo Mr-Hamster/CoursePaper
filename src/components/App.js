@@ -3,12 +3,13 @@ import { ThemeProvider } from '@material-ui/styles';
 import * as api from '../api/index';
 import '../styles/App.scss';
 import InputData from "../screens/InputData";
-import LogIn from "../screens/LogIn";
+import LogIn from "./LogIn";
 import { Switch, Route,  } from 'react-router-dom'
 import Settings from "../screens/Settings";
 import { slide as Menu } from 'react-burger-menu'
 import { Link  } from 'react-router-dom'
 import Testing from "../screens/Testing";
+import RegistrForm from "./RegistrationForm";
 
 const styles = {
     bmBurgerButton: {
@@ -128,12 +129,16 @@ class App extends Component {
                       <Link to='/test' >
                           Test
                       </Link>
+                      <Link to='/registration' >
+                          Registration
+                      </Link>
                   </Menu>
                   <Switch>
                       <Route exact path='/' component={LogIn} />
                       <Route path='/inputData' component={() => <InputData dependencyObj={dependencyObj} recentEvents={recentEvents} coinGecko={coinGecko} />} />
                       <Route path='/settings' component={() => <Settings coinGecko={coinGecko} />} />
                       <Route path='/test' component={Testing} />
+                      <Route path='/registration' component={RegistrForm} />
                   </Switch>
                 </div>
             </ThemeProvider>

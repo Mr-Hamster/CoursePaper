@@ -3,8 +3,8 @@ import '../styles/LogIn.scss';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { Redirect } from 'react-router-dom'
-import Eye from "../static/images/eye.png"
-
+import OpenEye from "../static/images/eye.png"
+import ClosedEye from '../static/images/eye1.png'
 const ValidEmail = '123@gmail.com';
 const ValidPassword = 'qwerty123';
 
@@ -62,7 +62,7 @@ export default class LogIn extends React.Component{
                                 })
                             } }
                             value={email}
-                            style={{ width: '100%' }}
+                            style={{ width: '100%',  }}
                         />
                         <div style={{ display:'flex', width: '100%', alignItems:'center', position: 'relative', }} >
                             <TextField
@@ -78,13 +78,20 @@ export default class LogIn extends React.Component{
                                     })
                                 } }
                                 value={password}
-                                style={{ width: '100%' }}
+                                style={{ width: '100%', marginTop:'10px' }}
                             />
-                            <img src={Eye} style={{ width:'20px', position: 'absolute', right: '15px', top: '36px', cursor: 'pointer' }} onMouseEnter={ () => this.setState({
-                                eye: true
-                            })} onMouseLeave={ () => this.setState({
-                                eye: false
-                            })} />
+                            <div style={{display:'flex', position:'absolute', height:'100%', alignItems:'center', right:'10px'}}>
+                                <img src={eye ? OpenEye : ClosedEye} style={{ width:'25px', cursor: 'pointer' }} 
+                                    // onMouseEnter={ () => this.setState({
+                                    //     eye: true
+                                    // })} onMouseLeave={ () => this.setState({
+                                    //     eye: false
+                                    // })} 
+                                    onClick={ ()=> this.setState({
+                                        eye: !eye
+                                    }) }
+                                />
+                            </div>
                         </div>
                     </div>
                     {

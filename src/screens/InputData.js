@@ -404,10 +404,12 @@ export default class InputData extends React.Component {
                             {
                                 arr.map((item, index) => (
                                     <div key={index} className="helpers">
-                                        <img src={Delete} alt='delete' style={{ position:"absolute", width: '15px', right: '8px', top: '8px', cursor: 'pointer' }} onClick={ ()=> this.removeItem(index, item) } />
-                                        <button onClick={ () => this.autoPasting(item) } style={{ height: '30px', width:'100px', cursor: 'pointer' }}>
+                                        <img src={Delete} alt='delete' 
+                                            style={{ position:"absolute", width: '15px', right: '8px', top: '8px', cursor: 'pointer' }} 
+                                            onClick={ ()=> this.removeItem(index, item) } />
+                                        <Button onClick={ () => this.autoPasting(item) } variant="contained" color="primary">
                                             {item}
-                                        </button>
+                                        </Button>
                                     </div>
                                 ))
                             }
