@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { ThemeProvider } from '@material-ui/styles';
 import * as api from '../api/index';
 import '../styles/App.scss';
-import InputData from "../screens/InputData";
+import MainPage from "../screens/MainPage";
 import LogIn from "./LogIn";
 import { Switch, Route,  } from 'react-router-dom'
 import Settings from "../screens/Settings";
@@ -75,7 +75,6 @@ class App extends Component {
     componentDidMount(){
       this.LoadRecentEvents();
       this.getCoinGecko();
-
     }
 
     LoadRecentEvents = () => {
@@ -101,6 +100,7 @@ class App extends Component {
         }).catch(err => console.log('Error:', err));
     }
 
+//result of func - '[{btc: bitcoin}...]'
     createDependencyObj = (arr) => {
       let obj = {};
       arr.forEach(item => {
@@ -114,13 +114,14 @@ class App extends Component {
     render() {
       const { dependencyObj, coinGecko, recentEvents } = this.state;
         return (
-            <ThemeProvider>
+            <ThemeProvider> {/* For material ui  */}
                 <div className="AppWrapper">
-                  <Menu styles={styles} >
+                  {/* menu for all pages */}
+                  <Menu styles={styles} > 
                       <Link to='/' style={{ outline:'none' }} >
                           Log In
                       </Link>
-                      <Link to='/inputData'>
+                      <Link to='/mainpage'>
                           App
                       </Link>
                       <Link to='/settings' >
@@ -133,9 +134,10 @@ class App extends Component {
                           Registration
                       </Link>
                   </Menu>
+                  {/* Router */}
                   <Switch>
                       <Route exact path='/' component={LogIn} />
-                      <Route path='/inputData' component={() => <InputData dependencyObj={dependencyObj} recentEvents={recentEvents} coinGecko={coinGecko} />} />
+                      <Route path='/mainpage' component={() => <MainPage dependencyObj={dependencyObj} recentEvents={recentEvents} coinGecko={coinGecko} />} />
                       <Route path='/settings' component={() => <Settings coinGecko={coinGecko} />} />
                       <Route path='/test' component={Testing} />
                       <Route path='/registration' component={RegistrForm} />

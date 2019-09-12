@@ -20,9 +20,9 @@ export default class GeneralData extends React.Component{
 
     componentDidMount(){
         this.filterTop10();
-
     }
 
+    //get all coin data list and filter by rank. Result is top 10 coin
     filterTop10 = () => {
         const { coinGecko } = this.props;
         let data = coinGecko;
@@ -33,6 +33,7 @@ export default class GeneralData extends React.Component{
         })
     }
 
+    //func for getting news by 'coin from' and 'coin to'
     getNews = () => {
         const { variantFrom, variantTo, } = this.props;  
         
@@ -56,7 +57,7 @@ export default class GeneralData extends React.Component{
         const { from, recentEvents } = this.props; 
         return(
             <div className="wrapper">
-                <Button variant="contained" color="primary" style={{width:'30%', height:'50px', margin:'20px' }} onClick={this.getNews }>
+                <Button variant="contained" color="primary" style={{width:'30%', height:'50px', margin:'20px', outline: 'none' }} onClick={this.getNews }>
                     Show News
                 </Button> 
                 {

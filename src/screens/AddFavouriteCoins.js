@@ -36,7 +36,6 @@ export default class AddFavouriteCoins extends React.Component{
         const { coinGecko } = this.props;
         if (coinGecko !== prevProps.coinGecko) {
             this.updateCoinList();
-            console.log('update')
         }
     }
 
@@ -79,13 +78,6 @@ export default class AddFavouriteCoins extends React.Component{
         })
     } 
 
-
-    closeFavouriteCoins = () => {
-        this.setState({ 
-            showFavouriteCoins: false 
-        })
-    }
-
     addToCoinList = (item) => {
         const { coinGecko } = this.props;
         let arr = coinGecko;
@@ -102,7 +94,7 @@ export default class AddFavouriteCoins extends React.Component{
         const { data, showFavouriteCoins, choosenCoins } = this.state;
         return(
             <div style={{ width:'100%', }} >
-            <Button variant="contained" color="primary" style={{width:'30%', height:'50px', margin:'20px' }} onClick={ () => this.setState({ open: true }) }>
+            <Button variant="contained" color="primary" style={{width:'30%', height:'50px', margin:'20px', outline: 'none' }} onClick={ () => this.setState({ open: true }) }>
                 Add Favourite Coins
             </Button> 
             <Dialog disableBackdropClick disableEscapeKeyDown open={this.state.open} onClose={()=>{
@@ -145,7 +137,7 @@ export default class AddFavouriteCoins extends React.Component{
                 </DialogActions>
             </Dialog>
                 {
-                    showFavouriteCoins ? <FavouriteCoinSection coinsFromLocStore={choosenCoins} closeFavouriteCoins={this.closeFavouriteCoins} addToCoinList={this.addToCoinList} /> : null
+                    showFavouriteCoins ? <FavouriteCoinSection coinsFromLocStore={choosenCoins} addToCoinList={this.addToCoinList} /> : null
                 }
             </div>
         );

@@ -13,7 +13,6 @@ export default class CoinNews extends React.Component{
 
     componentDidMount(){
         const { arrPosts } = this.props;
-        const { count, arrNews } = this.state;
         data = arrPosts;
         if(data){
             this.showMore();

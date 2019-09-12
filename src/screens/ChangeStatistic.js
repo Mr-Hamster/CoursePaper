@@ -83,7 +83,7 @@ export default class ChangeStatistic extends React.Component{
         // this.getPieChart();
     }
  
-//     PROBLEM with        vs_currency
+//     PROBLEM with vs_currency and timestamps
 
     getDataForVolumeChange = () => {
         const { from, to, dependencyObj } = this.props;
@@ -320,7 +320,7 @@ export default class ChangeStatistic extends React.Component{
                     yAxisID: 'y-axis-1'
                 }
             ]
-        };
+        };// options for chart
         const pieChart = {
             labels: [
                 'Buy',
@@ -415,7 +415,8 @@ export default class ChangeStatistic extends React.Component{
                     </FormControl>
                 </div>
                 <div style={{width:'65%',  }} onMouseMove={ this.onMouseMove } id="block">
-                    <div style={{ height: height, width: '2px', border: 'solid 1px', position:'absolute', left: x - 3 }} />
+                    {/* vertical line */}
+                    <div style={{ height: height, width: '2px', border: 'solid 1px', position:'absolute', left: x - 3 }} /> 
                     <Bar
                         data={data}
                         options={options}

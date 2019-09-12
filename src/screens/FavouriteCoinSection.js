@@ -4,12 +4,11 @@ import Delete from '../static/images/delete.png'
 
 export default class FavouriteCoinSection extends React.Component{
     state = {
-        showImg: false,
         FavouriteCoins: [],
     }
 
     componentDidMount(){
-        const { coinsFromLocStore, closeFavouriteCoins } = this.props;
+        const { coinsFromLocStore, } = this.props;
 
         this.setState({
             FavouriteCoins: coinsFromLocStore,
@@ -17,7 +16,7 @@ export default class FavouriteCoinSection extends React.Component{
     }   
 
     removeItem = (index, ticker) => {
-        const { coinsFromLocStore, closeFavouriteCoins, addToCoinList } = this.props;
+        const { coinsFromLocStore, addToCoinList } = this.props;
 
         let answer = confirm(`Are you sure you want to remove "${ticker.toUpperCase()}" from favorites?`);
         if(answer){
@@ -31,19 +30,14 @@ export default class FavouriteCoinSection extends React.Component{
     }
 
     render(){
-        const { showImg, FavouriteCoins } = this.state;
-        const { coinsFromLocStore } = this.props;
+        const { FavouriteCoins } = this.state;
         return(
             <div className="wrapperCoinSection">
                 <h2>Favourite Coins</h2>
                 <div className="CoinItems">
                     {
                         FavouriteCoins ? FavouriteCoins.map((item, index) => (
-                            <div key={index} className="FavouriteCoinItem" onMouseEnter={()=>this.setState({
-                                showImg: true
-                            })} onMouseLeave={()=>this.setState({
-                                showImg: false
-                            })}>
+                            <div key={index} className="FavouriteCoinItem">
                                 <img src={item.image.large} className="imgCoinItem" />
                                 <h3>{item.name} ({item.symbol.toUpperCase()})</h3>
                                 <img src={Delete} className="imgDeleteCoin" onClick={ () => this.removeItem(index, item.symbol) } />

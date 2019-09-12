@@ -18,15 +18,15 @@ export default class BigTrades extends React.Component{
         this.setState({
             showTrades: true,
         })
-        let newArrBuy = arrBuy.filter(item => item.type = 'buy');
-        let newArrSell = arrSell.filter(item => item.type = 'sell');
+        let newArrBuy = arrBuy.filter(item => item.type = 'buy'); //add type 'buy' to arr
+        let newArrSell = arrSell.filter(item => item.type = 'sell'); //add type 'sell' to arr
         newArrBuy= newArrBuy.filter(item => 
             item.amount >= amount
         );
         newArrSell = newArrSell.filter(item => 
             item.amount >= amount
         );
-        let result = newArrBuy.concat(newArrSell);
+        let result = [...newArrBuy, ...newArrSell];
         result = result.sort((a,b)=>{
             return b.amount - a.amount;
         })

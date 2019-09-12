@@ -2,6 +2,12 @@ import React from 'react';
 import {Pie} from 'react-chartjs-2';
 import * as api from '../api/index';
 
+// NOT DONE
+// NOT DONE
+// NOT DONE
+// NOT DONE
+// NOT DONE
+
 const data = {
 	labels: [
 		'Red',
@@ -32,7 +38,6 @@ export default class PieChart extends React.Component{
             resp => {         
                 console.log('data for pie chart',resp)
             }).catch(err => console.log('Error:', err));
-		
 	}
 
     render(){

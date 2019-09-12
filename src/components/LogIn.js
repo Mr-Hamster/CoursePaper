@@ -30,7 +30,7 @@ export default class LogIn extends React.Component{
             })
         }
     }
-
+    // if credentials is correct => redirect
     redirect = () => {
         const { redirect } = this.state;
 
@@ -40,12 +40,12 @@ export default class LogIn extends React.Component{
     }
 
     render(){
-        // console.log(this.state);
         const { error, eye, password, email } = this.state;
         return(
             <div className="wrapperLogIn">
                 <div className="logInBlock">
                     <h3>Sign In</h3>
+                    {/* for quick sign in */}
                     <span style={{cursor:'pointer'}} onClick={() => this.setState({ email: ValidEmail })}>Email: {ValidEmail}</span>
                     <span style={{cursor:'pointer'}} onClick={() => this.setState({ password: ValidPassword })}>Password: {ValidPassword}</span>
                     <div>

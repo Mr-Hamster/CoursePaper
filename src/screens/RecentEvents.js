@@ -14,7 +14,6 @@ export default class RecentEvents extends React.Component{
         const { from, recentEvents  } = this.props;
         if (this.props.from !== prevProps.from) {
             if(from){
-                // let data = JSON.parse(localStorage.getItem('recentEvents'));
                 let data = recentEvents;
                 let DataForCurrentValue = [];
                 data.filter(item => {

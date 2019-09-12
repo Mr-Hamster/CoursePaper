@@ -1,9 +1,9 @@
 import React, { Fragment } from "react";
 import Button from '@material-ui/core/Button';
 import * as api from '../api/index';
-import Charts from '../screens/Chart.js';
-import '../styles/InputData.scss';
-import BigTrades from '../screens/BigTrades'
+import Charts from './Chart.js';
+import '../styles/MainPage.scss';
+import BigTrades from './BigTrades'
 import ChangeStatistic from "./ChangeStatistic";
 import LatestStats from "./LatestStats";
 import Cookies from "./Cookies";
@@ -20,7 +20,7 @@ let tickers = [], tickers1 = [];
 let arrBuy = [], arrSell = [];
 
 
-export default class InputData extends React.Component {
+export default class MainPage extends React.Component {
     state = {
         variantFrom: '',
         from:'',
@@ -113,6 +113,7 @@ export default class InputData extends React.Component {
         }
     }
 
+    //get img and coin id of 'coin from'
     getValueFromData = () => {
         const { variantFrom } = this.state;  
 
@@ -131,6 +132,7 @@ export default class InputData extends React.Component {
         })
     }
 
+    //add ticker to local store if ticker counter >= 3 and render it
     AddDataToStore = () => {
         const { variantFrom, variantTo } = this.state;
         let data = sessionStorage.getItem('obj');
@@ -359,7 +361,7 @@ export default class InputData extends React.Component {
         const { arr, showChart, labels, dataBuy, dataSell, 
                 loader, variantFrom, variantTo, coinId, imgCoin, 
                 accept, 
-                FavouriteCoinsList, top10Coins, 
+                FavouriteCoinsList, 
                 from 
             } = this.state;
             const { dependencyObj, recentEvents, coinGecko } = this.props;
@@ -407,7 +409,7 @@ export default class InputData extends React.Component {
                                         <img src={Delete} alt='delete' 
                                             style={{ position:"absolute", width: '15px', right: '8px', top: '8px', cursor: 'pointer' }} 
                                             onClick={ ()=> this.removeItem(index, item) } />
-                                        <Button onClick={ () => this.autoPasting(item) } variant="contained" color="primary">
+                                        <Button style={{ outline: 'none' }} onClick={ () => this.autoPasting(item) } variant="contained" color="primary">
                                             {item}
                                         </Button>
                                     </div>
@@ -417,7 +419,7 @@ export default class InputData extends React.Component {
                     : null
                     }   
                 </div>         
-                    <Button variant="contained" color="primary" style={{width:'30%', height:'50px'}} onClick={ this.LoadData }>
+                    <Button variant="contained" color="primary" style={{width:'30%', height:'50px', outline: 'none'}} onClick={ this.LoadData }>
                         Get Exchanges Results
                     </Button>
                 {

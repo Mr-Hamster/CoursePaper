@@ -2,6 +2,13 @@ import React from 'react';
 import {Pie} from 'react-chartjs-2';
 import * as api from '../api/index';
 
+// NOT DONE
+// NOT DONE
+// NOT DONE
+// NOT DONE
+// NOT DONE
+// NOT DONE
+
 const data = {
 	labels: [
 		'Sell',
