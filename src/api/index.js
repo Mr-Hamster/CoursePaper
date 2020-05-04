@@ -18,8 +18,9 @@ const statsHeaders = () => ({
 const recentEvents = () => ({
     Accept: 'application/json',
     'Accept-Encoding': 'deflate, gzip',
-    'x-api-key': 'oeRt826L5N8CPIjPmmgtW53ZVFj03KMv22NZIVdD'
+    'x-api-key': 'MhszfL2wG3MYGo2ZYWPGW1Gi2EV1OFlx4JkUZ4EV5dlM3fdeDj3WDnGdXqaicxXX'
 });
+//oeRt826L5N8CPIjPmmgtW53ZVFj03KMv22NZIVdD
 
 const sendRequest = (url, options) =>
     axios({
