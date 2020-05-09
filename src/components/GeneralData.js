@@ -7,6 +7,7 @@ import CoinNews from '../screens/CoinNews';
 import * as api from '../api/index';
 import RecentEvents from '../screens/RecentEvents';
 import TableFavouriteCoins from '../screens/TableFavouriteCoins';
+import Axios from 'axios';
 
 
 export default class GeneralData extends React.Component{
@@ -38,7 +39,7 @@ export default class GeneralData extends React.Component{
         const { variantFrom, variantTo, } = this.props;  
         
         if(variantFrom && variantTo){
-            api.crudBuilder(`https://min-api.cryptocompare.com/data/v2/news/?categories=${variantFrom},${variantTo}`).get().then(
+            Axios.get(`https://min-api.cryptocompare.com/data/v2/news/?categories=${variantFrom},${variantTo}`).then(
                 resp => {
                     this.setState({
                         arrPosts: resp.data.Data,

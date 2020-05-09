@@ -33,7 +33,7 @@ class Testing extends React.Component{
     }
 
     getDataFromBinance = () => {
-        api.crudBuilder(`https://api.binance.com/api/v1/depth?symbol=${this.state.ticker}&limit=1000`).get().then(
+        axios.get(`https://api.binance.com/api/v1/depth?symbol=${this.state.ticker}&limit=1000`).then(
             resp => {         
                 let data = resp.data;
                 this.setState({

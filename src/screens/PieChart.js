@@ -1,6 +1,7 @@
 import React from 'react';
 import {Pie} from 'react-chartjs-2';
 import * as api from '../api/index';
+import axios from 'axios';
 
 // NOT DONE
 // NOT DONE
@@ -34,7 +35,7 @@ export default class PieChart extends React.Component{
 	componentDidMount(){
 		const { from, to } = this.props;
 		let ticker = from + to;
-		api.crudBuilder(`https://api.binance.com/api/v1/aggTrades?symbol=${ticker}`).get().then(
+		axios.get(`https://api.binance.com/api/v1/aggTrades?symbol=${ticker}`).then(
             resp => {         
                 console.log('data for pie chart',resp)
             }).catch(err => console.log('Error:', err));

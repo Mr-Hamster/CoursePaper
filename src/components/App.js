@@ -10,6 +10,7 @@ import { slide as Menu } from 'react-burger-menu'
 import { Link  } from 'react-router-dom'
 import Testing from "../screens/Testing";
 import RegistrForm from "./RegistrationForm";
+import Axios from "axios";
 
 const styles = {
     bmBurgerButton: {
@@ -78,8 +79,9 @@ class App extends Component {
     }
 
     LoadRecentEvents = () => {
-        api.eventsRequest(`https://developers.coinmarketcal.com/v1/events?max=150`).get().then(
-            resp => {
+      api.eventsRequest(`https://developers.coinmarketcal.com/v1/events?max=150`).get().then(
+        resp => {
+              console.log(resp)
                 let data = resp.data.body;
                 this.setState({
                   recentEvents: data
@@ -90,7 +92,7 @@ class App extends Component {
     }
 
     getCoinGecko = () => {
-      api.crudBuilder(`https://api.coingecko.com/api/v3/coins`).get().then(
+      Axios.get(`https://api.coingecko.com/api/v3/coins`).then(
         resp => {         
             let data = resp.data;
             this.createDependencyObj(data);

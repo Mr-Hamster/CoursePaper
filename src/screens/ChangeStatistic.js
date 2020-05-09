@@ -7,6 +7,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import {Pie} from 'react-chartjs-2';
+import axios from 'axios';
 
 let arrRes = [], height, result = [];
 
@@ -97,7 +98,7 @@ export default class ChangeStatistic extends React.Component{
                 valueFrom = dependencyObj[key];
             }
         }
-        api.crudBuilder(`https://min-api.cryptocompare.com/data/histoday?fsym=${from}&tsym=${to}&limit=1&aggregate=0&toTs=${currentTime}`).get().then(
+        axios.get(`https://min-api.cryptocompare.com/data/histoday?fsym=BTC&tsym=USDT&limit=1&aggregate=0&toTs=${currentTime}`).then(
             resp => { 
                 this.setState({
                     total_24hVolume: resp.data.Data[1]
@@ -105,7 +106,7 @@ export default class ChangeStatistic extends React.Component{
             }).catch(err => {
             console.log('Error:', err)
         });
-        api.crudBuilder(`https://api.coingecko.com/api/v3/coins/${valueFrom}/market_chart/range?vs_currency=ltc&from=${currentTimeUNIX-5*60*2}&to=${currentTimeUNIX}`).get().then(
+        axios.get(`https://api.coingecko.com/api/v3/coins/${valueFrom}/market_chart/range?vs_currency=ltc&from=${currentTimeUNIX-5*60*2}&to=${currentTimeUNIX}`).then(
             resp => { 
                 let data = resp.data.total_volumes;   
                 // data.map(item => console.log(item[0]));
@@ -147,7 +148,7 @@ export default class ChangeStatistic extends React.Component{
 
     getDataForPieChart = (ticker, currentTime, time) => {
         let promiseVar = new Promise((resolve, reject) => {
-            api.crudBuilder(`https://api.binance.com/api/v1/aggTrades?symbol=${ticker}&startTime=${currentTime-time}&endTime=${currentTime}`).get().then(
+            axios.get(`https://api.binance.com/api/v1/aggTrades?symbol=${ticker}&startTime=${currentTime-time}&endTime=${currentTime}`).then(
                 resp => {         
                     let data = resp.data;
                     let dataBuy = data.filter(item => item.m);
@@ -180,7 +181,7 @@ export default class ChangeStatistic extends React.Component{
     getPriceChanges = () => {
         let times, histo;
         const { from, to } = this.props;
-        api.crudBuilder(`https://min-api.cryptocompare.com/data/histominute?fsym=${from}&tsym=${to}&limit=1`).get().then(
+        axios.get(`https://min-api.cryptocompare.com/data/histominute?fsym=${from}&tsym=${to}&limit=1`).then(
             resp => {
                 arrRes = [];
                 let currentPrice = resp.data.Data[1].close;
@@ -209,7 +210,7 @@ export default class ChangeStatistic extends React.Component{
         
         const { from, to } = this.props;
 
-        api.crudBuilder(`https://min-api.cryptocompare.com/data/histo${histo}?fsym=${from}&tsym=${to}&limit=61`).get().then(
+        axios.get(`https://min-api.cryptocompare.com/data/histo${histo}?fsym=${from}&tsym=${to}&limit=61`).then(
             resp => {
                 let value = resp.data.Data[resp.data.Data.length - times].close;
                 let time = resp.data.Data[resp.data.Data.length - times].time;
@@ -265,7 +266,7 @@ export default class ChangeStatistic extends React.Component{
     buildChart = () => {
         const { from, to, } = this.props;
         const { histo, limit, volume, price } = this.state; 
-        api.crudBuilder(`https://min-api.cryptocompare.com/data/histo${histo}?fsym=${from}&tsym=${to}&limit=${limit}`).get().then(
+        axios.get(`https://min-api.cryptocompare.com/data/histo${histo}?fsym=${from}&tsym=${to}&limit=${limit}`).then(
             resp => {
                 let dataPrice = price === 'close' ? resp.data.Data.map(item => item.close) : price === 'high' ? resp.data.Data.map(item => item.high) : price === 'low' ? resp.data.Data.map(item => item.low) : resp.data.Data.map(item => item.open);
                 let dataVolume = volume === 'volumefrom' ? resp.data.Data.map(item => item.volumefrom) : resp.data.Data.map(item => item.volumeto);
@@ -366,15 +367,18 @@ export default class ChangeStatistic extends React.Component{
                                     ))
                                 }
                             </tr>     
-                            <tr>
+                            {/* <tr>
                                 <th>By volume:</th>
                                 
-                            </tr>                           
+                            </tr>                            */}
                         </tbody>
                 </Table>
-                <div style={{ display:'flex', width:'20%' }}>
+                {/* <div style={{ display:'flex', width:'20%' }}>
+                    {
+                        console.log(pieChart)
+                    }
                     <Pie data={pieChart} />
-                </div>
+                </div> */}
                 <div style={{ display: 'flex', width: '70%', justifyContent: 'space-around', margin: '15px' }} >
                     <FormControl style={{ width:'150px' }}>
                         <InputLabel htmlFor="age-native-simple">Select by time:</InputLabel>

@@ -12,6 +12,7 @@ import Swap from '../static/images/swap.png'
 import Delete from '../static/images/delete.png';
 import TextField from '@material-ui/core/TextField';
 import GeneralData from "../components/GeneralData";
+import axios from 'axios';
 
 let perc = 1, labelsCount = 100/perc;
 let bigestAskAmount, bigestAskPrice, bigestBidAmount, bigestBidPrice, currentPrice;
@@ -49,13 +50,12 @@ export default class MainPage extends React.Component {
     }
 
     getCoinGeckoData = () => {
-
-        api.crudBuilder(`https://min-api.cryptocompare.com/data/all/coinlist`).get().then(
+        axios.get(`https://min-api.cryptocompare.com/data/all/coinlist`).then(
             resp => {         
-                let data = resp.data.Data;
+                var data = resp.data.Data;
                 localStorage.setItem('data', JSON.stringify(data));
             }).catch(err => console.log('Error:', err));
-        
+
     }
 
     getFavouriteCoins = () => {
@@ -96,7 +96,7 @@ export default class MainPage extends React.Component {
             let ticker = `${variantFrom}${variantTo}`;
             this.getValueFromData();
             this.AddDataToStore();
-            api.crudBuilder(`https://api.binance.com/api/v1/depth?symbol=${ticker}&limit=1000`).get().then(
+            axios.get(`https://api.binance.com/api/v1/depth?symbol=${ticker}&limit=1000`).then(
                 resp => {
                     this.setState({
                         loader: true,
@@ -180,7 +180,7 @@ export default class MainPage extends React.Component {
     }
 
     getPrice = (ticker, requestResp) => {
-        api.crudBuilder(`https://api.binance.com/api/v3/ticker/price?symbol=${ticker}`).get().then(
+        axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${ticker}`).then(
             resp => {         
                 currentPrice = JSON.parse(resp.request.responseText).price;
                 this.buildChart(currentPrice, requestResp)
@@ -432,7 +432,7 @@ export default class MainPage extends React.Component {
                     showChart ? <ChangeStatistic from={variantFrom} to={variantTo} dependencyObj={dependencyObj} /> : null
                 }
                 {
-                    showChart ? <LatestStats coinId = {coinId} imgCoin={imgCoin} /> : null
+                    showChart  ? <LatestStats coinId = {coinId} imgCoin={imgCoin} /> : null
                 }
                 {
                     showChart ? <Charts currentPrice={currentPrice} labels={labels} dataBuy={dataBuy} dataSell={dataSell} arrBuy={arrBuy} arrSell={arrSell} /> : null

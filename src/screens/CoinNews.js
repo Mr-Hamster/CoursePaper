@@ -13,6 +13,7 @@ export default class CoinNews extends React.Component{
 
     componentDidMount(){
         const { arrPosts } = this.props;
+        console.log('111: ', arrPosts)
         data = arrPosts;
         if(data){
             this.showMore();
@@ -42,16 +43,17 @@ export default class CoinNews extends React.Component{
 
     render(){
         const { arrNews } = this.state;
+        console.log('ehre: ', arrNews)
         return(
             arrNews ? 
             <div className="wrapperNews">
                 {
                     arrNews.map((item, index) => (
                         <div className="postWrapper" key={index}>
-                            <img style={{ borderRadius: '10px' }} src={item.imageurl} />
+                            <img style={{ borderRadius: '10px' }} src={item && item.imageurl ? item.imageurl : null} />
                             <div className="postInfo">
-                                <h3 dangerouslySetInnerHTML={this.parser(item.title)} />
-                                <p dangerouslySetInnerHTML={this.parser(item.body)} />
+                                <h3 dangerouslySetInnerHTML={this.parser(item && item.title)} />
+                                <p dangerouslySetInnerHTML={this.parser(item && item.body)} />
                                 <span>
                                     Original Source: <a href={item.url} target="_blank">{item.url}</a>
                                 </span>
