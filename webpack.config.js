@@ -6,7 +6,8 @@ module.exports = {
   output: {
     path: path.join(__dirname, "/dist"),
     filename: "index-bundle.js",
-    publicPath: '/'
+    publicPath: '/',
+    filename: 'my-first-webpack.bundle.js'
   },
   devServer: {
     historyApiFallback: true
@@ -16,7 +17,8 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: ["babel-loader"]
+        use: ["babel-loader"],
+        test: /\.txt$/, use: 'raw-loader'
       },
       {
         test: /\.scss$/,
