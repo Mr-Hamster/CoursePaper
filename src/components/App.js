@@ -119,7 +119,7 @@ class App extends Component {
             <ThemeProvider> {/* For material ui  */}
                 <div className="AppWrapper">
                   {/* menu for all pages */}
-                  <Menu styles={styles} > 
+                  {/* <Menu styles={styles} > 
                       <Link to='/' style={{ outline:'none' }} >
                           Log In
                       </Link>
@@ -135,14 +135,14 @@ class App extends Component {
                       <Link to='/registration' >
                           Registration
                       </Link>
-                  </Menu>
+                  </Menu> */}
                   {/* Router */}
                   <Switch>
-                      <Route exact path='/' component={LogIn} />
-                      <Route path='/mainpage' component={() => <MainPage dependencyObj={dependencyObj} recentEvents={recentEvents} coinGecko={coinGecko} />} />
-                      <Route path='/settings' component={() => <Settings coinGecko={coinGecko} />} />
+                      {/* <Route exact path='/' component={LogIn} /> */}
+                      <Route path='/' component={() => <MainPage dependencyObj={dependencyObj} recentEvents={recentEvents} coinGecko={coinGecko} />} />
+                      {/* <Route path='/settings' component={() => <Settings coinGecko={coinGecko} />} />
                       <Route path='/test' component={Testing} />
-                      <Route path='/registration' component={RegistrForm} />
+                      <Route path='/registration' component={RegistrForm} /> */}
                   </Switch>
                 </div>
             </ThemeProvider>

@@ -13,6 +13,7 @@ import Delete from '../static/images/delete.png';
 import TextField from '@material-ui/core/TextField';
 import GeneralData from "../components/GeneralData";
 import axios from 'axios';
+import Loader from "../components/loader";
 
 let perc = 1, labelsCount = 100/perc;
 let bigestAskAmount, bigestAskPrice, bigestBidAmount, bigestBidPrice, currentPrice;
@@ -423,7 +424,7 @@ export default class MainPage extends React.Component {
                         Get Exchanges Results
                     </Button>
                 {
-                    loader ? 'Loading...' : null
+                    loader ? <Loader /> : null
                 }
                 {/* {
                     <PieChartMarketCap coinGecko={coinGecko} /> // Delete

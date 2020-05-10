@@ -16,7 +16,7 @@ export default class GeneralData extends React.Component{
         arrPosts: [],
         showNews: false,
         top10Coins:[], 
-
+        count: 1
     }
 
     componentDidMount(){
@@ -26,13 +26,14 @@ export default class GeneralData extends React.Component{
     //get all coin data list and filter by rank. Result is top 10 coin
     filterTop10 = () => {
         const { coinGecko } = this.props;
+        const { count } = this.state;
         let data = coinGecko;
         let arr = [];
-        arr = data.filter((item) => item.market_data.market_cap_rank < 11);
+        arr = data.filter((item) => item.market_data.market_cap_rank <= 10 * count);
         this.setState({
             top10Coins: arr,
         })
-    }
+    };
 
     //func for getting news by 'coin from' and 'coin to'
     getNews = () => {
@@ -54,18 +55,29 @@ export default class GeneralData extends React.Component{
     }
 
     render(){
-        const { showNews, arrPosts, top10Coins } = this.state;
+        const { showNews, arrPosts, top10Coins, count } = this.state;
         const { from, recentEvents } = this.props; 
         return(
             <div className="wrapper">
-                <Button variant="contained" color="primary" style={{width:'30%', height:'50px', margin:'20px', outline: 'none' }} onClick={this.getNews }>
+                <Button variant="contained" color="primary" style={{width:'30%', height:'50px', margin:'20px', outline: 'none' }} onClick={() => this.getNews }>
                     Show News
                 </Button> 
                 {
                     showNews ? <CoinNews arrPosts={arrPosts} /> : null               
                 }
-                <h3>Top 10 Coins</h3>
+                <h3>Top {count * 10} Coins</h3>
                 <TableFavouriteCoins top10={top10Coins} /> 
+                {
+                    count < 5 ?
+                        <Button variant="contained" color="primary" style={{width:'200px', height:'50px', margin:'20px', outline: 'none' }} onClick={() => this.setState({
+                            count: count + 1
+                        }, () => {
+                            this.filterTop10()
+                        })}>
+                            Show more
+                        </Button>
+                    : null
+                }
                 <HistoricalValues />
                 <GlobalInfoData />
                 <RecentEvents from={from} recentEvents={recentEvents} />
