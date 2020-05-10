@@ -148,10 +148,10 @@ export default class Charts extends React.Component{
               <h2>Biggest Amount</h2>
               <div className="numberInput">
                 <span>
-                  Current price: {currentPrice}
+                  <b>Current price =</b> {currentPrice}
                 </span>
                 <div style={{ display:'flex', alignItems: 'center' }}>
-                  Min price: current minus
+                  Min price = current price minus
                   <TextField
                     id="outlined-number"
                     label="%"
