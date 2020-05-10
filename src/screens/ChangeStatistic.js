@@ -420,7 +420,7 @@ export default class ChangeStatistic extends React.Component{
                 </div>
                 <div style={{width:'65%',  }} onMouseMove={ this.onMouseMove } id="block">
                     {/* vertical line */}
-                    <div style={{ height: height, width: '2px', border: 'solid 1px', position:'absolute', left: x - 3 }} /> 
+                    {/* <div style={{ height: height, width: '2px', border: 'solid 1px', position:'absolute', left: x - 3 }} />  */}
                     <Bar
                         data={data}
                         options={options}
