@@ -59,7 +59,7 @@ export default class GeneralData extends React.Component{
         const { from, recentEvents } = this.props; 
         return(
             <div className="wrapper">
-                <Button variant="contained" color="primary" style={{width:'30%', height:'50px', margin:'20px', outline: 'none' }} onClick={() => this.getNews }>
+                <Button variant="contained" color="primary" style={{width:'30%', height:'50px', margin:'20px', outline: 'none' }} onClick={() => this.getNews() }>
                     Show News
                 </Button> 
                 {

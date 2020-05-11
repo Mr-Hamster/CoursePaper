@@ -12,9 +12,10 @@ export default class GlobalInfoData extends React.Component{
                 resp => {
                     this.setState({
                         globalInfo: resp.data.data,
-                        marketCapPerc: resp.data.data.market_cap_percentage.usdt,
-                        marketCap: resp.data.data.total_market_cap.usd,
-                        totalVolume: resp.data.data.total_volume.usd
+                        marketCapPerc: resp.data.data.market_cap_percentage.btc,
+                        marketCap: resp.data.data.total_market_cap.btc,
+                        totalVolume: resp.data.data.total_volume.btc,
+                        cryptoCount: resp.data.data.active_cryptocurrencies
                     })
                 }).catch(err => {
                     alert(`${err}`)
@@ -22,23 +23,26 @@ export default class GlobalInfoData extends React.Component{
     }
 
     render(){
-        const { globalInfo, marketCapPerc, marketCap, totalVolume  } = this.state;
+        const { globalInfo, marketCapPerc, marketCap, totalVolume, cryptoCount } = this.state;
         return(
             <div>
                 <h2>
                     Global Info Data
                 </h2>
                 <p>
-                    Market cap change percentage 24h usd: {globalInfo.market_cap_change_percentage_24h_usd}
+                    Market cap change percentage 24h usd: {globalInfo.market_cap_change_percentage_24h_usd}%
                 </p>
                 <p>
-                    Market cap percentage: { marketCapPerc }
+                    Market cap percentage (btc): { marketCapPerc }%
                 </p>
                 <p>
-                    Total market cap (usd): { marketCap }
+                    Total market cap (btc): { marketCap }
                 </p>
                 <p>
-                    Total volume (usd): { totalVolume }
+                    Total volume (btc): { totalVolume }
+                </p>
+                <p>
+                    Active Cryptocurrencies: { cryptoCount }
                 </p>
             </div>
         )
