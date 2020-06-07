@@ -3,67 +3,8 @@ import { ThemeProvider } from '@material-ui/styles';
 import * as api from '../api/index';
 import '../styles/App.scss';
 import MainPage from "../screens/MainPage";
-import LogIn from "./LogIn";
 import { Switch, Route,  } from 'react-router-dom'
-import Settings from "../screens/Settings";
-import { slide as Menu } from 'react-burger-menu'
-import { Link  } from 'react-router-dom'
-import Testing from "../screens/Testing";
-import RegistrForm from "./RegistrationForm";
 import Axios from "axios";
-
-const styles = {
-    bmBurgerButton: {
-      position: 'fixed',
-      width: '36px',
-      height: '30px',
-      left: '36px',
-      top: '36px'
-    },
-    bmBurgerBars: {
-      background: '#373a47',
-    },
-    bmBurgerBarsHover: {
-      background: '#a90000'
-    },
-    bmCrossButton: {
-      height: '24px',
-      width: '24px'
-    },
-    bmCross: {
-      background: '#bdc3c7'
-    },
-    bmMenuWrap: {
-      height: '100%',
-      position: 'fixed',
-      left: '0',
-      top: '0'
-    },
-    bmMenu: {
-      background: '#373a47',
-      padding: '2.5em 1.5em 0',
-      fontSize: '1.15em'
-    },
-    bmMorphShape: {
-      fill: '#373a47',
-    },
-    bmItemList: {
-      color: '#b8b7ad',
-      padding: '0.8em'
-    },
-    bmItem: {
-      display: 'flex',
-      flexDirection: 'column',
-      outline: 'none',
-    },
-    bmOverlay: {
-      width: '100%',
-      position: 'fixed',
-      left: '0',
-      top: '0',
-      background: 'rgba(0, 0, 0, 0.3)'
-    }
-  }
 
 class App extends Component {
     
@@ -118,31 +59,17 @@ class App extends Component {
         return (
             <ThemeProvider> {/* For material ui  */}
                 <div className="AppWrapper">
-                  {/* menu for all pages */}
-                  {/* <Menu styles={styles} > 
-                      <Link to='/' style={{ outline:'none' }} >
-                          Log In
-                      </Link>
-                      <Link to='/mainpage'>
-                          App
-                      </Link>
-                      <Link to='/settings' >
-                          Settings
-                      </Link>
-                      <Link to='/test' >
-                          Test
-                      </Link>
-                      <Link to='/registration' >
-                          Registration
-                      </Link>
-                  </Menu> */}
-                  {/* Router */}
                   <Switch>
-                      {/* <Route exact path='/' component={LogIn} /> */}
-                      <Route path='/' component={() => <MainPage dependencyObj={dependencyObj} recentEvents={recentEvents} coinGecko={coinGecko} />} />
-                      {/* <Route path='/settings' component={() => <Settings coinGecko={coinGecko} />} />
-                      <Route path='/test' component={Testing} />
-                      <Route path='/registration' component={RegistrForm} /> */}
+                      <Route 
+                        path='/' 
+                        component={() => 
+                          <MainPage 
+                            dependencyObj={dependencyObj} 
+                            recentEvents={recentEvents} 
+                            coinGecko={coinGecko}
+                          />
+                        }
+                      />
                   </Switch>
                 </div>
             </ThemeProvider>

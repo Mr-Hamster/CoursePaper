@@ -358,7 +358,6 @@ export default class MainPage extends React.Component {
     }
 
     render() {
-        // console.log('State.........',this.state);
         const { arr, showChart, labels, dataBuy, dataSell, 
                 loader, variantFrom, variantTo, coinId, imgCoin, 
                 accept, 
@@ -426,9 +425,6 @@ export default class MainPage extends React.Component {
                 {
                     loader ? <Loader /> : null
                 }
-                {/* {
-                    <PieChartMarketCap coinGecko={coinGecko} /> // Delete
-                } */}
                 {
                     showChart ? <ChangeStatistic from={variantFrom} to={variantTo} dependencyObj={dependencyObj} /> : null
                 }
@@ -446,12 +442,6 @@ export default class MainPage extends React.Component {
                     !accept ? <Cookies checkAccept = { this.checkAccept } /> : null
                 }
                 <GeneralData variantFrom={variantFrom} variantTo={variantTo} from={from} recentEvents={recentEvents} coinGecko={coinGecko} />
-                {
-                    FavouriteCoinsList ? <Fragment>
-                                            <h3>Favourite Coins</h3>
-                                            <TableFavouriteCoins favouriteCoins={FavouriteCoinsList} /> 
-                                         </Fragment> : null
-                }
             </div>
         );
     }
