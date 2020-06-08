@@ -14,7 +14,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: ["babel-loader"]
       },
@@ -23,7 +23,7 @@ module.exports = {
         use: ["style-loader", "css-loader", "sass-loader"]
       },
       {
-        test: /\.(png|jpe?g|gif|ttf)$/,
+        test: /\.(png|jpe?g|svg|gif|ttf)$/,
         use: [
           {
             loader: 'file-loader',
@@ -32,6 +32,9 @@ module.exports = {
         ],
       },
     ]
+  },
+  resolve: {
+    extensions: ['*', '.js', '.jsx', '.ttf']
   },
   plugins: [
     new HtmlWebpackPlugin({

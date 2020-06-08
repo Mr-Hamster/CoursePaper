@@ -1,10 +1,10 @@
 @font-face {
     font-family: "Octin Prizon";
-    src : url("../static/images/fonts/prizon.ttf") format('truetype');
+    src : url("../static/fonts/prizon.ttf") format('truetype');
 }
 
 
-.AppWrapper{
+div {
     display: flex;
     flex-direction: column;
     width: 100%;
