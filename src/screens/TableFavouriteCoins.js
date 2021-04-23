@@ -46,7 +46,7 @@ export default class TableFavouriteCoins extends React.Component{
                                     </td>
                                     <td>{item.symbol.toUpperCase()}</td>
                                     <td>{item.market_data.current_price.usd.toFixed(3)}$</td>
-                                    <td style={{color: item.market_data.price_change_percentage_1h_in_currency.usd > 0 ? 'green' : 'red' }} >{item.market_data.price_change_percentage_1h_in_currency.usd.toFixed(3)}%</td>
+                                    <td style={{color: item.market_data.price_change_percentage_1h_in_currency.usd > 0 ? 'green' : 'red' }} >{item.market_data.price_change_percentage_1h_in_currency.usd}%</td>
                                     <td style={{color: item.market_data.price_change_percentage_24h > 0 ? 'green' : 'red' }} >{item.market_data.price_change_percentage_24h.toFixed(3)}%</td>      
                                     <td style={{color: item.market_data.price_change_percentage_7d > 0 ? 'green' : 'red' }} >{item.market_data.price_change_percentage_7d.toFixed(3)}%</td>                               
                                     <td>{item.market_data.total_volume.usd}$</td>

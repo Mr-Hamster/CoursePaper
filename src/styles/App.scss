@@ -1,10 +1,4 @@
-@font-face {
-    font-family: "Octin Prizon";
-    src : url("../static/images/fonts/prizon.ttf") format('truetype');
-}
-
-
-.AppWrapper{
+.AppWrapper {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -12,6 +6,4 @@
     text-align: center;
     justify-content: center;
     align-items: center;
-    background: url('../static/images/delete.png');
-    font-family: "Octin Prizon";
 }
