@@ -20,16 +20,27 @@ class App extends Component {
     }
 
     LoadRecentEvents = () => {
-      api.eventsRequest(`https://developers.coinmarketcal.com/v1/events?max=150`).get().then(
-        resp => {
-              console.log(resp)
-                let data = resp.data.body;
-                this.setState({
-                  recentEvents: data
-                })
-            }).catch(err => {
-                alert(`${err}`)
-            });
+      const request = url => {
+        return Axios ({
+          method: "get",
+          url,
+          headers: {
+              'Accept': 'application/json',
+              'Accept-Encoding': 'gzip, deflate, br',
+              'x-api-key': 'oeRt826L5N8CPIjPmmgtW53ZVFj03KMv22NZIVdD',
+          }
+      });
+      }
+      request(`https://cors-anywhere.herokuapp.com/https://developers.coinmarketcal.com/v1/events?max=150`)
+        .then(resp => {
+            let data = resp.data.body;
+            this.setState({
+              recentEvents: data
+            })
+        })
+        .catch(err => {
+            alert(`${err}`)
+        });
     }
 
     getCoinGecko = () => {

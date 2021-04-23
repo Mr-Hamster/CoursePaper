@@ -17,20 +17,23 @@ export default class HistoricalValues extends React.Component{
     }
 
     componentDidMount(){
-        api.crudBuilder('https://api.alternative.me/fng/').get().then(
-            resp => {
+        api.getAxios('https://api.alternative.me/fng/')
+            .then(({ data }) => {
                 this.setState({
-                    value: resp.data.data[0].value,
-                    value_classificaton: resp.data.data[0].value_classification,
+                    value: data.data[0].value,
+                    value_classificaton: data.data[0].value_classification,
                 })
-                
-            }).catch(err => console.log('Error:', err));
+            })
+            .catch((err) => {
+                console.log('error', err)
+            })
     }
 
     loadChart = () => {
         const { limit } = this.state;
-        api.crudBuilder(`https://api.alternative.me/fng/?limit=${limit}`).get().then(
-            resp => {
+        api.getAxios(`https://api.alternative.me/fng/?limit=${limit}`)
+            .then(resp => {
+                console.log()
                 let data = resp.data.data;
                 numbers = data.map((item) =>  item.value);
                 dates = data.map((item) => new Date(item.timestamp*1000));
@@ -38,7 +41,8 @@ export default class HistoricalValues extends React.Component{
                 this.setState({
                     showChart: true,
                 })
-            }).catch(err => console.log('Error:', err));
+            })
+            .catch(err => console.log('Error:', err));
     }
 
     render(){

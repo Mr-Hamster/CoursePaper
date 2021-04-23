@@ -58,3 +58,10 @@ export const eventsRequest = url => ({
     get: () => recentEventsRequest(url,{method: 'GET'}),
 });
 
+export const getAxios = (url) => {
+    return axios ({
+        method: "get",
+        url,
+    });
+}
+

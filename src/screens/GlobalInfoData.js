@@ -8,7 +8,8 @@ export default class GlobalInfoData extends React.Component{
     }
 
     componentDidMount(){
-        api.crudBuilder(`https://api.coingecko.com/api/v3/global`).get().then(
+        api.getAxios(`https://api.coingecko.com/api/v3/global`)
+            .then(
                 resp => {
                     this.setState({
                         globalInfo: resp.data.data,
@@ -17,9 +18,10 @@ export default class GlobalInfoData extends React.Component{
                         totalVolume: resp.data.data.total_volume.btc,
                         cryptoCount: resp.data.data.active_cryptocurrencies
                     })
-                }).catch(err => {
-                    alert(`${err}`)
-                });
+                })
+            .catch(err => {
+                alert(`${err}`)
+            });
     }
 
     render(){

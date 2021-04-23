@@ -53,7 +53,12 @@ export default class MainPage extends React.Component {
     getCoinGeckoData = () => {
         axios.get(`https://min-api.cryptocompare.com/data/all/coinlist`).then(
             resp => {         
-                var data = resp.data.Data;
+                const data = {};
+                console.log(resp.data.Data)
+                for (let item = 0; item <= 3800; item++) {
+                    
+                    data[item] = resp.data.Data[item];
+                }
                 localStorage.setItem('data', JSON.stringify(data));
             }).catch(err => console.log('Error:', err));
 
@@ -121,6 +126,7 @@ export default class MainPage extends React.Component {
         let data = [];
         let result;
         data = JSON.parse(localStorage.getItem('data'));
+        console.log('111: ', data)
         for(let key in data){
             if(key === variantFrom){
                 result = data[key];
