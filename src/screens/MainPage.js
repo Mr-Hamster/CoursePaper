@@ -51,16 +51,12 @@ export default class MainPage extends React.Component {
     }
 
     getCoinGeckoData = () => {
-        axios.get(`https://min-api.cryptocompare.com/data/all/coinlist`).then(
-            resp => {         
-                const data = {};
-                console.log(resp.data.Data)
-                for (let item = 0; item <= 3800; item++) {
-                    
-                    data[item] = resp.data.Data[item];
-                }
-                localStorage.setItem('data', JSON.stringify(data));
-            }).catch(err => console.log('Error:', err));
+        axios.get(`https://min-api.cryptocompare.com/data/all/coinlist`)
+            .then(({ data }) => {         
+                const result = Object.fromEntries(Object.entries(data.Data).slice(0, 3800));
+                localStorage.setItem('data', JSON.stringify(result));
+            })
+            .catch(err => console.log('Error:', err));
 
     }
 
@@ -102,20 +98,21 @@ export default class MainPage extends React.Component {
             let ticker = `${variantFrom}${variantTo}`;
             this.getValueFromData();
             this.AddDataToStore();
-            axios.get(`https://api.binance.com/api/v1/depth?symbol=${ticker}&limit=1000`).then(
-                resp => {
-                    this.setState({
-                        loader: true,
-                        showChart: false,
-                    })
-                    requestResp = resp.request.responseText;
-                    this.getPrice(ticker, requestResp);
-                }).catch(err => {
-                    alert(`${err}`)
-                    this.setState({
-                        loader: false,
-                    })
-                });
+            axios.get(`https://api.binance.com/api/v1/depth?symbol=${ticker}&limit=1000`)
+            .then((resp) => {
+                this.setState({
+                    loader: true,
+                    showChart: false,
+                })
+                requestResp = resp.request.responseText;
+                this.getPrice(ticker, requestResp);
+            })
+            .catch(err => {
+                alert(`${err}`)
+                this.setState({
+                    loader: false,
+                })
+            });
         }
     }
 
@@ -123,18 +120,17 @@ export default class MainPage extends React.Component {
     getValueFromData = () => {
         const { variantFrom } = this.state;  
 
-        let data = [];
+        let data = JSON.parse(localStorage.getItem('data'));
         let result;
-        data = JSON.parse(localStorage.getItem('data'));
-        console.log('111: ', data)
-        for(let key in data){
-            if(key === variantFrom){
+        
+        for (let key in data) {
+            if (key === variantFrom) {
                 result = data[key];
             }
-        }        
-        let imgUrl = 'https://www.cryptocompare.com' + result.ImageUrl;
+        }
+        let imgUrl = 'https://www.cryptocompare.com' + result?.ImageUrl;
         this.setState({
-            coinId: result.Id,
+            coinId: result?.Id,
             imgCoin: imgUrl,
         })
     }
@@ -434,9 +430,9 @@ export default class MainPage extends React.Component {
                 {
                     showChart ? <ChangeStatistic from={variantFrom} to={variantTo} dependencyObj={dependencyObj} /> : null
                 }
-                {
+                {/* {
                     showChart  ? <LatestStats coinId = {coinId} imgCoin={imgCoin} /> : null
-                }
+                } */}
                 {
                     showChart ? <Charts currentPrice={currentPrice} labels={labels} dataBuy={dataBuy} dataSell={dataSell} arrBuy={arrBuy} arrSell={arrSell} /> : null
                 }

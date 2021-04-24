@@ -33,40 +33,41 @@ export default class RecentEvents extends React.Component{
 
     LoadCurrentEvents = () => {
         const { recentEvents  } = this.props;
-
         let data = recentEvents;
         let currentDate = new Date();   
-        let DataForCurrentDate = data.filter(item => new Date(item.date_event).getDate() === currentDate.getDate()-1);
+        let DataForCurrentDate = data.filter(item => new Date(item.date_event).getDate() === currentDate.getDate());
         this.setState({
             data: DataForCurrentDate,
         })
     }
 
     render(){
-
         const { data } = this.state;
         return(
             <div className="wrapperEvents">   
                 <h2>Coin Recent Events</h2>
                 {
-                    data.length ? 
-                    <div className="eventBlocks">
-                    {
-                        data.map((item, index) => (
-                            <div key={index} className='eventItem'>
-                                <h3>
-                                    {item.title.en}
-                                </h3>
-                                <p>
-                                    {item.coins.map(item => `${item.fullname} `)}
-                                </p>
-                                <a href={item.source} target="_blank">
-                                    {item.source}
-                                </a>
-                            </div>
-                        ))
-                    }
-                </div> : <div>No results</div>
+                    data.length ? (
+                        <div className="eventBlocks">
+                            {
+                                data.map((item, index) => (
+                                    <div key={index} className='eventItem'>
+                                        <h3>
+                                            {item.title.en}
+                                        </h3>
+                                        <p>
+                                            {item.coins.map(item => `${item.fullname} `)}
+                                        </p>
+                                        <a href={item.source} target="_blank">
+                                            {item.source}
+                                        </a>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    ) : (
+                        <div>No results</div>
+                    )
                 }
             </div>
         );
