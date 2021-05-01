@@ -420,7 +420,7 @@ export default class MainPage extends React.Component {
                     : null
                     }   
                 </div>         
-                    <Button variant="contained" color="primary" style={{width:'30%', height:'50px', outline: 'none'}} onClick={ this.LoadData }>
+                    <Button variant="contained" color="primary" style={{width:'30%', marginBottom: "50px", height:'50px', outline: 'none'}} onClick={ this.LoadData }>
                         Get Exchanges Results
                     </Button>
                 {

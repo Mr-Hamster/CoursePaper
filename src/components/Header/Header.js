@@ -22,7 +22,7 @@ class Header extends PureComponent {
           </nav>
           <div className='auth'>
             {
-              true ? (
+              false ? (
                 <Link to='/sign-in'>
                   Sign-In
                 </Link>

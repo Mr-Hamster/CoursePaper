@@ -176,7 +176,7 @@ export default class RegistrForm extends React.Component{
                     <div style={{ display:'flex', width: '70%', alignItems:'center', position: 'relative', }} >
                         <TextField
                             id="outlined-uncontrolled"
-                            label="Password"
+                            label="Confirm Password"
                             defaultValue=""
                             margin="normal"
                             variant="outlined"
@@ -206,7 +206,7 @@ export default class RegistrForm extends React.Component{
                     {
                         check && errConfirmPsw ? <span style={{color:'red'}}>Passwords must matched!</span> : null
                     }
-                    <Button variant="contained" color="primary" style={{ width:'30%', height:'50px', marginTop:'10px'}} onClick={ this.Register }>
+                    <Button variant="contained" color="primary" style={{ width:'30%', height:'50px', marginTop:'40px'}} onClick={ this.Register }>
                         Sign Up
                     </Button>
                 </div>
