@@ -79,6 +79,7 @@ export default class GeneralData extends React.Component{
                     : null
                 }
                 <HistoricalValues />
+                <br />
                 <GlobalInfoData />
                 <RecentEvents from={from} recentEvents={recentEvents} />
             </div>

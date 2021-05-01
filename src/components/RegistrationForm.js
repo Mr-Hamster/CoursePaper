@@ -1,10 +1,11 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import OpenEye from '@material-ui/icons/Visibility';
+import ClosedEye from '@material-ui/icons/VisibilityOff';
 import '../styles/RegistrationForm.scss';
 
 const validEmail = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
-
 
 export default class RegistrForm extends React.Component{
 
@@ -14,6 +15,8 @@ export default class RegistrForm extends React.Component{
         email: '',
         psw: '',
         confirmPsw: '',
+        pswEye: false,
+        confirmPswEye: false,
         check: false,
         errFname: true,
         errLname: true,
@@ -86,16 +89,19 @@ export default class RegistrForm extends React.Component{
         const { fname, lname, email, psw, 
             confirmPsw, check, errLname, 
             errFname, errConfirmPsw, errEmail, 
-            errPsw } = this.state;
+            errPsw,
+            pswEye,
+            confirmPswEye,
+        } = this.state;
         return(
             <div className='regWrapper'>
                 <div className='regForm'>
                     <h3>
-                        Registration Form
+                        Sign Up
                     </h3>
                     <TextField
                         id="outlined-uncontrolled"
-                        label="First Name"
+                        label="Username"
                         margin="normal"
                         variant="outlined"
                         type="text"
@@ -112,26 +118,6 @@ export default class RegistrForm extends React.Component{
                     />
                     {
                         check && errFname ? <span style={{color:'red'}}>This field can not be empty!</span> : null
-                    }
-                    <TextField
-                        id="outlined-uncontrolled"
-                        label="Last Name"
-                        margin="normal"
-                        variant="outlined"
-                        name="firstname"
-                        type="text"
-                        onChange = { (event) => {
-                            this.setState({
-                                lname: event.target.value
-                            },()=>{
-                                this.validation()
-                            })
-                        } }
-                        value={lname}
-                        style={{ width: '70%',  }}
-                    />
-                    {
-                        check && errLname ? <span style={{color:'red'}}>This field can not be empty!</span> : null
                     }
                     <TextField
                         id="outlined-uncontrolled"
@@ -154,48 +140,74 @@ export default class RegistrForm extends React.Component{
                     {
                         check && errEmail ? <span style={{color:'red'}}>Email not valid!</span> : null
                     }
-                    <TextField
-                        id="outlined-uncontrolled"
-                        label="Password"
-                        margin="normal"
-                        variant="outlined"
-                        name="password"
-                        type="password"
-                        onChange = { (event) => {
-                            this.setState({
-                                psw: event.target.value
-                            },()=>{
-                                this.validation()
-                            })
-                        } }
-                        value={psw}
-                        style={{ width: '70%',  }}
-                    />
+                    <div style={{ display:'flex', width: '70%', alignItems:'center', position: 'relative', }} >
+                        <TextField
+                            id="outlined-uncontrolled"
+                            label="Password"
+                            defaultValue=""
+                            margin="normal"
+                            variant="outlined"
+                            type={!pswEye ? "password" : 'text' }
+                            onChange = { (event) => {
+                                this.setState({
+                                    psw: event.target.value
+                                })
+                            } }
+                            value={psw}
+                            style={{ width: '100%', marginTop:'10px' }}
+                        />
+                        <div style={{display:'flex', position:'absolute', height:'100%', alignItems:'center', right:'10px'}}>
+                            {
+                                pswEye ? (
+                                    <OpenEye onClick={() => this.setState({
+                                        pswEye: !pswEye
+                                    })}/>
+                                ) : (
+                                    <ClosedEye onClick={() => this.setState({
+                                        pswEye: !pswEye
+                                    })}/>
+                                )
+                            }
+                        </div>
+                    </div>
                     {
                         check && errPsw ? <span style={{color:'red'}}>Password must be minimal 8 chars!</span> : null
                     }
-                    <TextField
-                        id="outlined-uncontrolled"
-                        label="Confirm Password"
-                        margin="normal"
-                        variant="outlined"
-                        type="password"
-                        name="password"
-                        onChange = { (event) => {
-                            this.setState({
-                                confirmPsw: event.target.value
-                            },()=>{
-                                this.validation()
-                            })
-                        } }
-                        value={confirmPsw}
-                        style={{ width: '70%',  }}
-                    />
+                    <div style={{ display:'flex', width: '70%', alignItems:'center', position: 'relative', }} >
+                        <TextField
+                            id="outlined-uncontrolled"
+                            label="Password"
+                            defaultValue=""
+                            margin="normal"
+                            variant="outlined"
+                            type={!confirmPswEye ? "password" : 'text' }
+                            onChange = { (event) => {
+                                this.setState({
+                                    confirmPsw: event.target.value
+                                })
+                            } }
+                            value={confirmPsw}
+                            style={{ width: '100%', marginTop:'10px' }}
+                        />
+                        <div style={{display:'flex', position:'absolute', height:'70%', alignItems:'center', right:'10px'}}>
+                            {
+                                confirmPswEye ? (
+                                    <OpenEye onClick={() => this.setState({
+                                        confirmPswEye: !confirmPswEye
+                                    })}/>
+                                ) : (
+                                    <ClosedEye onClick={() => this.setState({
+                                        confirmPswEye: !confirmPswEye
+                                    })}/>
+                                )
+                            }
+                        </div>
+                    </div>
                     {
                         check && errConfirmPsw ? <span style={{color:'red'}}>Passwords must matched!</span> : null
                     }
                     <Button variant="contained" color="primary" style={{ width:'30%', height:'50px', marginTop:'10px'}} onClick={ this.Register }>
-                        Register
+                        Sign Up
                     </Button>
                 </div>
             </div>

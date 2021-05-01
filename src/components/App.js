@@ -3,18 +3,22 @@ import { ThemeProvider } from '@material-ui/styles';
 import * as api from '../api/index';
 import '../styles/App.scss';
 import MainPage from "../screens/MainPage";
-import { Switch, Route,  } from 'react-router-dom'
+import { Switch, Route, Redirect,  } from 'react-router-dom'
 import Axios from "axios";
+import Header from "./Header/Header";
+import LogIn from "./LogIn";
+import RegistrForm from "./RegistrationForm";
+import Verification from "./Verification/Verification";
 
 class App extends Component {
-    
     state = {
       coinGecko: [],
       dependencyObj: {},
       recentEvents: [],
+      routes: [],
     }
 
-    componentDidMount(){
+    componentDidMount() {
       this.LoadRecentEvents();
       this.getCoinGecko();
     }
@@ -70,17 +74,35 @@ class App extends Component {
         return (
             <ThemeProvider> {/* For material ui  */}
                 <div className="AppWrapper">
+                  <Header />
                   <Switch>
-                      <Route 
-                        path='/' 
-                        component={() => 
-                          <MainPage 
-                            dependencyObj={dependencyObj} 
-                            recentEvents={recentEvents} 
-                            coinGecko={coinGecko}
-                          />
-                        }
-                      />
+                    <Route 
+                      path='/' 
+                      component={() => 
+                        <MainPage 
+                          dependencyObj={dependencyObj} 
+                          recentEvents={recentEvents} 
+                          coinGecko={coinGecko}
+                        />
+                      }
+                      exact
+                    />
+                    <Route 
+                      path='/sign-in' 
+                      component={() => <LogIn />}
+                      exact
+                    />
+                    <Route 
+                      path='/sign-up' 
+                      component={() => <RegistrForm />}
+                      exact
+                    />
+                    <Route 
+                      path='/verification' 
+                      component={() => <Verification />}
+                      exact
+                    />
+                    <Route render={() => <Redirect to='/' />} />
                   </Switch>
                 </div>
             </ThemeProvider>

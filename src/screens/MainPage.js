@@ -51,10 +51,10 @@ export default class MainPage extends React.Component {
     }
 
     getCoinGeckoData = () => {
-        axios.get(`https://min-api.cryptocompare.com/data/all/coinlist`)
+        axios.get(`https://min-api.cryptocompare.com/data/all/coinlist?summary=true`)
             .then(({ data }) => {         
-                const result = Object.fromEntries(Object.entries(data.Data).slice(0, 3800));
-                localStorage.setItem('data', JSON.stringify(result));
+                // const result = Object.fromEntries(Object.entries(data.Data).slice(0, 3800));
+                localStorage.setItem('data', JSON.stringify(data.Data));
             })
             .catch(err => console.log('Error:', err));
 
@@ -369,7 +369,6 @@ export default class MainPage extends React.Component {
             const { dependencyObj, recentEvents, coinGecko } = this.props;
         return (
             <div className="wrapperInputData">
-                <h1>Crypto Cap</h1>
                     <div className="inputData"> 
                         <div className="textField"> 
                             <TextField
@@ -430,9 +429,9 @@ export default class MainPage extends React.Component {
                 {
                     showChart ? <ChangeStatistic from={variantFrom} to={variantTo} dependencyObj={dependencyObj} /> : null
                 }
-                {/* {
+                {
                     showChart  ? <LatestStats coinId = {coinId} imgCoin={imgCoin} /> : null
-                } */}
+                }
                 {
                     showChart ? <Charts currentPrice={currentPrice} labels={labels} dataBuy={dataBuy} dataSell={dataSell} arrBuy={arrBuy} arrSell={arrSell} /> : null
                 }
