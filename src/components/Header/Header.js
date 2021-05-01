@@ -16,7 +16,7 @@ class Header extends PureComponent {
             <Link to='/profile'>
               My profile
             </Link>
-            <Link to='/favorite-coins'>
+            <Link to='/favorites'>
               Favorite Coins
             </Link>
           </nav>

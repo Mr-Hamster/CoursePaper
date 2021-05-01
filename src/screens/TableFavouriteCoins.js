@@ -2,22 +2,23 @@ import React from 'react'
 import Table from 'react-bootstrap/Table'
 
 export default class TableFavouriteCoins extends React.Component{
-    // state = {
-    //     data: []
-    // }
+    state = {
+        data: []
+    }
 
     componentDidMount(){
-        // let dataCoins = JSON.parse(localStorage.getItem('FavouriteCoins'));
-        // this.setState({
-        //     data: dataCoins
-        // })
+        let dataCoins = JSON.parse(localStorage.getItem('FavouriteCoins'));
+        this.setState({
+            data: dataCoins
+        })
     }
 
     render(){
         const { favouriteCoins, top10 } = this.props;
+        const { data } = this.state;
         return(
             <div style={{ width:'90%' }} >
-                { favouriteCoins ? 
+                { data ? 
                  <Table responsive="sm">
                     <thead>
                         <tr>
@@ -31,12 +32,11 @@ export default class TableFavouriteCoins extends React.Component{
                             <th>24h Volume</th>
                             <th>Circulating Supply</th>
                             <th>Mkt Cap</th>
-                            <th>Last 7 Days</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            favouriteCoins.map((item,index) => (
+                            data.map((item,index) => (
                                 <tr key={index} >
                                     <td>{index+1}</td>
                                     <td style={{ display:'flex', justifyContent:'center', alignItems:'center', }} >
@@ -52,7 +52,6 @@ export default class TableFavouriteCoins extends React.Component{
                                     <td>{item.market_data.total_volume.usd}$</td>
                                     <td>{item.market_data.circulating_supply}</td>
                                     <td>{item.market_data.market_cap.usd}$</td>
-                                    <td>Table cell</td>
                                 </tr>
                             ))
                         }

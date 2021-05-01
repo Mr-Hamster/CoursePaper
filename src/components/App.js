@@ -9,6 +9,7 @@ import Header from "./Header/Header";
 import LogIn from "./LogIn";
 import RegistrForm from "./RegistrationForm";
 import Verification from "./Verification/Verification";
+import FavoriteCoins from "../screens/FavoriteCoins/FavoriteCoins";
 
 class App extends Component {
     state = {
@@ -100,6 +101,15 @@ class App extends Component {
                     <Route 
                       path='/verification' 
                       component={() => <Verification />}
+                      exact
+                    />
+                    <Route 
+                      path='/favorites' 
+                      component={() => (
+                        <FavoriteCoins
+                          coinGecko={coinGecko}
+                        />
+                      )}
                       exact
                     />
                     <Route render={() => <Redirect to='/' />} />
