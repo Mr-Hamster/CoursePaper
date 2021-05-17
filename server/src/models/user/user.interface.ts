@@ -1,4 +1,5 @@
 interface User {
+  _id: string,
   username: string,
   password: string,
   email: string,
@@ -7,6 +8,7 @@ interface User {
     expirationDate: Date,
     isVerify: boolean,
   },
+  favoriteCoins: [string]
 };
 
 export default User;

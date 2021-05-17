@@ -1,4 +1,4 @@
-import { IsOptional, MinLength, MaxLength, IsString, ValidateNested, IsEmail } from 'class-validator';
+import { MinLength, MaxLength, IsString, IsEmail } from 'class-validator';
 
 class CreateUserDto {
   @IsString()

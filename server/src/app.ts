@@ -1,9 +1,11 @@
 import bodyParser from 'body-parser';
 import express from 'express';
-import mongoose from 'mongoose';
 import cors from 'cors';
 import Controller from './interfaces/controller.interface';
 import errorMiddleware from './middleware/error';
+const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
+import './utils/db';
 
 class App {
   public app: express.Application;
@@ -35,27 +37,30 @@ class App {
 
   private initializeControllers(controllers: Controller[]) {
     controllers.forEach((controller) => {
-      this.app.use('/', controller.router);
+      this.app.use('/api/v1/', controller.router);
     });
   }
 
   private connectToTheDatabase() {
-    const MongoClient = require('mongodb').MongoClient;
-    const client = new MongoClient(
-      process.env.MONGODB_URI,
-      {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      }
-    );
-
-    client.connect((err: Error) => {
-      if (err) {
-        console.log('err', err);
-      }
-      console.log('DB connected')
-      client.close();
+    const { MONGODB_URI, SECRET_KEY, } = process.env;
+    const store = new MongoDBStore({
+      uri: MONGODB_URI,
+      collection: 'devices'
     });
+    
+    this.app.use(
+      session({
+        name: 'test',
+        secret: SECRET_KEY,
+        store: store,
+        cookie: {
+          path: '/',
+          maxAge: 60 * 60 * 1000,
+        },
+        resave: false,
+        saveUninitialized: false,
+      })
+    );
   }
 }
 

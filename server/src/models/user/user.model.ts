@@ -6,8 +6,6 @@ const userSchema = new mongoose.Schema(
     username: {
       type: String,
       required: true,
-      maxlength: [16, 'The maximum length for "username" is 16 characters'],
-      minlength: [3, 'The minimum length for "username" is 3 characters'],
       trim: true,
     },
     password: {
@@ -20,10 +18,6 @@ const userSchema = new mongoose.Schema(
       required: true,
       lowercase: true,
       trim: true,
-      match: [
-        '^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$',
-        "This email is not correct, try again!"
-      ]
     },
     verification: {
       code: String,
@@ -33,20 +27,18 @@ const userSchema = new mongoose.Schema(
         default: false,
       }
     },
+    favoriteCoins: [{
+      type: String,
+      ref: 'FavoriteCoins',
+    }]
   },
   {
     toJSON: {
-      virtuals: true,
       getters: true,
     },
+    id: false,
   },
 );
-
-userSchema.virtual('favoriteCoins', {
-  ref: 'FavoriteCoins',
-  localField: '_id',
-  foreignField: 'favoriteCoins',
-});
 
 const userModel = mongoose.model<User & mongoose.Document>('User', userSchema);
 export default userModel;
