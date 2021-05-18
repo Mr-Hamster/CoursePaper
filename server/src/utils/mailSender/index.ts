@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 const { EMAIL, MAIL_PASS } = process.env;
 
-module.exports = sendToMail = (to, subject, code) => {
+exports.sendToMail = (to: string, code: string) => {
   try {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -18,16 +18,17 @@ module.exports = sendToMail = (to, subject, code) => {
     const mailOptions = {
       from: EMAIL,
       to,
-      subject,
-      html: <h1>Your verification code is: {code} <br /> This code will expire in 24 hours</h1>,
+      subject: "Verification",
+      html: `<h1>Your verification code is: ${code} <br /> This code will expire in 24 hours</h1>`,
     };
 
     return new Promise((resolve, reject) => {
-      transporter.sendMail(mailOptions, (error, info) => {
+      transporter.sendMail(mailOptions, (error: Error, info: string) => {
         if (error) {
           reject(error)
           console.log(error);
         } else {
+          console.log('info', info)
           resolve(true)
         }
         transporter.close();

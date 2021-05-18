@@ -6,6 +6,7 @@ import TokenData from '../../interfaces/tokenData.interface';
 import CreateUserDto from '../../models/user/user.dto';
 import User from '../../models/user/user.interface';
 import userModel from '../../models/user/user.model';
+const { sendToMail } = require('../../utils/mailSender/index'); 
 
 class AuthenticationService {
   public user = userModel;
@@ -15,18 +16,20 @@ class AuthenticationService {
       throw new UserWithThatEmailAlreadyExistsException(userData.email);
     }
     const hashedPassword = await bcrypt.hash(userData.password, 10);
-    const number: string = String(Math.floor(Math.random()*90000) + 10000); // generate 5-digit number
-    console.log(number)
+    const code: string = String(Math.floor(Math.random()*90000) + 10000); // generate 5-digit number
     const user = new this.user({
       ...userData,
       password: hashedPassword,
       verification: {
-        code: await bcrypt.hash(number, 10),
+        code: await bcrypt.hash(code, 10),
         expirationDate: Date.now() + (3600000 * 24), // 3 600 000 = 1 hour
         isVerify: false,
       },
-    });;
-    const { email, username, _id } = await user.save();
+    });
+    const [{ email, username, _id }] = await Promise.all([
+      user.save(),
+      sendToMail(userData.email, code),
+    ]);
     return {
       user: {
         email,
