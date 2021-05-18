@@ -72,7 +72,10 @@ class FavoriteCoinsController implements Controller {
       .select('favoriteCoins');
 
     if (userData.favoriteCoins.includes(coinId)) {
-      const successResponse = await this.favoriteCoin.findByIdAndDelete(coinId);
+      const successResponse = await Promise.all([
+        this.favoriteCoin.findByIdAndDelete(coinId),
+        
+      ])
       if (successResponse) {
         res.sendStatus(200);
       } else {
