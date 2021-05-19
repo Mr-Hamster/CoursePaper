@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const serverPrefix = 'https://cors-anywhere.herokuapp.com/';
+const SERVER_URL = 'http://localhost:3000/api/v1';
     
 const getHeaders = () => ({
     'Content-Type': 'application/json',
@@ -64,4 +65,12 @@ export const getAxios = (url) => {
         url,
     });
 }
+
+export const signUp = (data) => {
+    return axios({
+        method: "post",
+        data,
+        url: `${SERVER_URL}/auth/sign-up`
+    })
+};
 

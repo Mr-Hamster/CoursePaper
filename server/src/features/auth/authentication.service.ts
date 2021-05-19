@@ -38,9 +38,6 @@ class AuthenticationService {
       },
     };
   }
-  public createCookie(tokenData: TokenData) {
-    return `Authorization=${tokenData.token}; HttpOnly;`;
-  }
   public createToken(user: User): TokenData {
     const secret = process.env.JWT_SECRET;
     const dataStoredInToken: DataStoredInToken = {

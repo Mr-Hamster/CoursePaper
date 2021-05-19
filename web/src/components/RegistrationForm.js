@@ -4,26 +4,24 @@ import Button from '@material-ui/core/Button';
 import OpenEye from '@material-ui/icons/Visibility';
 import ClosedEye from '@material-ui/icons/VisibilityOff';
 import '../styles/RegistrationForm.scss';
+import { signUp } from '../api';
 
 const validEmail = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
 
 export default class RegistrForm extends React.Component{
-
     state = {
-        fname: '',
-        lname: '',
+        username: '',
         email: '',
         psw: '',
         confirmPsw: '',
         pswEye: false,
         confirmPswEye: false,
         check: false,
-        errFname: true,
-        errLname: true,
+        errUsername: true,
         errEmail: true,
         errPsw: true,
         errConfirmPsw: true,
-    }
+    };
 
     Register = () => {
         this.setState({
@@ -35,18 +33,12 @@ export default class RegistrForm extends React.Component{
     }
 
     validation = () => {
-        const { fname, lname, email, psw, confirmPsw, } = this.state;
+        const { username, email, psw, confirmPsw, } = this.state;
 
-        fname.length ? this.setState({
-            errFname: false
-        }): this.setState({
-            errFname: true
-        })
-
-        lname.length ? this.setState({
-            errLname: false
-        }): this.setState({
-            errLname: true
+        username.length ? this.setState({
+            errUsername: false
+        }) : this.setState({
+            errUsername: true
         })
 
         validEmail.test(email) ? this.setState({
@@ -55,13 +47,13 @@ export default class RegistrForm extends React.Component{
             errEmail: true
         })
 
-        psw.length < 8 ? this.setState({
-            errPsw: true
-        }): this.setState({
+        psw.length > 8 ? this.setState({
             errPsw: false
+        }): this.setState({
+            errPsw: true
         })
 
-        psw.length >=8 && psw == confirmPsw ? this.setState({
+        psw.length > 8 && psw == confirmPsw ? this.setState({
             errConfirmPsw: false
         }): this.setState({
             errConfirmPsw: true
@@ -69,26 +61,30 @@ export default class RegistrForm extends React.Component{
     }
 
     sendData = () => {
-        const { errLname, errFname, errConfirmPsw, 
-            errEmail, errPsw, fname, lname, 
+        const { errUsername, errConfirmPsw, 
+            errEmail, errPsw, username,
             email, psw, } = this.state;
-        if(!errConfirmPsw && !errEmail && !errFname && !errLname && !errPsw){
+        if(!errConfirmPsw && !errEmail && !errUsername && !errPsw){
             let newUser = {
-                firstname: fname,
-                lastname: lname,
+                username,
                 email: email,
                 password: psw
             }
-            console.log(newUser)
+            signUp(newUser)
+                .then(({ data }) => {
+                    console.log(data)
+                })
+                .catch((err) => {
+                    alert(err.response.data.error)
+                })
         } else {
             console.log('error')
         }
     }
 
     render(){
-        const { fname, lname, email, psw, 
-            confirmPsw, check, errLname, 
-            errFname, errConfirmPsw, errEmail, 
+        const { username, errUsername, email, psw, 
+            confirmPsw, check, errConfirmPsw, errEmail, 
             errPsw,
             pswEye,
             confirmPswEye,
@@ -108,16 +104,16 @@ export default class RegistrForm extends React.Component{
                         name="lastname"
                         onChange = { (event) => {
                             this.setState({
-                                fname: event.target.value
+                                username: event.target.value
                             },()=>{
                                 this.validation()
                             })
                         } }
-                        value={fname}
+                        value={username}
                         style={{ width: '70%',  }}
                     />
                     {
-                        check && errFname ? <span style={{color:'red'}}>This field can not be empty!</span> : null
+                        check && errUsername ? <span style={{color:'red'}}>This field can not be empty!</span> : null
                     }
                     <TextField
                         id="outlined-uncontrolled"

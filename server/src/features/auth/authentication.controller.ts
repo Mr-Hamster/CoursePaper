@@ -25,7 +25,6 @@ class AuthenticationController implements Controller {
     this.router.post(`${this.path}/sign-up`, validationMiddleware(CreateUserDto), this.registration);
     this.router.post(`${this.path}/verification/:id`, validationMiddleware(VerificationDataDto), this.verification);
     this.router.post(`${this.path}/sign-in`, validationMiddleware(LogInDto), this.loggingIn);
-    this.router.post(`${this.path}/sign-out`, this.loggingOut);
   }
 
   private registration = async (request: Request, response: Response, next: NextFunction) => {
@@ -53,11 +52,13 @@ class AuthenticationController implements Controller {
         if (!user.verification.isVerify) {
           next(new UserNotVerifiedException());
         }
-        response.setHeader('Set-Cookie', [this.authenticationService.createCookie(tokenData)]);
         response.status(200).json({
-          _id: user._id,
-          username: user.username,
-          email: user.email,
+          user: {
+            _id: user._id,
+            username: user.username,
+            email: user.email,
+          },
+          token: tokenData,
         });
       } else {
         next(new WrongCredentialsException());
@@ -90,12 +91,15 @@ class AuthenticationController implements Controller {
         } 
         await user.save();
         const tokenData = this.authenticationService.createToken(user);
-        const cookie = this.authenticationService.createCookie(tokenData)
         
-        response.setHeader('Set-Cookie', [cookie]);
         const { _id, email, username } = user;
         response.status(200).json({
-          _id, email, username
+          user: {
+            _id,
+            email,
+            username,
+          },
+          token: tokenData,
         });
       } else {
         next(new WrongCredentialsException());
@@ -103,11 +107,6 @@ class AuthenticationController implements Controller {
     } else {
       next(new WrongCredentialsException());
     }
-  }
-
-  private loggingOut = (request: Request, response: Response) => {
-    response.setHeader('Set-Cookie', ['Authorization=;Max-age=0']);
-    response.sendStatus(200);
   }
 }
 

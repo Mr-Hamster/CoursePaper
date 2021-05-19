@@ -1,9 +1,18 @@
 import React, { PureComponent } from 'react';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
+import { isSignedIn } from '../../services/auth';
 import './Header.scss';
 
 class Header extends PureComponent {
+  state = {
+    isSignedIn: false,
+  };
+  componentDidMount () {
+    this.setState({
+      isSignedIn: isSignedIn(),
+    })
+  }
   render () {
     const { history } = this.props;
     return (
@@ -22,7 +31,7 @@ class Header extends PureComponent {
           </nav>
           <div className='auth'>
             {
-              false ? (
+              !this.state.isSignedIn ? (
                 <Link to='/sign-in'>
                   Sign-In
                 </Link>
