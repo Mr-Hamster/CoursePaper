@@ -8,7 +8,7 @@ interface User {
     expirationDate: Date,
     isVerify: boolean,
   },
-  favoriteCoins: [string]
+  favoriteCoins: string[],
 };
 
 export default User;

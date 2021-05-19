@@ -11,7 +11,7 @@
   },
   "nodemonConfig": {
     "watch": [
-      "server"
+      "src"
     ],
     "ext": "ts",
     "ignore": [

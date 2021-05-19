@@ -53,7 +53,7 @@ class FavoriteCoinsController implements Controller {
       await Promise.all([
         newFavoriteCoin.save(),
         this.user.findByIdAndUpdate(userId, {
-          $push: { favoriteCoins: newFavoriteCoin._id },
+          $addToSet: { favoriteCoins: newFavoriteCoin._id },
         }),
       ]);
 
@@ -71,16 +71,23 @@ class FavoriteCoinsController implements Controller {
       .findById(userId)
       .select('favoriteCoins');
 
-    if (userData.favoriteCoins.includes(coinId)) {
-      const successResponse = await Promise.all([
-        this.favoriteCoin.findByIdAndDelete(coinId),
-        
-      ])
-      if (successResponse) {
-        res.sendStatus(200);
-      } else {
-        next(new FavoriteCoinNotFound());
-      }
+      if (userData.favoriteCoins.includes(coinId)) {
+        const indexToDelete = userData.favoriteCoins.findIndex(item => item === coinId);
+        const newFavoriteCoins = [
+          ...userData.favoriteCoins.slice(0, indexToDelete), 
+          ...userData.favoriteCoins.slice(indexToDelete + 1),
+        ];
+        userData.favoriteCoins = newFavoriteCoins;
+
+        const [successResponse] = await Promise.all([
+          this.favoriteCoin.findByIdAndDelete(coinId),
+          userData.save(),
+        ]);
+        if (successResponse) {
+          res.sendStatus(200);
+        } else {
+          next(new FavoriteCoinNotFound());
+        }
     } else {
       next(new ForbiddenException())
     }
