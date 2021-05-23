@@ -74,3 +74,19 @@ export const signUp = (data) => {
     })
 };
 
+export const verification = (data, id) => {
+    return axios({
+        method: "post",
+        data,
+        url: `${SERVER_URL}/auth/verification/${id}`
+    })
+};
+
+export const signIn = (data) => {
+    return axios({
+        method: "post",
+        data,
+        url: `${SERVER_URL}/auth/sign-in`
+    })
+}
+

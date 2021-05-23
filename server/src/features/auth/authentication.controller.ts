@@ -48,7 +48,7 @@ class AuthenticationController implements Controller {
         user.get('password', null, { getters: false }),
       );
       if (isPasswordMatching) {
-        const tokenData = this.authenticationService.createToken(user);
+        const { token } = this.authenticationService.createToken(user);
         if (!user.verification.isVerify) {
           next(new UserNotVerifiedException());
         }
@@ -58,7 +58,7 @@ class AuthenticationController implements Controller {
             username: user.username,
             email: user.email,
           },
-          token: tokenData,
+          token,
         });
       } else {
         next(new WrongCredentialsException());
@@ -90,7 +90,7 @@ class AuthenticationController implements Controller {
           next(new VerificationDateExpired());
         } 
         await user.save();
-        const tokenData = this.authenticationService.createToken(user);
+        const { token } = this.authenticationService.createToken(user);
         
         const { _id, email, username } = user;
         response.status(200).json({
@@ -99,7 +99,7 @@ class AuthenticationController implements Controller {
             email,
             username,
           },
-          token: tokenData,
+          token,
         });
       } else {
         next(new WrongCredentialsException());

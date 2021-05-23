@@ -1,8 +1,10 @@
 .wrapperLogIn{
     display: flex;
-    width:100%;
+    width: 100%;
     justify-content: center;
     align-items: center;
+    height: calc(100vh - 86px);
+
     .logInBlock{
         display: flex;
         width: 450px;
@@ -14,7 +16,6 @@
         align-items: center;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12);
         padding: 40px 48px;
-        margin-top: 100px;
 
         p {
             font-size: 14px;

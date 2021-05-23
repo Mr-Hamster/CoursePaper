@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
-import { isSignedIn } from '../../services/auth';
+import { deleteToken, isSignedIn } from '../../services/auth';
 import './Header.scss';
 
 class Header extends PureComponent {
@@ -13,22 +13,35 @@ class Header extends PureComponent {
       isSignedIn: isSignedIn(),
     })
   }
+
+  signOut = () => {
+    this.setState({
+      isSignedIn: false,
+    });
+
+    deleteToken();
+  }
   render () {
     const { history } = this.props;
+    const { isSignedIn } = this.state;
     return (
       <header>
         <div className='title' onClick={() => history.push('/')}>
           Crypto Cap
         </div>
         <div>
-          <nav>
-            <Link to='/profile'>
-              My profile
-            </Link>
-            <Link to='/favorites'>
-              Favorite Coins
-            </Link>
-          </nav>
+          {
+            isSignedIn && (
+              <nav>
+                <Link to='/profile'>
+                  My profile
+                </Link>
+                <Link to='/favorites'>
+                  Favorite Coins
+                </Link>
+              </nav>
+            )
+          }
           <div className='auth'>
             {
               !this.state.isSignedIn ? (
@@ -36,7 +49,7 @@ class Header extends PureComponent {
                   Sign-In
                 </Link>
               ) : (
-                <span>
+                <span onClick={() => this.signOut()}>
                   Sign Out
                 </span>
               )

@@ -99,7 +99,7 @@ class App extends Component {
                       exact
                     />
                     <Route 
-                      path='/verification' 
+                      path='/verification/:id' 
                       component={() => <Verification />}
                       exact
                     />
