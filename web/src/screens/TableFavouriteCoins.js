@@ -18,7 +18,7 @@ export default class TableFavouriteCoins extends React.Component{
         const { data } = this.state;
         return(
             <div style={{ width:'90%' }} >
-                { data ? 
+                { data && favouriteCoins ? 
                  <Table responsive="sm">
                     <thead>
                         <tr>

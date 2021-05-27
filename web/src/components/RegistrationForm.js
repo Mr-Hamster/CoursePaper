@@ -44,7 +44,7 @@ class RegistrForm extends React.Component{
                 this.setState({
                     isLoad: false,
                 })
-                alert(err.response.data.error)
+                alert(err.response.data.message)
             })
     };
 

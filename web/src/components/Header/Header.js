@@ -15,11 +15,13 @@ class Header extends PureComponent {
   }
 
   signOut = () => {
+    const { history } = this.props;
     this.setState({
       isSignedIn: false,
     });
 
     deleteToken();
+    history.push('/');
   }
   render () {
     const { history } = this.props;

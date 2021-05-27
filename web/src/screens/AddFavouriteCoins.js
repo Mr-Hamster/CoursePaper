@@ -95,7 +95,7 @@ export default class AddFavouriteCoins extends React.Component{
         const { data, showFavouriteCoins, choosenCoins } = this.state;
         return(
             <div style={{ width:'100%', }} >
-            <Button variant="contained" color="primary" style={{width:'30%', height:'50px', margin:'20px', outline: 'none' }} onClick={ () => this.setState({ open: true }) }>
+            <Button variant="contained" color="primary" style={{width:'200px', height:'50px', margin:'20px', outline: 'none' }} onClick={ () => this.setState({ open: true }) }>
                 Add Favourite Coins
             </Button> 
             <Dialog disableBackdropClick disableEscapeKeyDown open={this.state.open} onClose={()=>{

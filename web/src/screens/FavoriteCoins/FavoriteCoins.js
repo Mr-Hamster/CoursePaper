@@ -10,7 +10,7 @@ export default class FavoriteCoins extends Component {
     return (
       <div>
         <AddFavouriteCoins coinGecko={coinGecko} />
-        <TableFavouriteCoins />
+        <TableFavouriteCoins favouriteCoins />
       </div>
     )
   }

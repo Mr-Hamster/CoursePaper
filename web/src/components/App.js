@@ -10,6 +10,7 @@ import LogIn from "./LogIn";
 import RegistrForm from "./RegistrationForm";
 import Verification from "./Verification/Verification";
 import FavoriteCoins from "../screens/FavoriteCoins/FavoriteCoins";
+import Profile from "../screens/Profile/Profile";
 
 class App extends Component {
     state = {
@@ -110,6 +111,11 @@ class App extends Component {
                           coinGecko={coinGecko}
                         />
                       )}
+                      exact
+                    />
+                    <Route 
+                      path='/profile' 
+                      component={() => <Profile />}
                       exact
                     />
                     <Route render={() => <Redirect to='/' />} />

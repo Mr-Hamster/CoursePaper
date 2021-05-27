@@ -29,7 +29,7 @@ class Verification extends React.Component{
           this.setState({
             isLoad: false,
           });
-          saveToken(data.token);
+          saveToken(data);
           history.push('/');
           window.location.reload();
         })
@@ -37,7 +37,7 @@ class Verification extends React.Component{
           this.setState({
             isLoad: false,
           });
-          alert(err.response.data.error)
+          alert(err.response.data.message)
         })
     };
 
