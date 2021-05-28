@@ -52,7 +52,7 @@ class Verification extends React.Component{
                 <div className="logInBlock">
                   <h3>Thanks For Signing Up!</h3>
                   <p>
-                    Please verify your account by entering the code that <br /> has been sent to khomiaknazarii@gmail.com
+                    Please verify your account by entering the code that <br /> has been sent to your email
                   </p>
                   <TextField
                     id="outlined-uncontrolled"

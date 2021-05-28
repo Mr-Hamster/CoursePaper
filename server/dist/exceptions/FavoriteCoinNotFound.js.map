@@ -1,0 +1,1 @@
+{"version":3,"file":"FavoriteCoinNotFound.js","sourceRoot":"","sources":["../../src/exceptions/FavoriteCoinNotFound.ts"],"names":[],"mappings":";;;;;AAAA,oEAA4C;AAE5C,MAAM,oBAAqB,SAAQ,uBAAa;IAC9C;QACE,KAAK,CAAC,GAAG,EAAE,sBAAsB,CAAC,CAAC;IACrC,CAAC;CACF;AAED,kBAAe,oBAAoB,CAAC"}
